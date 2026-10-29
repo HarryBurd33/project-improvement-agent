@@ -1,0 +1,696 @@
+{
+  "schema_version": 1,
+  "project_id": "project-improvement-agent",
+  "resources": [
+    {
+      "id": "release-resource-1",
+      "purpose": "Reusable release .github/workflows/tests.yml",
+      "kind": "reference",
+      "location": ".github/workflows/tests.yml",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-2",
+      "purpose": "Reusable release .gitignore",
+      "kind": "reference",
+      "location": ".gitignore",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-3",
+      "purpose": "Reusable release LICENSE",
+      "kind": "reference",
+      "location": "LICENSE",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-4",
+      "purpose": "Reusable release NOTICE",
+      "kind": "reference",
+      "location": "NOTICE",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-5",
+      "purpose": "Reusable release README.md",
+      "kind": "reference",
+      "location": "README.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-6",
+      "purpose": "Reusable release docs/provenance.md",
+      "kind": "reference",
+      "location": "docs/provenance.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-7",
+      "purpose": "Reusable release docs/validation.md",
+      "kind": "reference",
+      "location": "docs/validation.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-8",
+      "purpose": "Reusable release examples/sample-report.md",
+      "kind": "reference",
+      "location": "examples/sample-report.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-9",
+      "purpose": "Reusable release scripts/install.py",
+      "kind": "script",
+      "location": "scripts/install.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-10",
+      "purpose": "Reusable release scripts/validate.py",
+      "kind": "script",
+      "location": "scripts/validate.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-11",
+      "purpose": "Reusable release skills/project-improvement-agent/AGENT.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/AGENT.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-12",
+      "purpose": "Reusable release skills/project-improvement-agent/LICENSE",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/LICENSE",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-13",
+      "purpose": "Reusable release skills/project-improvement-agent/NOTICE",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/NOTICE",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-14",
+      "purpose": "Reusable release skills/project-improvement-agent/PLAYBOOK.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/PLAYBOOK.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-15",
+      "purpose": "Reusable release skills/project-improvement-agent/SKILL.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/SKILL.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-16",
+      "purpose": "Reusable release skills/project-improvement-agent/agent.json",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/agent.json",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-17",
+      "purpose": "Reusable release skills/project-improvement-agent/agents/openai.yaml",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/agents/openai.yaml",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-18",
+      "purpose": "Reusable release skills/project-improvement-agent/assets/implementation-prompt.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/assets/implementation-prompt.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-19",
+      "purpose": "Reusable release skills/project-improvement-agent/assets/report.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/assets/report.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-20",
+      "purpose": "Reusable release skills/project-improvement-agent/references/codex.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/references/codex.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-21",
+      "purpose": "Reusable release skills/project-improvement-agent/references/comprehensive.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/references/comprehensive.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-22",
+      "purpose": "Reusable release skills/project-improvement-agent/references/state.md",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/references/state.md",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-23",
+      "purpose": "Reusable release skills/project-improvement-agent/scripts/portfolio.py",
+      "kind": "script",
+      "location": "skills/project-improvement-agent/scripts/portfolio.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-24",
+      "purpose": "Reusable release skills/project-improvement-agent/toolbox/index.json",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/toolbox/index.json",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-25",
+      "purpose": "Reusable release skills/project-improvement-agent/toolbox/run-review.json",
+      "kind": "reference",
+      "location": "skills/project-improvement-agent/toolbox/run-review.json",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-26",
+      "purpose": "Reusable release tests/test_comprehensive.py",
+      "kind": "script",
+      "location": "tests/test_comprehensive.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-27",
+      "purpose": "Reusable release tests/test_install.py",
+      "kind": "script",
+      "location": "tests/test_install.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-28",
+      "purpose": "Reusable release tests/test_portfolio.py",
+      "kind": "script",
+      "location": "tests/test_portfolio.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-29",
+      "purpose": "Reusable release tests/test_validation.py",
+      "kind": "script",
+      "location": "tests/test_validation.py",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    },
+    {
+      "id": "release-resource-30",
+      "purpose": "Reusable release toolbox/index.json",
+      "kind": "reference",
+      "location": "toolbox/index.json",
+      "version": "1.0.0",
+      "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
+      "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-05",
+        "check-05"
+      ],
+      "validation": {
+        "method": "Local release behavioral, inventory, link and exact-public-content gates; limitations in validation record",
+        "evidence": [
+          "docs/validation.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt existing Agent Forge inventory contract and inspected skill index. Root release inventory is needed for source, tests, installer and sanitized docs outside the installable skill."
+    }
+  ]
+}

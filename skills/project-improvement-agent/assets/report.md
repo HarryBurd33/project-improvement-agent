@@ -1,0 +1,28 @@
+# Project improvement review — {run and observation date}
+
+Mode and limits: {broad/comprehensive, caps, actual consumption, stop reason}
+Priorities: {known goals or provisional ranking assumptions}
+
+## Coverage
+
+Sources searched: {stable keys, scope, observation, cursor, listing limits}
+Projects inventoried: {supported count; include inventoried-only entries}
+Initially assessed: {count and identities}
+Reviewed in depth: {count, identities, type criteria, exact evidence boundary}
+Blocked/inaccessible: {sources/projects, reason and recovery}
+Deferred: {run limits, outstanding questions, source queries and unread materials}
+Completion: {relative only to discovered accessible inventory as of date; unknown total remains unknown}
+
+## Prioritized recommendations
+
+{Use implementation-prompt.md for every recommendation, with evidence, confidence, ranking explanation, effort/tradeoffs/dependencies, checks and a fenced standalone prompt. Include no-change conclusions.}
+
+## Changes since previous run
+
+{New, changed, resolved and unchanged findings, rejected decisions and any evidenced reopening.}
+
+## Verification and continuation
+
+{Frozen checks with actual results and references; distinguish structural, simulated and live evidence.}
+Private state: {path}
+Next action: {specific manual action and how to verify it; exact continuation invocation}

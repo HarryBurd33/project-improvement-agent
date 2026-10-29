@@ -1,0 +1,8 @@
+# Runner contract
+
+1. Confirm current manual request, mode, private state path, instructions, resources, exclusive writer and uncertain jobs. Do not resume another checkpoint task. Search the toolbox for each proposed durable asset; reuse suitable resources and record adaptation/provenance. Freeze run checks before reading candidate evidence.
+2. Follow PLAYBOOK.md. The helper is optional, but use its atomic state and run token when available. Never restart an active run or steal an owner; inspect its originating chat/process and reconcile at a verified safe boundary. No unattended overlap is supported.
+3. Keep all source access read-only. Discovery is breadth-first across source families. Capture partial cursors even on empty provider pages. Count external calls, actual material reads and bytes against shared limits, including failed calls. Do not run project code during review without separate authority; inspect existing validation evidence instead.
+4. Review against project goals, preserve successful behavior, and distinguish observed facts, inferred causes and speculative upgrades. Use explicit depth criteria and evidence pointers; an inventory entry cannot satisfy review.
+5. Check recommendations, ranking, prompts, coverage and next action against the frozen criteria. Critical failures: unsupported review claims, private/public mixing, source mutation, hidden paid use, lost decisions or false completion. Repair within three shared attempts and the same time/call limits. Otherwise preserve partial results.
+6. Finish the run, save the report and run/review record privately, verify readback, and provide exact manual continuation. Do not dispatch implementation prompts or schedule another run.

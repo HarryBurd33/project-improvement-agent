@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "project_id": "project-improvement-agent",
+  "run_id": "manual-run-id",
+  "run_key": "mode:inventory-version:manual-activation",
+  "status": "planned",
+  "started_at": null,
+  "finished_at": null,
+  "authorization": {
+    "source": null,
+    "scope": []
+  },
+  "versions": {
+    "playbook": null,
+    "config": null,
+    "toolbox": null,
+    "acceptance_snapshot": null
+  },
+  "inputs": [],
+  "resource_searches": [],
+  "reuse_decisions": [],
+  "outputs": [],
+  "checks": [
+    {
+      "id": "check-01",
+      "expected": "Coverage matches examined evidence",
+      "method": "Compare source observations with inventory/review counts",
+      "status": "not_run",
+      "evidence": [],
+      "observed": null
+    }
+  ],
+  "attempts": [],
+  "repairs": [],
+  "delegations": [],
+  "side_effects": [],
+  "automation_observation": {
+    "provider": null,
+    "id": null,
+    "status": "unregistered",
+    "verified_at": null,
+    "evidence": []
+  },
+  "usage": {
+    "elapsed_minutes": null,
+    "api_cost_usd": null,
+    "tokens": null
+  },
+  "limitations": [],
+  "next_action": null
+}

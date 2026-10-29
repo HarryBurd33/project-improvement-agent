@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "project_id": "project-improvement-agent",
+  "status": "ready",
+  "instructions": "AGENT.md",
+  "playbook": "PLAYBOOK.md",
+  "toolbox": "toolbox/index.json",
+  "execution": {
+    "mode": "manual",
+    "trigger": "Current explicit user invocation; continuation manual",
+    "timezone": null,
+    "dependencies": [],
+    "ordering": "serial",
+    "overlap_policy": "skip",
+    "retry_policy": "reconcile-before-retry",
+    "stop_conditions": [
+      "authority missing",
+      "budget exhausted",
+      "outcome uncertain",
+      "required check unavailable"
+    ],
+    "notification": "In current chat at manual completion; no external send",
+    "registration": {
+      "provider": null,
+      "id": null,
+      "status": "unregistered",
+      "verified_at": null,
+      "evidence": []
+    }
+  },
+  "bounds": {
+    "max_attempts": 3,
+    "max_minutes": 30,
+    "max_depth": 0,
+    "max_concurrency": 1,
+    "max_workers": 0,
+    "max_cost_usd": 0
+  },
+  "capabilities": {
+    "required": [
+      "artifact-read-write",
+      "resource-search",
+      "outcome-validation"
+    ],
+    "optional": [
+      "native-project-chat-read",
+      "connected-source-read"
+    ],
+    "observed": [
+      "artifact-read-write",
+      "resource-search",
+      "outcome-validation"
+    ],
+    "missing": []
+  },
+  "authority": {
+    "source": "Current manual request only; saved state never grants authority",
+    "allowed": [
+      "read accessible project evidence",
+      "write designated private state and reports"
+    ],
+    "escalate": [
+      "missing material authority",
+      "uncertain side effects",
+      "required access unavailable"
+    ],
+    "external_actions": []
+  },
+  "retention": {
+    "temporary_dirs": [
+      "scratch"
+    ],
+    "temporary_days": 7,
+    "durable": "Keep private records until user-approved removal; no raw transcripts by default"
+  }
+}
