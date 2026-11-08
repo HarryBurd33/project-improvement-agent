@@ -36,6 +36,14 @@
       "status": "not_run",
       "evidence": [],
       "observed": null
+    },
+    {
+      "id": "focused-isolation",
+      "expected": "Focused start/status/report and changes affect only the selected identity; unrelated inventory and decisions are preserved",
+      "method": "Compare scoped before/after records and report/status coverage; explicit broad/comprehensive remain global",
+      "status": "not_run",
+      "evidence": [],
+      "observed": null
     }
   ],
   "attempts": [],

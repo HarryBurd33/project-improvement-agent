@@ -1,4 +1,4 @@
-# Validation evidence — 1.0.0
+# Validation evidence
 
 Validation distinguishes deterministic fixtures, the bounded private live pilot, installation, native discovery and a full portfolio review. This package was not used to perform a complete portfolio audit.
 
@@ -35,10 +35,35 @@ The reusable source is released as version 1.0.0. The installed manifest is comp
 
 All **57 local tests passed** on macOS. The original 40 remain unchanged; 17 focused tests exercise evidence-gated statuses, source/install/release separation, correction and hold preservation, stable IDs, duplicate origins, stale evidence, scoped project guards, standalone and broad continuation, old-state preservation and complete action fields. Agent Forge ready audit and the 32-file inventory/link/public-path gate pass.
 
-Eleven synthetic original-turn/source cases were frozen outside the candidate before edits, split into seven development and four reserved held-out cases. The coordinator reconciled their source facts into audit events and retained actual reports, ledgers and event transcripts. All eleven reports matched the frozen classification oracles; completed/rejected/deferred/superseded items did not reappear as unfinished commitments, while the replacement CSV requirement remained active. Source fixture hashes were unchanged. The 1.0.0 helper rejected the new focused API in the comparable replay. That is an API-support baseline, not a measured comparison of language-model quality.
+Eleven synthetic cases were frozen outside the candidate before edits, split into seven development and four reserved cases. The private evaluator supplied classifications by fixture name before exercising record/report generation. All eleven generated reports matched those supplied classifications. This validates the exercised state/report path, not independent requirement extraction or judgment; the 1.1.1 repair below replaces that missing evaluation evidence. Source fixture hashes were unchanged. The 1.0.0 helper rejected the new focused API in the comparable replay. That is an API-support baseline, not a measured comparison of language-model quality.
 
 Evaluation limits: the same coordinator authored the detailed synthetic inputs and implementation, using acceptance scenarios supplied independently in the task brief. Held-out cases were reserved until implementation but were not blinded to this coordinator. No separate model evaluator or autonomous LLM harness was run. These results qualify the exercised state/report behavior and the bounded coordinator-assisted workflow; they do not prove universal requirement extraction accuracy.
 
 Natural-language discovery eligibility is enabled with a narrowly scoped description requiring an explicit request naming Improvement Agent. The loaded-instruction path was exercised against the exact focused request and synthetic evidence; broad-scope and standalone routing were also reviewed. **Fresh-chat native automatic selection was not executed**: the host metadata socket was unavailable, and the zero-worker bound was preserved. Use explicit `$project-improvement-agent focused` or ask the host to read the installed SKILL.md if native discovery does not select it. Discovery configuration is distinct from runtime selection.
 
 The existing agent's manual execution, zero workers/delegation, shared finite limits and zero paid API budget are unchanged. Installation/remote publication receipts are verified separately when releasing; local tests alone do not certify a release.
+
+
+## Validation repair 1.1.1 — 2026-11-08
+
+All **75 local tests passed**: the original 57 plus 18 regressions for focused startup/status/report isolation, shared and unexamined source/material ownership, canonical aliases, continuation, legacy state, broad/comprehensive behavior and active-versus-finished run checks. Baseline reproductions failed before each repair. Agent Forge ready audit and the 32-file inventory/link/public-path gate passed. Production execution/worker/cost limits and schema 1 are unchanged. The 30-material cap counts distinct reviewed project evidence; all governing/discovery/evidence reads still consume the shared calls, bytes and time budgets.
+
+### Independent model evaluation
+
+A separate author constructed original-turn/source fixtures and froze the expected oracle before execution without inspecting the candidate or previous evaluator. Executors received only selected evidence and the skill, never expected labels. The author then independently annotated actual reports and traces against the frozen criteria. Private originals, grading records and failure artifacts remain outside source and installation.
+
+The cases cover absent promised work, code without acceptance, completed work behind stale TODOs, corrections/supersession, rejection, deferral, inaccessible history, ambiguous identity, separate source/install/release drift, repeat-after-completion and narrow versus explicitly comprehensive scope. Three development/repeat audits used one separate executor context; two original held-out audits used fresh native contexts. Development read logs were executor-authored, so they do not independently prove every read or absence of external actions. They are not represented as full native traces.
+
+The initial reports classified requirements correctly but **failed** required impact fields; the initial comprehensive report also omitted a grounded optional-opportunities assessment. Those outputs remain failed. The repair makes the final output checklist apply in every requested scope, requires explicit impact/dependencies for every action, and checks optional opportunities separately from implementation authority.
+
+The corrected comprehensive rerun and a newly authored, previously unseen focused case **passed the unchanged full grading gates**, including scope, authority, source-stage distinctions, action completeness, grounded opportunities and 100% actionable precision/recall and classification accuracy within those small synthetic cases. Both ran in fresh GPT-6 Astra / Extra High native CLI contexts with raw JSONL command traces and unchanged workspace hashes. The comprehensive rerun is regression evidence, not a new held-out case. Minor prose count/wording inconsistencies were retained as observations; these results do not imply universal accuracy or error-free prose.
+
+A final fresh native invocation of the installed 1.1.1 package repeated the focused audit against updated evidence and the actual prior report. It passed the original full repeat gates: stable request ID retained, completed YAML export removed from implementation recommendations, other decisions preserved, complete action fields and a grounded no-opportunity assessment. Raw traces support scoped reads and no external actions; all 23 workspace file hashes matched before/after. The prompt supplied no skill path and the trace read the active user-level installation.
+
+### Native invocation and delivery boundary
+
+Codex CLI 0.166.0, using the existing ChatGPT subscription login and explicit Astra/Extra High selection, completed fresh natural-language and explicit-skill invocations. Neither prompt supplied the skill file path; the traces show actual installed SKILL.md reads. A quoted copy-edit control selected no skill and ran no tools. These selection controls are separate from semantic grading. No paid API fallback was used.
+
+The contradictory implicit-invocation documentation is corrected: `allow_implicit_invocation: true` enables narrow relevance matching; current manual audit authority is still required. File hashes, metadata discovery, native model execution, instruction-file fallback and behavioral quality are different evidence states. **Desktop GUI automatic selection was not tested**; the local metadata inspector could not find its configured socket. The CLI receipts establish a tested supported path, not universal host behavior. Explicit `$project-improvement-agent focused` and the documented instruction-file fallback remain available.
+
+Installation contains 16 reviewed files with matching hashes and a preserved 1.1.0 rollback. Publication must bind this reviewed tree to the remote commit, four Linux/macOS Python 3.9/3.13 CI jobs and the v1.1.1 release. Those provider receipts are separate from the local gates.

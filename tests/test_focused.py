@@ -129,4 +129,281 @@ class FocusedTests(unittest.TestCase):
             with self.assertRaises((ValueError,KeyError)):self.event(**e)
 
 
+class FocusedIsolationTests(unittest.TestCase):
+    """Regression fixtures for scope isolation, separate from judgment evaluation."""
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.store = p.Store(Path(self.tmp.name).resolve() / 'private')
+        self.store.init()
+        self.run = self.store.start(mode='broad', owner='isolation', checks=CHECKS)
+        self.ids = {}
+        for name in ('A', 'B'):
+            source = self.event(op='source', identity='source:' + name, scope='only ' + name,
+                                discovery='partial', limits='bounded fixture', cursor=name + '-cursor')
+            project = self.event(op='project', identity='project:' + name, title=name,
+                                 type='software', source=source)
+            material = self.event(op='material', identity='material:' + name, source=source,
+                                  locator='/fixture/' + name, version=None)
+            evidence = self.event(op='evidence', project=project, material=material,
+                                  location='all', observation=name + ' examined')
+            self.event(op='review', project=project, evidence=[evidence],
+                       facets={key: [evidence] for key in p.FACETS['software']},
+                       conclusion='All fixture facets inspected', questions=[], next_action='Reinspect ' + name)
+            finding = dict(op='finding', project=project, key='gap', kind='observed',
+                           confidence='high', evidence=[evidence],
+                           scores={key: 1 for key in ('benefit', 'relevance', 'evidence', 'urgency', 'effort', 'risk')},
+                           prompt={key: name + ' fixture instruction' for key in p.PROMPT_FIELDS})
+            finding.update({key: name + ' fixture detail' for key in
+                            ('problem', 'improvement', 'benefit', 'effort', 'tradeoffs', 'dependencies', 'questions', 'ranking_reason')})
+            fid = self.event(**finding)
+            self.ids[name] = dict(project=project, source=source, material=material,
+                                  evidence=evidence, finding=fid)
+        self.event(op='association', left=self.ids['A']['project'], right=self.ids['B']['project'],
+                   certainty='uncertain', relationship='related', reason='Titles alone are insufficient',
+                   evidence='fixture association observation')
+        self.finish('Continue unrelated B')
+        self.before = self.store.read()
+        self.scope = dict(chat='chat-A', project='project:A', basis='Verified project identity')
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def event(self, **event):
+        return self.store.event(self.run['token'], event)
+
+    def start(self, mode='focused', scope=None):
+        self.run = self.store.start(mode=mode, scope=scope or self.scope, owner='isolation', checks=CHECKS)
+        return self.run
+
+    def finish(self, next_action='Continue A'):
+        return self.store.finish(self.run['token'], next_action, 'Compare scoped snapshots',
+                                 {'precision': dict(status='passed', evidence=['isolation fixture'],
+                                                    observed='Compared exact records')})
+
+    def assert_b_unchanged(self, before=None):
+        before = before or self.before
+        after = self.store.read()
+        for table, key in (('projects', 'project'), ('sources', 'source'), ('materials', 'material'),
+                           ('evidence', 'evidence'), ('findings', 'finding')):
+            self.assertEqual(before[table][self.ids['B'][key]], after[table][self.ids['B'][key]], table)
+        self.assertEqual(before['associations'], after['associations'])
+
+    def assert_focused_summary(self, result):
+        self.assertEqual(result['projects'], 1)
+        self.assertEqual(result['uncertain_associations'], [])
+        serialized = json.dumps(result)
+        for identifier in self.ids['B'].values():
+            self.assertNotIn(identifier, serialized)
+        self.assertNotIn('Continue unrelated B', serialized)
+        self.assertEqual(set(sum(result['changes'].values(), [])), {self.ids['A']['finding']})
+
+    def test_start_preserves_deep_nonstale_unrelated_project(self):
+        self.assertEqual(self.before['projects'][self.ids['B']['project']]['status'], 'deep')
+        self.assertFalse(self.before['findings'][self.ids['B']['finding']]['stale'])
+        self.start()
+        self.assert_b_unchanged()
+        after = self.store.read()
+        self.assertEqual(after['projects'][self.ids['A']['project']]['status'], 'needs_recheck')
+        self.assertTrue(after['findings'][self.ids['A']['finding']]['stale'])
+
+    def test_active_status_and_start_baseline_are_scoped(self):
+        run = self.start()
+        self.assertEqual(set(run['baseline']), {self.ids['A']['finding']})
+        self.assert_focused_summary(p.summary(self.store.read()))
+
+    def test_finished_status_and_omitted_mode_continuation_are_scoped(self):
+        self.start()
+        self.assert_focused_summary(self.finish())
+        self.assert_focused_summary(p.summary(self.store.read()))
+        self.run = self.store.start(owner='isolation', checks=CHECKS)
+        self.assertEqual(self.run['mode'], 'focused')
+        self.assertEqual(self.run['scope'], self.scope)
+        self.assert_focused_summary(p.summary(self.store.read()))
+        self.assert_b_unchanged()
+
+    def test_focused_sources_require_current_run_observation(self):
+        self.start()
+        self.assertEqual(p.summary(self.store.read())['sources'], {})
+        self.event(op='source', identity='source:A', scope='only A', discovery='partial',
+                   limits='bounded A fixture', cursor='A-page-2')
+        status = p.summary(self.store.read())
+        self.assertEqual(set(status['sources']), {self.ids['A']['source']})
+        self.assertEqual(status['discovery_gaps'], [self.ids['A']['source']])
+        self.assertIn('A-page-2', p.report(self.store.read()))
+        self.assertNotIn('B-cursor', p.report(self.store.read()))
+        self.assert_b_unchanged()
+
+    def test_unrelated_source_and_material_updates_are_atomic_rejections(self):
+        self.start()
+        events = [dict(op='source', identity='source:B', scope='overwrite', discovery='complete', limits='none'),
+                  dict(op='material', identity='material:B', source=self.ids['A']['source'],
+                       locator='/fixture/replacement', version='changed'),
+                  dict(op='evidence', project=self.ids['A']['project'], material=self.ids['B']['material'],
+                       location='all', observation='Do not import unrelated material')]
+        for event in events:
+            with self.subTest(op=event['op']):
+                before = (self.store.path / 'state.json').read_bytes()
+                with self.assertRaises(ValueError):
+                    self.event(**event)
+                self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+
+    def test_shared_material_cannot_invalidate_other_project(self):
+        self.start(mode='broad')
+        self.event(op='evidence', project=self.ids['A']['project'], material=self.ids['B']['material'],
+                   location='shared', observation='Shared source is explicitly linked in broad mode')
+        self.finish()
+        self.start()
+        before = self.store.read()
+        with self.assertRaises(ValueError):
+            self.event(op='material', identity='material:B', source=self.ids['B']['source'],
+                       locator='/fixture/B', version='v2')
+        self.assert_b_unchanged(before)
+
+    def test_shared_source_cannot_replace_other_projects_coverage(self):
+        self.start(mode='broad')
+        self.event(op='project', identity='project:A', title='A', type='software', source=self.ids['B']['source'])
+        self.finish()
+        self.start()
+        before = self.store.read()
+        with self.assertRaises(ValueError):
+            self.event(op='source', identity='source:B', scope='A only', discovery='complete', limits='focused')
+        self.assert_b_unchanged(before)
+
+    def test_project_decision_association_and_requirement_cannot_cross_scope(self):
+        self.start()
+        events = [dict(op='blocked', project=self.ids['B']['project'], reason='wrong scope', next_action='none'),
+                  dict(op='decision', finding=self.ids['B']['finding'], decision='rejected', reason='wrong scope', source='fixture'),
+                  dict(op='association', left=self.ids['A']['project'], right=self.ids['B']['project'],
+                       certainty='confirmed', relationship='duplicate', reason='wrong scope', evidence='fixture'),
+                  dict(op='requirement', project=self.ids['B']['project'], key='foreign')]
+        for event in events:
+            with self.subTest(op=event['op']):
+                before = (self.store.path / 'state.json').read_bytes()
+                with self.assertRaises(ValueError):
+                    self.event(**event)
+                self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+
+    def test_alias_scope_uses_canonical_project_for_reads_and_updates(self):
+        self.start(mode='broad')
+        alias = self.event(op='project', identity='project:A-alias', title='A alias', type='software', source=self.ids['A']['source'])
+        self.event(op='association', left=self.ids['A']['project'], right=alias, certainty='confirmed',
+                   relationship='duplicate', reason='Verified same repository', evidence='fixture identity match')
+        self.finish()
+        self.start(scope=dict(self.scope, project='project:A-alias'))
+        self.assert_focused_summary(p.summary(self.store.read()))
+        source = self.event(op='source', identity='source:A-alias-focused', scope='A', discovery='complete', limits='fixture')
+        result = self.event(op='project', identity='project:A-alias', title='A alias', type='software', source=source)
+        self.assertEqual(result, self.ids['A']['project'])
+        self.assertIn(source, self.store.read()['projects'][result]['sources'])
+        self.event(op='blocked', project=alias, reason='Fixture blocker', next_action='Read A')
+        self.assertEqual(p.summary(self.store.read())['blocked'], [self.ids['A']['project']])
+
+    def test_standalone_chat_scope_excludes_portfolio(self):
+        self.start(scope=dict(chat='standalone', project=None, basis='No project association proven'))
+        self.assertEqual(p.summary(self.store.read())['projects'], 0)
+        self.assertEqual(self.run['baseline'], {})
+        project = self.event(op='project', identity='chat:standalone', title='Standalone', type='other', source=self.ids['A']['source'])
+        self.assertEqual(p.summary(self.store.read())['remaining'], [project])
+        self.assert_b_unchanged()
+
+    def test_broad_and_comprehensive_keep_portfolio_rechecks_and_summary(self):
+        for mode in ('broad', 'comprehensive'):
+            with self.subTest(mode=mode):
+                self.start(mode=mode)
+                state = self.store.read()
+                self.assertEqual(state['projects'][self.ids['B']['project']]['status'], 'needs_recheck')
+                self.assertTrue(state['findings'][self.ids['B']['finding']]['stale'])
+                result = p.summary(state)
+                self.assertEqual(result['projects'], 2)
+                self.assertEqual(set(result['sources']), {self.ids[name]['source'] for name in ('A', 'B')})
+                self.assertEqual(len(result['uncertain_associations']), 1)
+                self.assertEqual(len(self.run['baseline']), 2)
+                self.event(op='material', identity='material:B', source=self.ids['B']['source'], locator='/fixture/B', version=None)
+                self.finish()
+
+    def test_legacy_current_run_sources_stay_scoped_in_summary_and_report(self):
+        self.start()
+        # An older helper allowed these observations during focused A. Preserve
+        # the legacy records, but do not render B as this audit's coverage.
+        with self.store.transaction() as data:
+            for name in ('A', 'B'):
+                data['sources'][self.ids[name]['source']]['run'] = self.run['id']
+        for phase in ('active', 'finished'):
+            if phase == 'finished':
+                self.finish()
+            data = self.store.read()
+            original = copy.deepcopy(data)
+            for view in ('summary', 'report'):
+                with self.subTest(phase=phase, view=view):
+                    result = json.dumps(p.summary(data)) if view == 'summary' else p.report(data)
+                    self.assertIn(self.ids['A']['source'], result)
+                    self.assertNotIn(self.ids['B']['source'], result)
+                    self.assertNotIn('B-cursor', result)
+            self.assertEqual(data, original, 'presentation must not rewrite legacy state')
+
+    def test_unexamined_material_source_ownership_blocks_overwrite_and_import(self):
+        self.start(mode='broad')
+        material = self.event(op='material', identity='material:B-unexamined', source=self.ids['B']['source'],
+                              locator='/fixture/B/unexamined', version='v1')
+        self.finish()
+        self.start()
+        events = [dict(op='material', identity='material:B-unexamined', source=self.ids['A']['source'],
+                       locator='/fixture/replacement', version='v2'),
+                  dict(op='evidence', project=self.ids['A']['project'], material=material,
+                       location='all', observation='Outside material without an evidence owner')]
+        for event in events:
+            with self.subTest(op=event['op']):
+                before = (self.store.path / 'state.json').read_bytes()
+                with self.assertRaises(ValueError):
+                    self.event(**event)
+                self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+
+    def test_new_material_requires_scoped_source_and_new_scoped_observation_works(self):
+        self.start()
+        before = (self.store.path / 'state.json').read_bytes()
+        with self.assertRaises(ValueError):
+            self.event(op='material', identity='material:B-new', source=self.ids['B']['source'],
+                       locator='/fixture/B/new', version='v1')
+        self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+        source = self.event(op='source', identity='source:A-focused-new', scope='A only',
+                            discovery='complete', limits='new bounded observation')
+        material = self.event(op='material', identity='material:A-focused-new', source=source,
+                              locator='/fixture/A/new', version='v1')
+        self.event(op='evidence', project=self.ids['A']['project'], material=material,
+                   location='all', observation='Actual new A observation')
+        self.assertEqual(set(p.summary(self.store.read())['sources']), {source})
+        self.assert_b_unchanged()
+
+    def test_evidenced_material_owner_survives_shared_provider_source(self):
+        self.start(mode='broad')
+        self.event(op='project', identity='project:B', title='B', type='software', source=self.ids['A']['source'])
+        self.finish()
+        before = self.store.read()
+        self.start()
+        # This material is already proven to belong only to A; its provider's
+        # broad discovery record is shared, but updating A's material is safe.
+        self.event(op='material', identity='material:A', source=self.ids['A']['source'],
+                   locator='/fixture/A', version='v2')
+        self.assert_b_unchanged(before)
+        with self.assertRaises(ValueError):
+            self.event(op='material', identity='material:A', source=self.ids['B']['source'],
+                       locator='/fixture/A', version='v3')
+
+    def test_broad_modes_retain_source_coverage_and_unexamined_material_updates(self):
+        for mode in ('broad', 'comprehensive'):
+            with self.subTest(mode=mode):
+                self.start(mode=mode)
+                self.event(op='source', identity='source:B', scope='B only', discovery='partial',
+                           limits='broad fixture', cursor='B-current-page')
+                material = self.event(op='material', identity='material:B-unexamined',
+                                      source=self.ids['B']['source'], locator='/fixture/B/unexamined', version='v1')
+                self.event(op='material', identity='material:B-unexamined', source=self.ids['A']['source'],
+                           locator='/fixture/broad-reinspection', version='v2')
+                self.event(op='evidence', project=self.ids['A']['project'], material=material,
+                           location='all', observation='Broad scope can establish shared material')
+                self.assertIn(self.ids['B']['source'], p.summary(self.store.read())['sources'])
+                self.assertIn('B-current-page', p.requirement_report(self.store.read()))
+                self.finish()
+
+
 if __name__=='__main__':unittest.main()

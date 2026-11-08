@@ -26,7 +26,19 @@ This copies only `skills/project-improvement-agent` to `~/.agents/skills/project
 
 ## Manual invocation
 
-In a local Codex chat:
+In a local Codex chat, audit the current project and chat with:
+
+```text
+Use improvement agent to identify limitations or capabilities I have requested but still don't exist.
+```
+
+Or use the explicit focused invocation:
+
+```text
+$project-improvement-agent focused
+```
+
+For portfolio modes:
 
 ```text
 $project-improvement-agent

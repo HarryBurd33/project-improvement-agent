@@ -66,6 +66,30 @@ class PortfolioTests(unittest.TestCase):
         source=self.root/'source.txt';source.write_text('keep')
         self.event(op='material',identity='fixture:ordinary',source=self.source,locator=str(source),version='hash')
         self.finish();self.assertEqual(source.read_text(),'keep')
+    def test_active_report_uses_new_run_checks_in_both_broad_modes(self):
+        self.finish()  # A previous passing check must not stand in for this run.
+        for mode in ('broad', 'comprehensive'):
+            checks=[dict(id=mode+'-current',expected='Inspect this revision',method='Read current source evidence')]
+            run=self.store.start(mode=mode,owner='fixture',checks=checks)
+            with self.subTest(mode=mode):
+                rendered=json.loads(p.report(self.store.read()).rsplit('\n## Run checks\n',1)[1])
+                self.assertEqual(rendered,run['checks'])
+                self.assertEqual(rendered[0]['status'],'not_run')
+                self.assertEqual(rendered[0]['evidence'],[])
+            self.store.finish(run['token'],'Read current revision','Inspect current evidence',
+                              {checks[0]['id']:dict(status='partial',evidence=[],observed='This revision still needs inspection')})
+    def test_finished_report_preserves_latest_actual_results_in_both_broad_modes(self):
+        self.finish()
+        for mode in ('broad', 'comprehensive'):
+            check=dict(id=mode+'-finished',expected='Current revision meets criteria',method='Compare current evidence')
+            run=self.store.start(mode=mode,owner='fixture',checks=[check])
+            result=dict(status='failed',evidence=['current fixture result'],observed='Current revision does not meet the criterion')
+            self.store.finish(run['token'],'Inspect the failed criterion','Compare the recorded result',{check['id']:result})
+            with self.subTest(mode=mode):
+                data=self.store.read()
+                self.assertIsNone(data['active'])
+                rendered=json.loads(p.report(data).rsplit('\n## Run checks\n',1)[1])
+                self.assertEqual(rendered,[dict(check,**result)])
 
 
 if __name__=='__main__':unittest.main()

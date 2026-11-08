@@ -133,12 +133,17 @@ class Store:
                 need(isinstance(scope, dict) and nonempty(scope.get('chat')) and
                      nonempty(scope.get('basis')), 'focused scope needs current chat and identity basis')
                 need(scope.get('project') is None or nonempty(scope['project']), 'invalid project identity')
-            for project in d['projects'].values():
+            selection = dict(mode=mode, scope=scope)
+            for pid, project in d['projects'].items():
+                if not in_scope(d, selection, pid):
+                    continue
                 if project['status'] == 'deep' and any(
                     d['materials'][d['evidence'][eid]['material']]['version'] is None
                     for rev in project['reviews'][-1:] for eid in rev['evidence']):
                     project['status'] = 'needs_recheck'
             for finding in d['findings'].values():
+                if not in_scope(d, selection, finding['project']):
+                    continue
                 if any(d['materials'][d['evidence'][eid]['material']]['version'] is None for eid in finding['evidence']):
                     finding['stale'] = True
             bounds = dict(LIMITS)
@@ -150,7 +155,7 @@ class Store:
             r = dict(id=str(uuid.uuid4()), token=str(uuid.uuid4()), owner=owner, mode=mode,
                      started=now(), epoch=time.time(), limits=bounds, used=dict.fromkeys(bounds, 0),
                      checks=[dict(c, status='not_run', evidence=[], observed=None) for c in checks],
-                     status='active', scope=copy.deepcopy(scope), baseline={k:dict(revision=v['revision'],decision=v['decision']) for k,v in d['findings'].items()}, events=[])
+                     status='active', scope=copy.deepcopy(scope), baseline={k:dict(revision=v['revision'],decision=v['decision']) for k,v in d['findings'].items() if in_scope(d, selection, v['project'])}, events=[])
             d['active'] = r
         return copy.deepcopy(r)
 
@@ -201,19 +206,29 @@ def apply(d, r, e):
         e['project'] = canonical(d, e['project'])
     op = e['op']
     if r['mode'] == 'focused':
-        identity = r['scope'].get('project') or 'chat:' + r['scope']['chat']
+        identity = scope_identity(r)
         if op == 'project':
             need(e['identity'] == identity, 'project outside focused scope')
         if 'project' in e:
-            project = d['projects'].get(e['project'], {})
-            need(identity in [project.get('identity')] + project.get('aliases', []), 'project outside focused scope')
+            need(in_scope(d, r, e['project']), 'project outside focused scope')
         if op == 'association':
-            need(all(identity in [d['projects'].get(x, {}).get('identity')] +
-                     d['projects'].get(x, {}).get('aliases', []) for x in (e['left'], e['right'])),
+            need(all(in_scope(d, r, x) for x in (e['left'], e['right'])),
                  'association outside focused scope')
         if op == 'decision':
-            project = d['projects'][d['findings'][e['finding']]['project']]
-            need(identity in [project['identity']] + project['aliases'], 'decision outside focused scope')
+            need(in_scope(d, r, d['findings'][e['finding']]['project']), 'decision outside focused scope')
+        if op == 'source':
+            sid = stable('source', e['identity'])
+            need(source_in_scope(d, r, sid),
+                 'source shared with or outside focused scope; record a separate scoped observation')
+        if op in ('material', 'evidence'):
+            mid = stable('material', e['identity']) if op == 'material' else e['material']
+            need(material_in_scope(d, r, mid),
+                 'material shared with or outside focused scope; record a separate scoped observation')
+            if op == 'material':
+                old = d['materials'].get(mid)
+                if old is None or e['source'] != old['source']:
+                    need(source_in_scope(d, r, e['source']),
+                         'new material source outside focused scope; record a separate scoped observation')
     if op == 'requirement':
         return requirement(d, r, e)
     if op == 'usage':
@@ -229,7 +244,7 @@ def apply(d, r, e):
             limits=e['limits'], cursor=e.get('cursor'), observed_at=now(), run=r['id'])
         return sid
     if op == 'project':
-        pid = stable('project', e['identity'])
+        pid = canonical(d, stable('project', e['identity']))
         need(e['type'] in FACETS and nonempty(e['title']), 'project title/type required')
         need(e['source'] in d['sources'], 'known source required')
         if pid not in d['projects']:
@@ -248,10 +263,14 @@ def apply(d, r, e):
                  version=e.get('version'), observed_at=now(), run=r['id'], observation_id=str(uuid.uuid4()))
         need(nonempty(m['locator']), 'material locator required')
         if old and (old['version'] != m['version'] or m['version'] is None):
-            for p in d['projects'].values():
+            for pid, p in d['projects'].items():
+                if not in_scope(d, r, pid):
+                    continue
                 if any(d['evidence'][eid]['material'] == mid for rev in p['reviews'] for eid in rev['evidence']):
                     p['status'] = 'needs_recheck'
             for f in d['findings'].values():
+                if not in_scope(d, r, f['project']):
+                    continue
                 if any(d['evidence'][eid]['material'] == mid for eid in f['evidence']):
                     f['stale'] = True
         d['materials'][mid] = m
@@ -364,6 +383,41 @@ def canonical(d, pid):
         need(pid not in seen,'alias cycle');seen.add(pid)
         pid=d['projects'][pid]['merged_into']
     return pid
+
+
+def scope_identity(run):
+    scope = run.get('scope') or {}
+    return scope.get('project') or ('chat:' + scope['chat'] if scope.get('chat') else None)
+
+
+def in_scope(d, run, pid):
+    """Use the same canonical identity boundary for mutation and presentation."""
+    if run.get('mode') != 'focused':
+        return True
+    project = d['projects'].get(canonical(d, pid), {})
+    identity = scope_identity(run)
+    return identity is not None and identity in [project.get('identity')] + project.get('aliases', [])
+
+
+def source_in_scope(d, run, sid):
+    if run.get('mode') != 'focused':
+        return True
+    linked = [pid for pid, project in d['projects'].items() if sid in project['sources']]
+    linked += [ev['project'] for ev in d['evidence'].values()
+               if d['materials'][ev['material']]['source'] == sid]
+    return all(in_scope(d, run, pid) for pid in linked)
+
+
+def material_in_scope(d, run, mid):
+    if run.get('mode') != 'focused':
+        return True
+    linked = [ev['project'] for ev in d['evidence'].values() if ev['material'] == mid]
+    if linked:
+        # Examined project ownership is more precise than a shared provider scope.
+        return all(in_scope(d, run, pid) for pid in linked)
+    old = d['materials'].get(mid)
+    # Before examination, retain the ownership established by its source.
+    return old is None or source_in_scope(d, run, old['source'])
 
 
 def fresh(d, eid, run):
@@ -485,15 +539,13 @@ def requirement(d, r, e):
 def requirement_report(d):
     run = d['active'] or (d['runs'][-1] if d['runs'] else {})
     scope = run.get('scope') or {}
-    identity = scope.get('project') or ('chat:' + scope['chat'] if scope.get('chat') else None)
     lines = ['# Requested-capability audit', '', 'Scope: ' + json.dumps(scope),
              'Coverage: source scopes and cursors below describe inspected material only.',
              'Absence without a discriminating check means not evidenced in the inspected scope.',
              '', '## Requirement ledger']
     selected = []
     for rid, row in d.get('requirements', {}).items():
-        p = d['projects'][row['project']]
-        if run.get('mode') == 'focused' and identity not in [p['identity']] + p['aliases']:
+        if not in_scope(d, run, row['project']):
             continue
         current_ids = row['evidence'] + [x for layer in row['layers'].values() for x in layer.get('evidence', []) + layer.get('verification', [])]
         stale = row['run'] != run.get('id') or not all(fresh(d, x, run.get('id')) for x in current_ids)
@@ -523,31 +575,43 @@ def requirement_report(d):
                       'Original request/opportunity basis: ' + a['basis']] + [k.title() + ': ' + a['prompt'][k] for k in PROMPT_FIELDS] + ['```']
     lines += ['', '## Reinspection queue'] + [rid + ': ' + row['next_check'] for rid, row, stale in selected if stale]
     # Only this run's observed sources; never imply that an old portfolio scan is this audit's coverage.
-    lines += ['', '## Source coverage', json.dumps({k:v for k,v in d['sources'].items() if v['run'] == run.get('id')}, indent=2),
+    lines += ['', '## Source coverage', json.dumps({k:v for k,v in d['sources'].items()
+              if v['run'] == run.get('id') and source_in_scope(d, run, k)}, indent=2),
               '', '## Run checks', json.dumps(run.get('checks', []), indent=2)]
     return '\n'.join(lines) + '\n'
 
 
 def summary(d):
-    ps = {k:v for k,v in d['projects'].items() if not v.get('merged_into')}
-    remaining=[k for k,p in ps.items() if p['status']!='deep']
     latest=d['active'] or (d['runs'][-1] if d['runs'] else {})
+    focused = latest.get('mode') == 'focused'
+    ps = {k:v for k,v in d['projects'].items() if not v.get('merged_into') and in_scope(d, latest, k)}
+    findings = {k:v for k,v in d['findings'].items() if in_scope(d, latest, v['project'])}
+    sources = {k:v for k,v in d['sources'].items() if not focused or
+               (v['run'] == latest.get('id') and source_in_scope(d, latest, k))}
+    remaining=[k for k,p in ps.items() if p['status']!='deep']
     baseline=latest.get('baseline',{})
     changes=dict(new=[],changed=[],unchanged=[],resolved=[])
-    for fid,f in d['findings'].items():
+    for fid,f in findings.items():
         old=baseline.get(fid)
         category='resolved' if f['decision']=='resolved' and (not old or old['decision']!='resolved') else 'new' if not old else 'changed' if old['revision']!=f['revision'] or old['decision']!=f['decision'] else 'unchanged'
         changes[category].append(fid)
-    discovery_gaps=[k for k,v in d['sources'].items() if v['discovery']!='complete']
+    discovery_gaps=[k for k,v in sources.items() if v['discovery']!='complete']
+    active = {k:v for k,v in d['active'].items() if k != 'token'} if d['active'] else None
+    if focused and active:
+        # A schema-1 run saved by an older helper may have a portfolio-wide baseline/log.
+        active['baseline'] = {k:v for k,v in baseline.items() if k in findings}
+        active.pop('events', None)
+    next_action = (latest.get('next_action', 'Continue the current focused run') if focused else
+                   d['runs'][-1]['next_action'] if d['runs'] else 'Start a bounded manual run')
     return dict(observed_at=now(), projects=len(ps), inventoried_only=sum(p['status']=='inventoried' for p in ps.values()),
         assessed=sum(p['assessment'] is not None for p in ps.values()),
         deep=sum(p['status']=='deep' for p in ps.values()),
         blocked=[k for k,p in ps.items() if p['status']=='blocked'],
-        remaining=remaining, sources=d['sources'], discovery_gaps=discovery_gaps,
-        uncertain_associations=[x for x in d['associations'] if x['certainty']=='uncertain'],changes=changes,
+        remaining=remaining, sources=sources, discovery_gaps=discovery_gaps,
+        uncertain_associations=[x for x in d['associations'] if x['certainty']=='uncertain' and
+                                all(in_scope(d, latest, pid) for pid in (x['left'], x['right']))],changes=changes,
         depth_complete_for_discovered=bool(ps) and not remaining,
-        active={k:v for k,v in d['active'].items() if k!='token'} if d['active'] else None,
-        next_action=d['runs'][-1]['next_action'] if d['runs'] else 'Start a bounded manual run',
+        active=active, next_action=next_action,
         completion=('Depth criteria met for discovered inventory at recorded evidence dates; ' if ps and not remaining else 'Partial discovered-inventory review; ')+('discovery gaps remain; ' if discovery_gaps else 'complete only for recorded source scopes; ')+'total portfolio population unknown')
 
 
@@ -580,7 +644,7 @@ def report(d):
     for fid,f in d['findings'].items():
         if f['decision']!='proposed' or f['stale']:
             lines += [fid+': '+f['decision']+'; stale='+str(f['stale'])+'; history='+json.dumps(f['history'])]
-    lines += ['', '## Run checks', json.dumps(d['runs'][-1]['checks'] if d['runs'] else [], indent=2)]
+    lines += ['', '## Run checks', json.dumps(latest.get('checks', []), indent=2)]
     if d.get('requirements'):
         lines += ['', requirement_report(d)]
     return '\n'.join(lines)+'\n'
