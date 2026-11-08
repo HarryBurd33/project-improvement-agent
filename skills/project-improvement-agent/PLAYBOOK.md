@@ -1,8 +1,8 @@
-# Portfolio review playbook — 1.0.0
+# Portfolio review playbook — 1.1.0
 
 ## Inputs, authority, limits
 
-Input: current manual request, optional goals/priorities, scope exclusions, mode and private store. Default scope is all accessible project work: Codex/ChatGPT projects and active/archived chats; recognizable local folders, repositories, documents, skills, agents and outputs; relevant connected materials. Discover actual capabilities, do not assume account-wide access.
+Input: current manual request, optional goals/priorities, scope exclusions, mode and private store. For requested-but-missing capabilities, use [focused audit](references/focused.md) and its current project/chat scope. Bare broad invocation retains its default scope of all accessible project work: Codex/ChatGPT projects and active/archived chats; recognizable local folders, repositories, documents, skills, agents and outputs; relevant connected materials. Discover actual capabilities, do not assume account-wide access.
 
 Default per-session limits: 30 minutes, 40 external calls, 120 state events, 300 newly inventoried projects, 30 examined materials, 2 MiB examined text, three deep reviews, three total repair attempts; serial coordinator, zero workers and zero paid API budget. All phases and repairs share these caps. Adjust only within an explicitly recorded finite run contract; raising limits needs current resource assessment, not an automatic retry. Stop earlier at resource/authority boundaries. Helper caps are a backstop; track calls/bytes before issuing reads and charge them with `usage` events, including failures.
 
@@ -63,3 +63,7 @@ Construction lessons are added only after observed failures and retests. Reusabl
 - Continuation must preserve the saved mode at the helper and CLI boundaries. A new comprehensive run followed by an omitted-mode start previously reverted to broad. Both paths now retain comprehensive mode; an explicit mode still changes it. Regression checks cover the installed CLI from another directory.
 - Validate the complete release inventory after adding a resource. The initial package omitted NOTICE and the comprehensive reference from its index. Publication now requires exact root and skill inventories, checked local Markdown targets, and an intentional broken-link fixture that must fail. These gates supplement review of the actual staged public files.
 - A publication path scanner must not match its own regex literal. Restrict the username shape and require a following directory separator; inspect actual publication bytes as the separate release gate.
+
+- Focused audits reconcile user requests against current source, acceptance, installation and release independently. The 1.0.0 portfolio finding record could not express those distinctions or reliably separate an assistant proposal from a user commitment; the additive requirement ledger preserves both without replacing existing findings.
+
+- Standalone prompts must carry destination, request basis and starting model/effort inside the copied prompt. Report fields outside the prompt are insufficient for handoff; focused rendering now repeats these fields in the copyable block. Evidence role is part of evidence identity so an acceptance observation cannot collide with an otherwise identical user/artifact record.

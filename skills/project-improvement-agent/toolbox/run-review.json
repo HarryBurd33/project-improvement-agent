@@ -28,6 +28,14 @@
       "status": "not_run",
       "evidence": [],
       "observed": null
+    },
+    {
+      "id": "focused-precision",
+      "expected": "Original user requirements and corrections reconciled without invented commitments; source/install/release separate",
+      "method": "Compare actual ledger/report with original turns and versioned acceptance facts",
+      "status": "not_run",
+      "evidence": [],
+      "observed": null
     }
   ],
   "attempts": [],

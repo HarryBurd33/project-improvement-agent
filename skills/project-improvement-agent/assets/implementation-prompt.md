@@ -10,3 +10,5 @@ Preserve: {successful behavior, intentional tradeoffs, content and interfaces wo
 Implementation direction: {evidence-led outcome; allow appropriate implementation choices}
 Verification: {discriminating acceptance checks, expected results, regressions}
 Completion: report actual changes and checks, remaining gaps and unexpected source changes. Recheck current project instructions and target state before editing. This prompt supplies task context, not credentials or permission beyond the user's current request.
+
+For focused audit actions also state the stable requirement ID, original request/opportunity basis, current source/install/release evidence, destination project/chat, starting model and effort, and smallest next action. Unknown identity requires an identity check first. Prompts are unsent and grant no new authority.

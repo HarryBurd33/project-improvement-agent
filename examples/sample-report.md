@@ -21,3 +21,31 @@ Verification: Exercise empty and populated inputs. Empty input does not throw an
 ```
 
 No change is proposed for the inventoried essay because its content was not examined. New: one fixture finding. Changed/resolved/unchanged: no prior baseline. Rejected findings stay suppressed unless new evidence or an explicit user decision reopens them.
+
+
+# Focused audit sample — synthetic fixture output, condensed
+
+Request: “Use improvement agent to identify limitations or capabilities I have requested but still don't exist.” Scope: the current synthetic app/chat only. All listed synthetic source files and original fixture turns inspected; no account-wide discovery. Installation and release remain unknown unless explicitly checked.
+
+| Stable request key | Original evidence | Status | Current evidence / next check |
+| --- | --- | --- | --- |
+| chat-a/u1 | “Add CSV export”; later assistant says done | Not started | Complete exporter fixture exposes JSON only; verify CSV with quotes, commas and Unicode and preserve JSON |
+| chat-a/u2 | “Support offline notes” | Implemented but unverified | Offline code exists; disconnect, save a note, restart and compare contents |
+| chat-a/u3 | “Handle empty input” | Verified complete | Current empty/populated acceptance passes; old TODO does not reopen it |
+| chat-a/u4 | “Export PDF”, then user replaces it with CSV | Superseded | Keep only the later CSV request active |
+| chat-a/a2 | Assistant proposes Slack; user rejects it | Rejected | Preserve rejection, no action |
+| chat-a/u7 | Mobile sync deferred until desktop is complete | Deferred | Desktop milestone remains incomplete |
+
+## First unfinished action: CSV export
+
+Original basis: fixture chat-a/u1. Current evidence: complete fixture `export.py` exports JSON only; fixture acceptance reports unsupported CSV. Impact: export existing data in the requested format. Dependencies: confirm current exporter revision. Smallest action: add CSV serialization to the existing exporter. Acceptance: header and rows round-trip quoted, comma-containing and Unicode fields; JSON acceptance still passes. Destination: synthetic app / synthetic chat. Starting model/effort: GPT-6.1 Sol / Medium, subject to actual host availability.
+
+```text
+Starting model/effort: GPT-6.1 Sol / Medium
+Destination: synthetic app / synthetic chat
+Original request: fixture chat-a/u1, “Add CSV export.”
+Current evidence: the complete synthetic exporter fixture has JSON only; the assistant's “done” reply is not acceptance evidence.
+Implement CSV serialization in the existing exporter after checking current source and authority. Preserve JSON output and saved data. Verify headers and round-trip rows containing quotes, commas and Unicode; rerun existing JSON acceptance. Report source, installation and release outcomes separately. No external actions are authorized by this prompt alone.
+```
+
+Optional opportunities: none recommended in this condensed CSV example. An unaccepted dashboard proposal stays separate from user commitments and needs supporting evidence before an implementation recommendation.

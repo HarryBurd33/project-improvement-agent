@@ -42,3 +42,5 @@ python3 "$HELPER" --state "$STATE" status
 ```
 
 Save the report output and a run/review record in the same private task storage and index their path, purpose, version, checks and validation. State includes the immutable finished run criteria/results. Inspect `state.json` to retrieve IDs, evidence history, run records, prior mode and token. Atomic writes use a checksummed envelope, restrictive permissions and a verified `previous.json`. On corruption, stop; inspect both copies and actual outcomes before any manual recovery. Never blindly restore an old state over newer decisions or active work. Schema migration is explicit; unsupported versions fail closed. The helper opens only designated state paths and private event/check files; locators are inert references.
+
+Focused mode adds an optional requirement ledger to schema 1; see [focused audit](focused.md) for scope, layers, origins, dispositions and actions. Existing store files, tokens, cursors and decisions remain authoritative.

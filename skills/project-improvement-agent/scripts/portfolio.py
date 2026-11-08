@@ -26,6 +26,9 @@ FACETS = {
     'other': ['purpose', 'output', 'validation', 'limitations'],
 }
 PROMPT_FIELDS = ['context', 'targets', 'outcome', 'scope', 'constraints', 'preserve', 'verification']
+LAYER_STATES = ('not started', 'partially implemented', 'implemented but unverified', 'verified complete', 'unknown')
+KINDS = ('user_request', 'accepted_change', 'assistant_proposal', 'opportunity')
+HOLDS = ('deferred', 'rejected', 'superseded')
 
 
 def need(condition, message):
@@ -115,8 +118,8 @@ class Store:
     def read(self):
         return load(safe(self.path / 'state.json'))
 
-    def start(self, mode=None, owner='', checks=None, limits=None):
-        need(mode in (None, 'broad', 'comprehensive'), 'invalid mode')
+    def start(self, mode=None, owner='', checks=None, limits=None, scope=None):
+        need(mode in (None, 'broad', 'comprehensive', 'focused'), 'invalid mode')
         need(nonempty(owner), 'current owner required')
         need(checks and all(nonempty(c.get('id')) and nonempty(c.get('expected')) and
                            nonempty(c.get('method')) for c in checks), 'freeze checks before run')
@@ -124,6 +127,12 @@ class Store:
             need(d['active'] is None, 'active run exists; reconcile exact owner/token, never steal')
             if mode is None:
                 mode = d['runs'][-1]['mode'] if d['runs'] else 'broad'
+                if scope is None and d['runs']:
+                    scope = d['runs'][-1].get('scope')
+            if mode == 'focused':
+                need(isinstance(scope, dict) and nonempty(scope.get('chat')) and
+                     nonempty(scope.get('basis')), 'focused scope needs current chat and identity basis')
+                need(scope.get('project') is None or nonempty(scope['project']), 'invalid project identity')
             for project in d['projects'].values():
                 if project['status'] == 'deep' and any(
                     d['materials'][d['evidence'][eid]['material']]['version'] is None
@@ -141,7 +150,7 @@ class Store:
             r = dict(id=str(uuid.uuid4()), token=str(uuid.uuid4()), owner=owner, mode=mode,
                      started=now(), epoch=time.time(), limits=bounds, used=dict.fromkeys(bounds, 0),
                      checks=[dict(c, status='not_run', evidence=[], observed=None) for c in checks],
-                     status='active', baseline={k:dict(revision=v['revision'],decision=v['decision']) for k,v in d['findings'].items()}, events=[])
+                     status='active', scope=copy.deepcopy(scope), baseline={k:dict(revision=v['revision'],decision=v['decision']) for k,v in d['findings'].items()}, events=[])
             d['active'] = r
         return copy.deepcopy(r)
 
@@ -191,6 +200,22 @@ def apply(d, r, e):
     if 'project' in e:
         e['project'] = canonical(d, e['project'])
     op = e['op']
+    if r['mode'] == 'focused':
+        identity = r['scope'].get('project') or 'chat:' + r['scope']['chat']
+        if op == 'project':
+            need(e['identity'] == identity, 'project outside focused scope')
+        if 'project' in e:
+            project = d['projects'].get(e['project'], {})
+            need(identity in [project.get('identity')] + project.get('aliases', []), 'project outside focused scope')
+        if op == 'association':
+            need(all(identity in [d['projects'].get(x, {}).get('identity')] +
+                     d['projects'].get(x, {}).get('aliases', []) for x in (e['left'], e['right'])),
+                 'association outside focused scope')
+        if op == 'decision':
+            project = d['projects'][d['findings'][e['finding']]['project']]
+            need(identity in [project['identity']] + project['aliases'], 'decision outside focused scope')
+    if op == 'requirement':
+        return requirement(d, r, e)
     if op == 'usage':
         for k,v in e['counts'].items():
             need(k in ('bytes', 'calls') and type(v) is int and v >= 0, 'invalid usage charge')
@@ -235,9 +260,11 @@ def apply(d, r, e):
         need(e['project'] in d['projects'] and e['material'] in d['materials'], 'known project/material required')
         need(nonempty(e['location']) and nonempty(e['observation']), 'actual examined boundary and observation required')
         m = d['materials'][e['material']]
-        eid = stable('evidence', json.dumps([e['project'], e['material'], m['version'], e['location'], e['observation'], r['id']]))
+        eid = stable('evidence', json.dumps([e['project'], e['material'], m['version'], e['location'], e['observation'], e.get('role', 'artifact'), r['id']]))
         r['used']['materials'] += int(not any(v['material'] == e['material'] and v['run'] == r['id'] for v in d['evidence'].values()))
-        d['evidence'][eid] = dict(project=e['project'], material=e['material'], version=m['version'],
+        role = e.get('role', 'artifact')
+        need(role in ('user', 'assistant', 'artifact', 'acceptance', 'installation', 'release'), 'invalid evidence role')
+        d['evidence'][eid] = dict(project=e['project'], material=e['material'], version=m['version'], role=role,
             material_observation=m['observation_id'],location=e['location'], observation=e['observation'], examined_at=now(), run=r['id'])
         return eid
     if op in ('assess', 'review'):
@@ -320,6 +347,8 @@ def apply(d, r, e):
                 if ev['project']==b:ev['project']=a
             for f in d['findings'].values():
                 if f['project']==b:f['project']=a
+            for req in d.get('requirements', {}).values():
+                if req['project']==b:req['project']=a
         return relation
     if op == 'blocked':
         project=d['projects'][e['project']]
@@ -342,6 +371,161 @@ def fresh(d, eid, run):
     m = d['materials'][ev['material']]
     return ev['version'] == m['version'] and (m['version'] is not None or (
         ev['run'] == run and ev.get('material_observation') == m.get('observation_id')))
+
+
+def requirement(d, r, e):
+    """Validate a runner's evidence reconciliation, never infer facts from prose."""
+    pid = e['project']
+    need(pid in d['projects'] and nonempty(e.get('key')), 'requirement needs project and stable original-request key')
+    ledger = d.setdefault('requirements', {})  # Additive schema-1 extension; no second store.
+    rid = next((k for k, v in ledger.items() if v['project'] == pid and v['key'] == e['key']),
+               stable('requirement', pid + ':' + e['key']))
+    old = ledger.get(rid)
+    kind = e.get('kind')
+    need(kind in KINDS, 'separate requests, accepted changes, proposals and opportunities')
+
+    def refs(ids, current=False, roles=None):
+        need(isinstance(ids, list) and ids and all(x in d['evidence'] and
+             d['evidence'][x]['project'] == pid for x in ids), 'examined project evidence required')
+        if current:
+            need(all(fresh(d, x, r['id']) for x in ids), 'reinspect stale requirement evidence')
+        if roles:
+            need(any(d['evidence'][x].get('role') in roles for x in ids), 'original evidence role required: ' + str(roles))
+
+    refs(e.get('origins'), roles=('user',) if kind in ('user_request', 'accepted_change') else None)
+    if e.get('duplicate_of'):
+        target = e['duplicate_of']
+        need(target in ledger and target != rid and ledger[target]['project'] == pid and
+             ledger[target]['kind'] == kind, 'duplicate needs existing same-project, same-kind requirement')
+        need(nonempty(e.get('duplicate_reason')), 'evidence-backed duplicate reason required')
+        need(old is None, 'existing rows require explicit reconciliation; cannot erase history')
+        row = ledger[target]
+        row['origins'] = list(dict.fromkeys(row['origins'] + e['origins']))
+        row.setdefault('aliases', []).append(e['key'])
+        row['history'].append(dict(at=now(), duplicate_key=e['key'], reason=e['duplicate_reason'], origins=e['origins']))
+        return target
+    alias = next((k for k, v in ledger.items() if v['project'] == pid and e['key'] in v.get('aliases', [])), None)
+    need(alias is None, 'use canonical requirement key for known duplicate')
+    for field in ('title', 'coverage', 'next_check'):
+        need(nonempty(e.get(field)), 'requirement needs ' + field)
+    refs(e.get('evidence'), current=True)
+    disposition = e.get('disposition', 'active')
+    need(disposition in ('active',) + HOLDS, 'invalid requirement disposition')
+    decision = e.get('decision_evidence', [])
+    if decision:
+        refs(decision, current=True, roles=('user',))
+    if disposition in HOLDS:
+        need(bool(decision) or (old and old['disposition'] == disposition), 'hold needs user evidence')
+    if old and old['disposition'] in HOLDS and disposition != old['disposition']:
+        need(bool(decision) and nonempty(e.get('decision_reason')) and
+             set(decision) != set(old.get('decision_evidence', [])), 'hold change needs a new explicit user decision')
+    if old:
+        need(kind == old['kind'] or (kind == 'accepted_change' and bool(decision)), 'kind change needs user acceptance')
+    supersedes = e.get('supersedes', [])
+    need(isinstance(supersedes, list) and all(x in ledger and x != rid and ledger[x]['project'] == pid for x in supersedes), 'invalid supersession links')
+    if supersedes:
+        need(bool(decision), 'supersession needs correction evidence')
+        pending = list(supersedes); seen = set()
+        while pending:
+            ancestor = pending.pop()
+            need(ancestor != rid, 'supersession cycle refused')
+            if ancestor not in seen:
+                seen.add(ancestor); pending.extend(ledger[ancestor].get('supersedes', []))
+    layers = e.get('layers', {})
+    need(set(layers) == {'source', 'installation', 'release'}, 'source/install/release must be separate')
+    required = e.get('required_layers', ['source'])
+    need(isinstance(required, list) and 'source' in required and set(required) <= set(layers), 'source and requested delivery layers needed')
+    for name, layer in layers.items():
+        need(layer.get('status') in LAYER_STATES and nonempty(layer.get('observed')), 'layer status and observation required')
+        if layer['status'] != 'unknown':
+            refs(layer.get('evidence'), current=True)
+        if layer['status'] == 'not started':
+            need(layer.get('absence_established') is True, 'absence needs a discriminating inspection; otherwise use unknown')
+        if layer['status'] == 'verified complete':
+            refs(layer.get('verification'), current=True,
+                 roles=('acceptance',) if name == 'source' else (name,))
+    states = [layers[k]['status'] for k in required]
+    if disposition in HOLDS:
+        status = disposition
+    elif all(x == 'verified complete' for x in states):
+        status = 'verified complete'
+    elif 'partially implemented' in states or ('verified complete' in states and 'not started' in states):
+        status = 'partially implemented'
+    elif any(x in ('verified complete', 'implemented but unverified') for x in states):
+        status = 'implemented but unverified'
+    elif all(x == 'not started' for x in states):
+        status = 'not started'
+    else:
+        status = 'unknown'
+    action = e.get('action')
+    actionable = disposition == 'active' and status != 'verified complete'
+    if actionable:
+        need(isinstance(action, dict), 'unfinished item or opportunity requires next action')
+        for field in ('basis', 'impact', 'dependencies', 'next_action', 'acceptance', 'destination', 'model', 'effort', 'ranking_reason'):
+            need(nonempty(action.get(field)), 'action requires ' + field)
+        need(type(action.get('rank')) is int and action['rank'] > 0, 'positive provisional rank required')
+        need(isinstance(action.get('prompt'), dict) and all(nonempty(action['prompt'].get(k)) for k in PROMPT_FIELDS), 'standalone implementation prompt required')
+    history = copy.deepcopy(old['history']) if old else []
+    if old:
+        history.append({k:copy.deepcopy(old[k]) for k in ('status', 'disposition', 'layers', 'origins', 'evidence', 'run')})
+    row = {k:copy.deepcopy(e[k]) for k in ('project', 'key', 'kind', 'title', 'origins', 'evidence', 'coverage', 'next_check')}
+    row.update(status=status, disposition=disposition, layers=layers, required_layers=required, action=action,
+               history=history, supersedes=supersedes, decision_evidence=decision or (old or {}).get('decision_evidence', []),
+               aliases=(old or {}).get('aliases', []), run=r['id'], at=now())
+    if old:
+        row['origins'] = list(dict.fromkeys(old['origins'] + row['origins']))
+    ledger[rid] = row
+    for previous in supersedes:
+        other = ledger[previous]
+        other['history'].append(dict(at=now(), status=other['status'], superseded_by=rid, evidence=decision))
+        other.update(status='superseded', disposition='superseded', decision_evidence=decision, superseded_by=rid)
+    return rid
+
+
+def requirement_report(d):
+    run = d['active'] or (d['runs'][-1] if d['runs'] else {})
+    scope = run.get('scope') or {}
+    identity = scope.get('project') or ('chat:' + scope['chat'] if scope.get('chat') else None)
+    lines = ['# Requested-capability audit', '', 'Scope: ' + json.dumps(scope),
+             'Coverage: source scopes and cursors below describe inspected material only.',
+             'Absence without a discriminating check means not evidenced in the inspected scope.',
+             '', '## Requirement ledger']
+    selected = []
+    for rid, row in d.get('requirements', {}).items():
+        p = d['projects'][row['project']]
+        if run.get('mode') == 'focused' and identity not in [p['identity']] + p['aliases']:
+            continue
+        current_ids = row['evidence'] + [x for layer in row['layers'].values() for x in layer.get('evidence', []) + layer.get('verification', [])]
+        stale = row['run'] != run.get('id') or not all(fresh(d, x, run.get('id')) for x in current_ids)
+        display = row['status'] if not stale or row['disposition'] in HOLDS else 'unknown (reinspection needed; saved ' + row['status'] + ')'
+        lines += ['', '### ' + rid + ': ' + row['title'], 'Kind: ' + row['kind'] + '; status: ' + display,
+                  'Coverage: ' + row['coverage'], 'Next discriminating check: ' + row['next_check'],
+                  'Layers: ' + json.dumps(row['layers']), 'Supersession: ' + json.dumps(row.get('supersedes', []))]
+        for eid in dict.fromkeys(row['origins'] + row.get('decision_evidence', []) + current_ids):
+            ev = d['evidence'][eid]; m = d['materials'][ev['material']]
+            lines += ['Evidence ' + eid + ': ' + m['locator'] + ' ' + ev['location'] +
+                      '; version ' + str(ev['version']) + '; role ' + ev.get('role', 'artifact') + '; ' + ev['observation']]
+        selected.append((rid, row, stale))
+    for title, kinds in [('Ranked unfinished work', ('user_request', 'accepted_change')),
+                         ('Optional opportunities (not commitments)', ('assistant_proposal', 'opportunity'))]:
+        lines += ['', '## ' + title]
+        actions = [(rid, row) for rid, row, stale in selected if row['kind'] in kinds and
+                   row['disposition'] == 'active' and row['status'] != 'verified complete' and not stale]
+        if not actions:
+            lines += ['None supported by the current inspected evidence.']
+        for rid, row in sorted(actions, key=lambda x: x[1]['action']['rank']):
+            a = row['action']
+            lines += ['', '### ' + str(a['rank']) + '. ' + row['title'] + ' (' + rid + ')']
+            for k in ('basis', 'impact', 'dependencies', 'next_action', 'acceptance', 'destination', 'model', 'effort', 'ranking_reason'):
+                lines += [k.replace('_', ' ').title() + ': ' + a[k]]
+            lines += ['```text', 'Starting model/effort: ' + a['model'] + ' / ' + a['effort'],
+                      'Destination: ' + a['destination'], 'Requirement: ' + rid,
+                      'Original request/opportunity basis: ' + a['basis']] + [k.title() + ': ' + a['prompt'][k] for k in PROMPT_FIELDS] + ['```']
+    lines += ['', '## Reinspection queue'] + [rid + ': ' + row['next_check'] for rid, row, stale in selected if stale]
+    # Only this run's observed sources; never imply that an old portfolio scan is this audit's coverage.
+    lines += ['', '## Source coverage', json.dumps({k:v for k,v in d['sources'].items() if v['run'] == run.get('id')}, indent=2),
+              '', '## Run checks', json.dumps(run.get('checks', []), indent=2)]
+    return '\n'.join(lines) + '\n'
 
 
 def summary(d):
@@ -368,6 +552,9 @@ def summary(d):
 
 
 def report(d):
+    latest = d['active'] or (d['runs'][-1] if d['runs'] else {})
+    if latest.get('mode') == 'focused':
+        return requirement_report(d)
     s = summary(d)
     lines = ['# Project improvement review', '', json.dumps(s, indent=2), '', '## Recommendations',
              '', 'Ranking is provisional: usefulness and reliability before novelty. Scores are estimates.']
@@ -394,6 +581,8 @@ def report(d):
         if f['decision']!='proposed' or f['stale']:
             lines += [fid+': '+f['decision']+'; stale='+str(f['stale'])+'; history='+json.dumps(f['history'])]
     lines += ['', '## Run checks', json.dumps(d['runs'][-1]['checks'] if d['runs'] else [], indent=2)]
+    if d.get('requirements'):
+        lines += ['', requirement_report(d)]
     return '\n'.join(lines)+'\n'
 
 
@@ -402,13 +591,13 @@ def main():
     parser.add_argument('--state', required=True)
     sub=parser.add_subparsers(dest='command', required=True)
     sub.add_parser('init'); sub.add_parser('status'); sub.add_parser('report')
-    p=sub.add_parser('start');p.add_argument('--owner',required=True);p.add_argument('--mode',choices=['broad','comprehensive'],default=None);p.add_argument('--checks',required=True)
+    p=sub.add_parser('start');p.add_argument('--owner',required=True);p.add_argument('--mode',choices=['broad','comprehensive','focused'],default=None);p.add_argument('--checks',required=True);p.add_argument('--scope',help='JSON file with current chat, project identity or null, and identity basis')
     p=sub.add_parser('event');p.add_argument('--token',required=True);p.add_argument('--json',required=True)
     p=sub.add_parser('finish');p.add_argument('--token',required=True);p.add_argument('--json',required=True)
     args=parser.parse_args(); store=Store(args.state)
     try:
         if args.command=='init': value=store.init()
-        elif args.command=='start': value=store.start(args.mode,args.owner,json.loads(Path(args.checks).read_text()))
+        elif args.command=='start': value=store.start(args.mode,args.owner,json.loads(Path(args.checks).read_text()),scope=json.loads(Path(args.scope).read_text()) if args.scope else None)
         elif args.command=='event': value=store.event(args.token,json.loads(Path(args.json).read_text()))
         elif args.command=='finish': value=store.finish(args.token,**json.loads(Path(args.json).read_text()))
         elif args.command=='status': value=summary(store.read())

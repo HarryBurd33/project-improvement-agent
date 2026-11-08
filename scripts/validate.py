@@ -42,7 +42,8 @@ def validate():
         if indexed!=actual:errors.append('inventory mismatch at '+root.name+': '+str(indexed^actual))
     skill=(SKILL/'SKILL.md').read_text()
     if not skill.startswith('---\nname: project-improvement-agent\ndescription:'):errors.append('skill metadata')
-    if 'allow_implicit_invocation: false' not in (SKILL/'agents/openai.yaml').read_text():errors.append('manual policy')
+    if 'allow_implicit_invocation: true' not in (SKILL/'agents/openai.yaml').read_text():errors.append('discovery policy')
+    if 'Activate only on a current explicit request.' not in skill:errors.append('manual activation boundary')
     print(json.dumps({'ok':not errors,'files':len(paths),'errors':errors,'limits':'Structural and narrow pattern checks only; exact publication review still required.'},indent=2))
     return 1 if errors else 0
 

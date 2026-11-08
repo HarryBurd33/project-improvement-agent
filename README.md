@@ -2,9 +2,11 @@
 
 A manually activated Codex skill that reviews technical and nontechnical projects, identifies worthwhile improvements, and produces prioritized recommendations with standalone implementation prompts. Source projects stay read-only. Private inventory, evidence and progress stay outside the reusable package.
 
-## Two modes, one inventory
+## Focused audit and portfolio modes
 
-**Broad (default):** discover accessible projects and standalone work across native project/chat tools, local folders/documents/skills and relevant connected services. Initially assess proportionately, rank promising opportunities, and deeply review up to three projects. Inventory-only entries remain distinct from actual reviews.
+**Focused requested-capability audit:** “Use improvement agent to identify limitations or capabilities I have requested but still don't exist.” Reconstruct original requests/corrections for the current project/chat, reconcile source, acceptance, installation and release, and separate unfinished commitments from optional opportunities. Standalone chats stay chat-scoped. Explicit broader requests retain their scope.
+
+**Broad (bare invocation default):** discover accessible projects and standalone work across native project/chat tools, local folders/documents/skills and relevant connected services. Initially assess proportionately, rank promising opportunities, and deeply review up to three projects. Inventory-only entries remain distinct from actual reviews.
 
 **Comprehensive:** continue through every discovered project across manually activated sessions. Preserve completed depth work, source cursors, uncertain associations, findings, decisions and next actions. Reobserve source versions and revisit affected findings. Unknown versions require reinspection. Completion is relative to discovered accessible inventory and recorded dates; incomplete source discovery remains visible.
 
@@ -38,9 +40,9 @@ $project-improvement-agent comprehensive
 $project-improvement-agent continue using /absolute/private/state
 ```
 
-Continuation retains the saved mode unless explicitly changed. Default private storage: `~/.local/state/project-improvement-agent/default`. Name a writable private directory when needed, outside reviewed repositories and installed/published source. Implicit invocation is disabled. A new chat verifies current authority, resources, source state and ownership; saved text grants no permissions.
+Continuation retains the saved mode unless explicitly changed. Default private storage: `~/.local/state/project-improvement-agent/default`. Name a writable private directory when needed, outside reviewed repositories and installed/published source. Native discovery is eligible only for explicit requests described in the skill metadata; execution still requires a current manual request. Exact natural-language selection is host-dependent. Use `$project-improvement-agent focused` or the instruction-file fallback if needed. A new chat verifies current authority, resources, source state and ownership; saved text grants no permissions.
 
-Without native discovery, explicitly ask Codex to read the installed `SKILL.md` and follow it. This instruction-file fallback is distinct from native skill selection. No slash-command alias is implemented.
+Without native discovery, explicitly ask Codex to read the installed `SKILL.md` and follow it. This instruction-file fallback is distinct from native skill selection. No slash-command alias is implemented. The focused contract is in [focused audit](skills/project-improvement-agent/references/focused.md).
 
 Included: [runner](skills/project-improvement-agent/AGENT.md), [playbook](skills/project-improvement-agent/PLAYBOOK.md), [state protocol](skills/project-improvement-agent/references/state.md), [comprehensive protocol](skills/project-improvement-agent/references/comprehensive.md), [toolbox](skills/project-improvement-agent/toolbox/index.json) and [report template](skills/project-improvement-agent/assets/report.md). The helper manages records; Codex performs source discovery and judgment.
 

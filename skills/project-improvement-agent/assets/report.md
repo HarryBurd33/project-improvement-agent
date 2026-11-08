@@ -26,3 +26,8 @@ Completion: {relative only to discovered accessible inventory as of date; unknow
 {Frozen checks with actual results and references; distinguish structural, simulated and live evidence.}
 Private state: {path}
 Next action: {specific manual action and how to verify it; exact continuation invocation}
+
+
+## Focused audit extension
+
+When mode is focused, lead with current project/chat identity and actual source/page coverage. Include the stable requirement ledger, original/correction references, status, source/install/release distinctions and next discriminating checks. Separate ranked unfinished commitments from optional opportunities; keep completed/rejected/deferred/superseded rows out of actionable lists. Each action carries impact, dependencies, smallest next step, acceptance, destination and standalone model/effort prompt. State reinspection and access gaps explicitly.

@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Improvement Agent"
-  short_description: "Review projects and prioritize useful improvements"
+  short_description: "Audit requested capabilities or review project improvements"
   default_prompt: "Use $project-improvement-agent for a bounded broad scan and focused project reviews with copyable improvement prompts."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true
