@@ -21,6 +21,8 @@ Produce a requirement ledger with stable ID, kind, original/correction reference
 
 Rank by the existing benefit/relevance/evidence/urgency versus effort/risk method or explain an explicit ordering; dependencies can override numeric rank. Completed, superseded, rejected and held work stays visible in the ledger but outside actionable unfinished/opportunity lists. An assistant proposal is never a user commitment. Review precision as well as recall: false missing-work claims, duplicate recommendations and revived rejections are critical failures. Independently compare each output against original turns and current evidence, not the generated report itself.
 
+When original history is oversized or invocation proof is host-specific, use [history and host recovery](history-and-host.md). Before reporting execution counts or duration from saved supported receipts, use [receipt verification](receipts.md); do not convert missing records into zero or verified claims.
+
 Before returning a requested-capability audit in **any mode**, including an explicitly broad or comprehensive scope, check the actual final report against this completion checklist:
 
 - Keep a separate **Optional opportunities** section. Evaluate unaccepted proposals as opportunities, not commitments. If none is worthwhile, give a short evidence-based reason; “this audit cannot implement changes” is an authority boundary, not an opportunity assessment.

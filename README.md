@@ -77,3 +77,9 @@ API caps, inaccessible archives, unenumerable services and unknown revisions rem
 Submit sanitized reproductions, expected behavior and version assumptions. Add discriminating fixtures, run checks and keep inventories, private reports, credentials, checkpoints and personal configuration out of commits. Do not weaken coverage or authority boundaries to satisfy tests.
 
 MIT, copyright 2026 Harrison Black. [NOTICE](NOTICE) retains MIT notices for adapted Agent Forge contracts and the installer. [Provenance](docs/provenance.md) describes reuse. Private audit data is excluded.
+
+## Execution evidence and host limits (1.2)
+
+The optional standard-library [receipt checker](skills/project-improvement-agent/references/receipts.md) checks recorded CLI command counts, bound runner duration and structured claims against exact report/trace hashes. It generates an evidence section and rejects unsupported assertions; it does not authenticate evidence or interpret all free prose. Missing events remain unknown. No background collection or production worker is added.
+
+[History recovery](skills/project-improvement-agent/references/history-and-host.md) preserves oversized/unread boundaries and distinguishes original messages from summaries. The [invocation checklist](skills/project-improvement-agent/assets/invocation-checklist.md) records natural, explicit and non-audit controls with separate user-observed, direct-GUI, CLI and fallback evidence. A host restriction remains a limitation, not a claimed successful test.

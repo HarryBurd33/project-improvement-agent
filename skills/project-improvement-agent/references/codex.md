@@ -25,3 +25,7 @@ Keep these validation claims separate:
 - Behavioral quality: provide original input evidence to the executor and compare its actual report/tool trace with separately frozen expected results. Keep expected labels hidden from that executor. Native selection alone does not prove audit precision, recall or preservation of decisions.
 
 Fresh invocation tests require actual authorized model execution. Use the host's supported authenticated route; do not add an API key requirement or spend API money when validating a subscription-backed host. If execution is unavailable, mark invocation untested/blocked and report only the discovery or fallback evidence actually obtained. The production audit remains a serial coordinator with zero workers. Separately authorized package-construction tests may use fresh contexts within their own recorded finite bounds; this never grants the audit permission to launch workers.
+
+## Evidence recovery and repeatable host checks
+
+Use [history and host recovery](history-and-host.md) and the [private invocation checklist](../assets/invocation-checklist.md). A supported [receipt checker](receipts.md) can validate saved CLI execution claims; it does not capture the desktop or expose hidden history. Preserve explicit tool restrictions and unexecuted cases.

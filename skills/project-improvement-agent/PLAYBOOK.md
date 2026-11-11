@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.1.1
+# Portfolio review playbook — 1.2.0
 
 ## Inputs, authority, limits
 
@@ -40,6 +40,8 @@ Each facet links examined evidence, not merely a checked box. A missing facet pr
 
 Every recommendation needs project identity/targets, specific evidence and confidence, problem/opportunity, proposed change, benefit, effort, tradeoffs, dependencies, questions, observable acceptance checks, preservation constraints and a standalone implementation prompt. Follow assets/implementation-prompt.md. The prompt must work without this chat; include the context and evidence locators rather than “as discussed.” Allow implementation choices to follow current evidence. Do not include secrets or unnecessary private text. Prompts remain private and unsent.
 
+When execution claims rely on a supported saved trace, follow [receipt verification](references/receipts.md): generate evidence facts, bind the structured claims to the exact report and trace, and run the checker before delivery. A failed/partial gate blocks the affected verified claim; unsupported hosts or unavailable receipts remain explicit unknowns. Keep raw traces private. Use [history and host recovery](references/history-and-host.md) for oversized original turns and invocation observations.
+
 Before finalizing, independently compare each claim to the examined materials, check that alternative explanations were considered, and verify that acceptance checks could fail if the issue persists. Separate suggested change from tested benefit. Report a count of inventory, assessment, depth, blocked and deferred work only when supported. Distinguish new/changed/resolved/unchanged findings. Rejected findings do not return without materially new evidence or explicit user reconsideration; explain any reopening. Never infer resolution just because a finding disappeared.
 
 ## step-05 — Save and continue
@@ -75,3 +77,5 @@ Construction lessons are added only after observed failures and retests. Reusabl
 - Independent behavioral validation needs an executor given only original input evidence, a separately frozen expected-results oracle, and the actual report/tool trace. Replaying preclassified helper records verifies persistence and rendering, not model judgment. Native metadata discovery, fresh native invocation and the instruction-file fallback are separate checks; fallback cannot pass native-selection acceptance. Record host-specific execution limits and retain a non-audit control rather than generalizing one host's success to every host.
 
 - Independent model runs correctly classified requirements but omitted impact for verification-only actions and confused “do not implement during an audit” with “no worthwhile opportunity.” The requested-capability output contract now applies in every scope, requires explicit Impact and Dependencies/holds for each action, and checks the separate optional-opportunities assessment before delivery. Preserve original failed outputs and rerun affected cases with the external oracle unchanged.
+
+- A historical audit claimed tool counts and an exact time that its retained trace could not establish. Preserve the original output, derive only supported recorded facts, bind the exact report/trace, and keep missing events unknown. The receipt checker supplements semantic review; hashes do not authenticate a host or verify arbitrary prose. Its saved procedure must be exercised on changed input before claiming reuse.

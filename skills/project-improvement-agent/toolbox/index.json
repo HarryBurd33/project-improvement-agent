@@ -7,7 +7,7 @@
       "purpose": "Portfolio review AGENT.md",
       "kind": "instructions",
       "location": "AGENT.md",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -30,260 +30,7 @@
       "purpose": "Portfolio review LICENSE",
       "kind": "instructions",
       "location": "LICENSE",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-3",
-      "purpose": "Portfolio review PLAYBOOK.md",
-      "kind": "instructions",
-      "location": "PLAYBOOK.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-4",
-      "purpose": "Portfolio review SKILL.md",
-      "kind": "instructions",
-      "location": "SKILL.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-5",
-      "purpose": "Portfolio review agent.json",
-      "kind": "configuration",
-      "location": "agent.json",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-6",
-      "purpose": "Portfolio review agents/openai.yaml",
-      "kind": "configuration",
-      "location": "agents/openai.yaml",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-7",
-      "purpose": "Portfolio review assets/implementation-prompt.md",
-      "kind": "instructions",
-      "location": "assets/implementation-prompt.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-8",
-      "purpose": "Portfolio review assets/report.md",
-      "kind": "instructions",
-      "location": "assets/report.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-9",
-      "purpose": "Portfolio review references/codex.md",
-      "kind": "instructions",
-      "location": "references/codex.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-10",
-      "purpose": "Portfolio review references/state.md",
-      "kind": "instructions",
-      "location": "references/state.md",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-11",
-      "purpose": "Portfolio review scripts/portfolio.py",
-      "kind": "script",
-      "location": "scripts/portfolio.py",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "resource-12",
-      "purpose": "Portfolio review toolbox/run-review.json",
-      "kind": "configuration",
-      "location": "toolbox/run-review.json",
-      "version": "1.1.1",
-      "input_contract": "Current manual request and applicable evidence; never inherited permission",
-      "output_contract": "Bounded private review or honest partial record",
-      "dependencies": [],
-      "status": "validated",
-      "used_by": [
-        "step-01",
-        "check-01"
-      ],
-      "validation": {
-        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
-        "evidence": [
-          "PLAYBOOK.md"
-        ]
-      },
-      "replaces": null,
-      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
-    },
-    {
-      "id": "toolbox-index",
-      "purpose": "Inventory of reusable resources",
-      "kind": "instructions",
-      "location": "toolbox/index.json",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -306,7 +53,7 @@
       "purpose": "Portfolio review NOTICE",
       "kind": "instructions",
       "location": "NOTICE",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -325,11 +72,197 @@
       "reuse_decision": "Reuse existing package artifact; add the inventory entry omitted during construction."
     },
     {
+      "id": "resource-3",
+      "purpose": "Portfolio review PLAYBOOK.md",
+      "kind": "instructions",
+      "location": "PLAYBOOK.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-4",
+      "purpose": "Portfolio review SKILL.md",
+      "kind": "instructions",
+      "location": "SKILL.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-5",
+      "purpose": "Portfolio review agent.json",
+      "kind": "configuration",
+      "location": "agent.json",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-6",
+      "purpose": "Portfolio review agents/openai.yaml",
+      "kind": "configuration",
+      "location": "agents/openai.yaml",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-7",
+      "purpose": "Portfolio review assets/implementation-prompt.md",
+      "kind": "instructions",
+      "location": "assets/implementation-prompt.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "receipt-upgrade-assets-invocation-checklist-md",
+      "purpose": "Receipt validation and explicit history/host evidence procedure: assets/invocation-checklist.md",
+      "kind": "reference",
+      "location": "assets/invocation-checklist.md",
+      "version": "1.2.0",
+      "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
+      "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-04",
+        "check-01",
+        "check-04",
+        "check-05"
+      ],
+      "validation": {
+        "method": "37 independent adversarial cases,87local tests,targeted saved-procedure native use,inventory/links and AgentForge ready audit; scope in validation documentation",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Existing record helper and instructions do not parse execution receipts or supply these explicit host/history checks; additive stdlib tool and references preserve existing API."
+    },
+    {
+      "id": "resource-8",
+      "purpose": "Portfolio review assets/report.md",
+      "kind": "instructions",
+      "location": "assets/report.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-9",
+      "purpose": "Portfolio review references/codex.md",
+      "kind": "instructions",
+      "location": "references/codex.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
       "id": "resource-references-comprehensive-md",
       "purpose": "Portfolio review references/comprehensive.md",
       "kind": "instructions",
       "location": "references/comprehensive.md",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -352,7 +285,7 @@
       "purpose": "Focused requirement reconstruction and state/output contract",
       "kind": "reference",
       "location": "references/focused.md",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -373,6 +306,173 @@
       },
       "replaces": null,
       "reuse_decision": "Existing comprehensive reference addresses portfolio depth; focused request reconciliation needs its own bounded procedure. Reuses existing state and report assets."
+    },
+    {
+      "id": "receipt-upgrade-references-history-and-host-md",
+      "purpose": "Receipt validation and explicit history/host evidence procedure: references/history-and-host.md",
+      "kind": "reference",
+      "location": "references/history-and-host.md",
+      "version": "1.2.0",
+      "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
+      "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-04",
+        "check-01",
+        "check-04",
+        "check-05"
+      ],
+      "validation": {
+        "method": "37 independent adversarial cases,87local tests,targeted saved-procedure native use,inventory/links and AgentForge ready audit; scope in validation documentation",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Existing record helper and instructions do not parse execution receipts or supply these explicit host/history checks; additive stdlib tool and references preserve existing API."
+    },
+    {
+      "id": "receipt-upgrade-references-receipts-md",
+      "purpose": "Receipt validation and explicit history/host evidence procedure: references/receipts.md",
+      "kind": "reference",
+      "location": "references/receipts.md",
+      "version": "1.2.0",
+      "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
+      "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-04",
+        "check-01",
+        "check-04",
+        "check-05"
+      ],
+      "validation": {
+        "method": "37 independent adversarial cases,87local tests,targeted saved-procedure native use,inventory/links and AgentForge ready audit; scope in validation documentation",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Existing record helper and instructions do not parse execution receipts or supply these explicit host/history checks; additive stdlib tool and references preserve existing API."
+    },
+    {
+      "id": "resource-10",
+      "purpose": "Portfolio review references/state.md",
+      "kind": "instructions",
+      "location": "references/state.md",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "receipt-upgrade-scripts-audit-receipt-py",
+      "purpose": "Receipt validation and explicit history/host evidence procedure: scripts/audit_receipt.py",
+      "kind": "script",
+      "location": "scripts/audit_receipt.py",
+      "version": "1.2.0",
+      "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
+      "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-04",
+        "check-01",
+        "check-04",
+        "check-05"
+      ],
+      "validation": {
+        "method": "37 independent adversarial cases,87local tests,targeted saved-procedure native use,inventory/links and AgentForge ready audit; scope in validation documentation",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Existing record helper and instructions do not parse execution receipts or supply these explicit host/history checks; additive stdlib tool and references preserve existing API."
+    },
+    {
+      "id": "resource-11",
+      "purpose": "Portfolio review scripts/portfolio.py",
+      "kind": "script",
+      "location": "scripts/portfolio.py",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "toolbox-index",
+      "purpose": "Inventory of reusable resources",
+      "kind": "instructions",
+      "location": "toolbox/index.json",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
+    },
+    {
+      "id": "resource-12",
+      "purpose": "Portfolio review toolbox/run-review.json",
+      "kind": "configuration",
+      "location": "toolbox/run-review.json",
+      "version": "1.2.0",
+      "input_contract": "Current manual request and applicable evidence; never inherited permission",
+      "output_contract": "Bounded private review or honest partial record",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Release behavioral suite, Agent Forge ready audit and exact inventory/link gate; see PLAYBOOK construction lessons.",
+        "evidence": [
+          "PLAYBOOK.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Searched Agent Forge templates, organizer and improve-system. Adapted contracts; new portfolio-specific content required. See public provenance at release."
     }
   ]
 }
