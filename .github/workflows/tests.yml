@@ -6,7 +6,8 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        # Pin images with Python 3.9 builds; latest OS labels can outpace that runtime.
+        os: [ubuntu-24.04, macos-15-intel]
         python: ['3.9', '3.13']
     runs-on: ${{ matrix.os }}
     steps:

@@ -101,3 +101,5 @@ Original unsuccessful attempts remain preserved: an initial harness timeout, a r
 The exact inventory/link gate and Agent Forge ready audit supplement behavioral checks. Installation, rollback, provider commit/tag/release readbacks and the four Linux/macOS Python 3.9/3.13 CI jobs are separate delivery gates. Private traces, original messages, raw fixtures and grading records are excluded from the public package.
 
 Oversized original-history access and direct desktop GUI capture remain host limitations. Prior user-observed invocation evidence retains its separate evidence kind. This release neither recovers hidden history nor bypasses a host restriction, and cannot certify unrecorded reads or arbitrary narrative claims.
+
+The first 1.3.0 branch CI attempt failed during Python 3.9 setup on the migrated Ubuntu 26.04 image; sibling jobs were cancelled. That setup failure is preserved separately from test results. CI now pins Ubuntu 24.04 and Intel macOS 15, retaining both Python 3.9 and 3.13 on each platform. Compatibility was checked against the official Python-build manifest and runner-image labels; actual successful jobs remain the release gate.
