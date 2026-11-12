@@ -3,7 +3,7 @@ name: project-improvement-agent
 description: Use only when the user explicitly invokes Project Improvement Agent, $project-improvement-agent, or says "use improvement agent" to audit requested capabilities or project improvements. Focus missing-capability requests on the current project/chat; preserve explicit broad/comprehensive portfolio reviews. Do not activate for ordinary implementation tasks, quoted requests, or incidental mentions.
 license: MIT
 metadata:
-  version: "1.3.0"
+  version: "1.3.1"
 ---
 
 # Project Improvement Agent
@@ -28,4 +28,4 @@ Manual prompts:
 
 The Python helper manages records; Codex performs discovery and judgment with available tools. Running the helper alone does not review a portfolio. End with a report using [assets/report.md](assets/report.md), standalone prompts using [assets/implementation-prompt.md](assets/implementation-prompt.md), actual checks, limitations and a verified next action.
 
-For execution claims supported by saved receipts, run [the receipt check](references/receipts.md) before delivery and bind claims to the exact trace/report bytes. Missing receipts stay unknown. For oversized history or host-specific invocation evidence, use [history and host recovery](references/history-and-host.md); user observation, direct GUI capture, CLI trace and fallback are distinct. These procedures add no background collection or production workers.
+For execution claims supported by saved receipts, run [the receipt check](references/receipts.md) before delivery and bind claims to the exact trace/report bytes. Missing receipts stay unknown. For oversized history or host-specific invocation evidence, use [history and host recovery](references/history-and-host.md); user observation, user-supplied image evidence, permitted direct GUI capture, CLI trace and fallback are distinct. These procedures add no background collection or production workers.

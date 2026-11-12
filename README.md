@@ -82,9 +82,16 @@ MIT, copyright 2026 Harrison Black. [NOTICE](NOTICE) retains MIT notices for ada
 
 The optional standard-library [receipt checker](skills/project-improvement-agent/references/receipts.md) checks recorded CLI command counts, bound runner duration and structured claims against exact report/trace hashes. It generates an evidence section and rejects unsupported assertions; it does not authenticate evidence or interpret all free prose. Missing events remain unknown. No background collection or production worker is added.
 
-[History recovery](skills/project-improvement-agent/references/history-and-host.md) preserves oversized/unread boundaries and distinguishes original messages from summaries. The [invocation checklist](skills/project-improvement-agent/assets/invocation-checklist.md) records natural, explicit and non-audit controls with separate user-observed, direct-GUI, CLI and fallback evidence. A host restriction remains a limitation, not a claimed successful test.
+[History recovery](skills/project-improvement-agent/references/history-and-host.md) preserves oversized/unread boundaries and distinguishes original messages from summaries. The [invocation checklist](skills/project-improvement-agent/assets/invocation-checklist.md) records natural, explicit and non-audit controls with separate user-observed, user-supplied-image, permitted direct-GUI, CLI and fallback evidence. A host restriction remains a limitation, not a claimed successful test.
 
 
 ## Intake and final accounting (1.3)
 
 Save scope and outcome criteria before project evidence reads. The optional [session workflow](skills/project-improvement-agent/references/session.md) records intake, checks declared command ordering, and finalizes a completed audit into a private report/claims/receipt bundle. It generates supported totals from the finished trace, preserves valid zero and unknowns, and refuses existing destinations. A final manifest binds the verified output files. No model execution or background collection is added. Narrative correctness and actual command classifications still require independent review; unsupported hosts retain explicit unverified states.
+
+
+## Supported history and GUI recovery (1.3.1)
+
+The [recovery procedure](skills/project-improvement-agent/references/history-and-host.md) distinguishes an oversized reader response, available turn/item pagination, an already-paginated store, and an unavailable host interface. Where the installed CLI and current permissions support it, a finite foreground stdio connection can read selected turn/item pages without resuming a chat or starting a model turn. It preserves unread boundaries and original-message provenance. It adds no daemon, migration mutation or shared-chat workaround.
+
+The [desktop checklist](skills/project-improvement-agent/assets/invocation-checklist.md) accepts inspected user-supplied screenshots as a distinct evidence kind. It records visible state and unknowns separately for natural, explicit and non-audit cases. A screenshot or user-observed result does not imply agent GUI access or certify unseen state. Host-dependent checks retain concrete operator and host-owner acceptance steps.
