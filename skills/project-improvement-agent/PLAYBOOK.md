@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.2.0
+# Portfolio review playbook — 1.3.0
 
 ## Inputs, authority, limits
 
@@ -9,6 +9,10 @@ Default per-session limits: 30 minutes, 40 external calls, 120 state events, 300
 The 30-material limit counts distinct project evidence items examined this run, including reads not yet recorded by the helper. Governing instructions read solely to operate the audit do not consume material slots; instructions reviewed as project evidence do. Rereads consume calls and bytes, but no additional material slot. The 40 source-access calls and 2 MiB of retrieved examined text include instruction, discovery and evidence reads, failures and rereads across all phases. Batched reads count each distinct evidence material. Reserve capacity before reading and carry intake usage into the same run; never reset counters when initializing the helper.
 
 The default three deep reviews is a maximum and selection target, not a quota for recommendations. Fewer may be justified by evidence or time; document the reason. Never force changes. Sources remain read-only; private inventory/reports are the only run writes. No automation or outbound messages. Keep prior user decisions. Credentials, account tokens, raw chat archives, dependency/vendor caches and recovery stores are outside discovery targets.
+
+## Before evidence — freeze scope and criteria
+
+Read the current request and governing instructions, then save an explicit intake with scope and coverage/precision/decision/output/read-only criteria before project evidence, original history or prior findings. Ownership/resource metadata checks may precede intake; project findings may not. Instructions examined as project evidence count as evidence. Use [intake and finalization](references/session.md) for the optional helper, exact completion-before-read boundary, post-run classification review and finalized report bundle. Unsupported hosts retain an equivalent private intake and an unverified mechanical-order status. This does not reset existing run budgets or duplicate state.
 
 ## step-01 — Discover and connect
 
@@ -39,6 +43,8 @@ Each facet links examined evidence, not merely a checked box. A missing facet pr
 ## step-04 — Recommend and verify
 
 Every recommendation needs project identity/targets, specific evidence and confidence, problem/opportunity, proposed change, benefit, effort, tradeoffs, dependencies, questions, observable acceptance checks, preservation constraints and a standalone implementation prompt. Follow assets/implementation-prompt.md. The prompt must work without this chat; include the context and evidence locators rather than “as discussed.” Allow implementation choices to follow current evidence. Do not include secrets or unnecessary private text. Prompts remain private and unsent.
+
+A finished run may use the opt-in [session finalizer](references/session.md) to preserve its narrative, generate recorded facts and bind the actual final report. Validate declared intake/evidence order separately and independently inspect command classifications. The current audit cannot certify its own totals before its trace finishes.
 
 When execution claims rely on a supported saved trace, follow [receipt verification](references/receipts.md): generate evidence facts, bind the structured claims to the exact report and trace, and run the checker before delivery. A failed/partial gate blocks the affected verified claim; unsupported hosts or unavailable receipts remain explicit unknowns. Keep raw traces private. Use [history and host recovery](references/history-and-host.md) for oversized original turns and invocation observations.
 
@@ -79,3 +85,7 @@ Construction lessons are added only after observed failures and retests. Reusabl
 - Independent model runs correctly classified requirements but omitted impact for verification-only actions and confused “do not implement during an audit” with “no worthwhile opportunity.” The requested-capability output contract now applies in every scope, requires explicit Impact and Dependencies/holds for each action, and checks the separate optional-opportunities assessment before delivery. Preserve original failed outputs and rerun affected cases with the external oracle unchanged.
 
 - A historical audit claimed tool counts and an exact time that its retained trace could not establish. Preserve the original output, derive only supported recorded facts, bind the exact report/trace, and keep missing events unknown. The receipt checker supplements semantic review; hashes do not authenticate a host or verify arbitrary prose. Its saved procedure must be exercised on changed input before claiming reuse.
+
+- Intake must be a standalone command whose stdout contains only the helper receipt. A native repeat correctly preserved requirements and decisions but printed a spec-save status before the receipt, so strict ordering validation rejected it. The saved instructions now require spec creation separately and intake-only stdout; a fresh changed-input repeat passed independent order and semantic review. Keep the original failure; never normalize a trace to manufacture a pass. Trailing whitespace is allowed; a leading prefix is not.
+
+- Toolbox dependencies name indexed resource IDs, not file paths. A ready audit rejected the session helper dependency written as a path; binding the existing receipt-helper resource ID fixes resolution without changing execution. Exact inventories and the ready audit verify this relationship before delivery.

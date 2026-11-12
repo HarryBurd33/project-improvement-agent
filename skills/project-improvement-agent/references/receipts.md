@@ -4,6 +4,8 @@ Use this check when a report relies on a supported saved execution receipt. It v
 
 The checker is read-only Python 3.9+ standard library code: [audit_receipt.py](../scripts/audit_receipt.py). Inputs are explicit private files; no connector, model call, background capture or network access is added. Keep traces, claims, reports and generated receipts outside installed/published source. Reserve and charge their reads against the same run call/byte/time limits; parser size ceilings do not enlarge the production audit budget.
 
+For a completed current run, [intake and finalization](session.md) automates report/claims/receipt assembly after the trace is finished. It also checks declared criteria-before-evidence order with independent classification review. Use the manual procedure below for existing supplied reports or hosts where the finalizer is unavailable. Neither route authenticates the host or certifies narrative prose.
+
 ## Procedure
 
 1. Identify the actual run and preserve its trace unchanged. Confirm its provenance through the existing run record. Do not substitute another run's trace or infer missing metadata.

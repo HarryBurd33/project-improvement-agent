@@ -37,3 +37,8 @@ Before delivery, inspect every action for explicit Impact and Dependencies/holds
 ## Execution evidence when available
 
 Use the generated supported-receipt evidence section and save the hash-bound claim-check result privately. Distinguish recorded command counts from all tool activity, calculated byte accounting from measured I/O, bound runner duration from independent clock evidence, and user-observed GUI results from direct capture. Missing/unsupported receipts remain unknown; see [receipt verification](../references/receipts.md).
+
+
+## Intake and post-run evidence
+
+Identify the pre-evidence scope/criteria record and whether actual trace order was checked, independently classified, or remains unverified. Do not report late criteria as pre-evidence. The [session workflow](../references/session.md) can produce a final report bundle only after the audit trace completes. Keep its generated execution facts distinct from narrative semantic review, preserve unknowns and record `not_checked` when ordering evidence is absent.

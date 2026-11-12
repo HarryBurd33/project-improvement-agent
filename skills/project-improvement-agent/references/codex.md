@@ -29,3 +29,8 @@ Fresh invocation tests require actual authorized model execution. Use the host's
 ## Evidence recovery and repeatable host checks
 
 Use [history and host recovery](history-and-host.md) and the [private invocation checklist](../assets/invocation-checklist.md). A supported [receipt checker](receipts.md) can validate saved CLI execution claims; it does not capture the desktop or expose hidden history. Preserve explicit tool restrictions and unexecuted cases.
+
+
+## Completed-trace finalization
+
+The optional [session helper](session.md) consumes saved completed Codex CLI JSONL and private intake/classification files. It does not launch Codex, capture the desktop or create a daemon. An existing authorized runner retains the trace/duration; an operator performs finalization afterward. Order checking is scoped to recorded commands and independently reviewed labels. Do not relabel unsupported native tool events or hidden reads as verified.
