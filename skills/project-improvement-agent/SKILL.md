@@ -3,7 +3,7 @@ name: project-improvement-agent
 description: Use only when the user explicitly invokes Project Improvement Agent, $project-improvement-agent, or says "use improvement agent" to audit requested capabilities or project improvements. Focus missing-capability requests on the current project/chat; preserve explicit broad/comprehensive portfolio reviews. Do not activate for ordinary implementation tasks, quoted requests, or incidental mentions.
 license: MIT
 metadata:
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Project Improvement Agent
