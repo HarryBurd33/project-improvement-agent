@@ -20,7 +20,44 @@ The official app-server reference supports `codex app-server --stdio`. When the 
 - Use current native permissions and the normal native approval flow if required for this already authorized read. A startup permission error is a failed startup, not proof that the chat has no readable original text. A denied read remains controlling; do not bypass it. Do not start a daemon or network listener, discover private IPC, read raw stores/databases, migrate data, or use `thread/start`, `thread/resume`, `thread/fork`, model-turn or GUI operations.
 - Close the subprocess and confirm child termination on success, timeout, size limit and every error path. Record exit/termination evidence with the private receipt. If termination is uncertain, reconcile that process before another probe; do not leave a background service or launch a duplicate.
 
-This route adds no production worker, paid API call or runtime helper. Reading one original `userMessage` demonstrates recovery only of that item and its recorded span, not closure of the remaining history gaps.
+Use the [selected-history reader](../scripts/read_history.py) when this supported foreground route and the current read authority match the task. The optional helper adds no production worker or paid API call. Reading one original userMessage establishes recovery of that item and its recorded span. Continue to record all unread history and host-evidence gaps.
+
+#### Run one saved selected-history plan
+
+Save a private UTF-8 JSON plan before the selected read. This synthetic example requests one item page for a known turn. Replace the example identifiers only with the authorized selected thread and a known turn from the same API.
+
+```json
+{
+  "schema_version": 1,
+  "thread_id": "synthetic-chat",
+  "operation": "items",
+  "turn_id": "synthetic-turn",
+  "direction": "asc",
+  "page_size": 4,
+  "max_pages": 1,
+  "max_records": 4,
+  "max_seconds": 15,
+  "max_bytes": 131072
+}
+```
+
+On macOS or Linux with Python 3.9+, the invocation from the installed skill folder is:
+
+```sh
+python3 scripts/read_history.py --plan "$private_plan" --output "$new_private_directory"
+```
+
+Use a nonsymlink plan and a new private destination with existing parents outside the project repository and skill installation. The helper resolves codex on the trusted operator PATH and launches only its foreground app-server stdio command. Verify the installed route and current read authority first. A refused plan or destination launches no peer.
+
+Required keys are schema_version, thread_id and operation. Use turns for metadata and items for original user text. The turns request uses notLoaded and accepts an empty items list with omitted itemsView metadata or an explicit notLoaded value. An omitted or null turn_id permits items across the selected thread, so set it when a known turn is sufficient. Any supplied turn must be from this API. For pagination, use an exact returned string cursor from the same operation, thread, optional turn and direction. The helper records it as caller-supplied provenance. Its presence does not prove that origin. Omit or use null to start the selected scope. The helper accepts no receipt-derived continuation or item-anchor object.
+
+Defaults are direction asc, page_size 20, max_pages 2, max_records 20, max_seconds 15 and max_bytes 131072. Page/record/byte bounds are positive integers. Time is a finite positive number. Bounds can be reduced, and the helper issues no automatic retry. Record each call and failed probe against the original audit's shared budget. An explicitly permitted smaller-page retry requires a separate plan and output within that budget.
+
+The wire counter covers bytes actually read from both pipes, including ignored notifications and opaque errors. The reader consumes at most the configured combined ceiling. If the budget is exhausted and a complete valid response still needs more bytes, it stops with byte_limit at the last safe boundary. A complete response can be accepted at the exact ceiling. The reader stops collecting once the selected operation settles. It reaps its owned process group with a separate margin of up to 2.5 seconds. If cleanup cannot be confirmed, stop dependent work and reconcile the process.
+
+The new private directory uses mode 0700 and its two JSON files mode 0600. records.json retains exact user text parts in order, native identities, role and supplied timestamps. User attachment payloads and path metadata are omitted. Other item bodies and notification/error payloads are discarded; a non-user item hash covers a sorted, compact ASCII JSON serialization plus newline, not raw wire or original provider bytes. receipt.json records the normalized plan, original-plan hash, effective executable, observed app-server version when recognized, exact page requests, accepted counts and cursor, actual received bytes and cleanup. The records hash identifies the exact persisted file bytes.
+
+Stdout contains only a machine summary and local evidence paths/hashes. Exit 0 represents an accepted selected-scope end or a normal bounded partial. Check the status before reporting coverage. Exit 1 means the transport, protocol or persistence check failed. Exit 2 is a prelaunch refusal. An invalid page cannot advance the last safe boundary. Explicit null nextCursor closes only the queried scope, even for an empty page. An absent cursor field fails closed. Preserve the receipt and exact opaque cursor privately for a separately authorized next plan. On an unsupported host, use the scoped alternatives below. No metadata, receipt or helper run certifies full history or establishes desktop invocation.
 
 If the installed CLI supports a selected-thread, read-only `codex migrate-rollouts --thread <selected-thread-id> --json` diagnostic, record its result and CLI version. `already_paginated` is not recovery of the unread text and does not justify `--apply`. An already-paginated chat with neither an exposed item interface nor an authorized supported CLI read route remains blocked. This procedure authorizes no migration mutation.
 
