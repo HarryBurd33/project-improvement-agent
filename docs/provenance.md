@@ -11,3 +11,7 @@ No model runtime, connectors or paid dependencies are bundled. Python standard-l
 ## Selected-history reader
 
 The 1.4.0 reader and synthetic stdio peer are original Python standard-library code. They adapt the existing bounded audit procedure and reference the [Codex app-server protocol](https://learn.chatgpt.com/docs/app-server) and the installed 0.166.0 request and response schemas. The synthetic peer also mirrors integer notification emission timestamps observed in that version. No Codex implementation, generated schema, private prototype or real history is bundled. Existing MIT and upstream attribution records remain applicable.
+
+### Explicit larger profile
+
+Version 1.5.0 adapts the existing MIT reader and synthetic peer. It adds plan validation for an opt-in receive limit while retaining the original transport, item schema, privacy and cleanup. The installed 0.166.0 schema and official protocol reference remain the connection contract. No external code or schema was copied.

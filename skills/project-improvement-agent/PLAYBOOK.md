@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.3.0
+# Portfolio review playbook — 1.5.0
 
 ## Inputs, authority, limits
 
@@ -106,3 +106,12 @@ Inspect the newest private receipt and confirm its transport, original plan hash
 For an authorized changed-turn check, use the same [selected-history procedure](references/history-and-host.md) with a different known turn in the selected chat. Set its turn_id in a new plan and start without a cursor unless a cursor is already verified for that exact new scope. Use a fresh output directory. Independently compare the actual private user item and turn IDs with the expected changed selection and verify group cleanup. Keep the original receipt and do not report either bounded read as a full-chat recovery.
 
 The independent transport check caught an earlier one-byte probe beyond the configured receive ceiling. The reader now stops at the ceiling and validates complete buffered responses there. Verify both the exact-cap success case and the one-byte-short failure case from the actual stdout and stderr counters. A page that needs more bytes leaves its previous validated cursor unchanged.
+
+
+### Recheck one oversized selected item
+
+An actual standard read at a saved selected-turn cursor stopped at 131072 received bytes with no accepted record and left that cursor unchanged. The larger profile makes a new chosen receive allowance visible in a separate plan. Use the [single-item large-page procedure](references/history-and-host.md#select-a-larger-budget-for-one-known-turn-and-item) only for an authorized known turn, with one page and one item and an explicit finite byte budget. Keep the original failing receipt and exact selected scope. Do not infer an item size or a permission failure from the wire count.
+
+Independently check the returned item identity, exact user text or minimized non-user hash, returned cursor, actual received count and confirmed process cleanup. Preserve a size/time stop and its unread boundary. For a changed-input qualification, save the new known turn or exact cursor and expected item before the run. Use the same procedure with a new private plan and output directory, then compare the original and changed receipts and retain remaining gaps.
+
+Qualification of the explicit larger profile recovered the same previously unread item and matched an independently recorded identity, minimized non-user hash and returned cursor. A changed-turn read from this saved method also matched independently witnessed original user text. Both reads stopped at their one-record limits with confirmed cleanup; keep their remaining history partial. The normal mode continued to stop at its unchanged byte ceiling.

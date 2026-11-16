@@ -17,10 +17,11 @@ import sys
 import time
 
 
-VERSION = "1.4.0"
+VERSION = "1.5.0"
 DEFAULTS = dict(direction="asc", page_size=20, max_pages=2, max_records=20, max_seconds=15, max_bytes=131072)
 REQUIRED = {"schema_version", "thread_id", "operation"}
-OPTIONAL = {"turn_id", "cursor"}
+OPTIONAL = {"turn_id", "cursor", "read_mode"}
+LARGE_MAX_BYTES = 4 * 1024 * 1024
 ID = re.compile(r"[A-Za-z0-9._:-]{1,200}")
 METHOD = re.compile(r"[A-Za-z0-9_./-]{1,160}")
 ITEMS = {
@@ -96,15 +97,25 @@ def load_plan(path):
     supplied = parse(raw, "invalid_plan_json")
     require(isinstance(supplied, dict) and REQUIRED <= supplied.keys()
             and supplied.keys() <= REQUIRED | OPTIONAL | DEFAULTS.keys(), "invalid_plan_fields")
-    plan = {**DEFAULTS, "turn_id": None, "cursor": None, **supplied}
+    plan = {**DEFAULTS, "turn_id": None, "cursor": None, "read_mode": "standard", **supplied}
     require(type(plan["schema_version"]) is int and plan["schema_version"] == 1, "invalid_plan_version")
     require(plan["operation"] in ("turns", "items") and plan["direction"] in ("asc", "desc"), "invalid_plan_operation")
     require(identifier(plan["thread_id"]), "invalid_plan_thread")
     require(plan["turn_id"] is None or (plan["operation"] == "items" and identifier(plan["turn_id"])), "invalid_plan_turn")
     require(plan["cursor"] is None or valid_cursor(plan["cursor"]), "invalid_plan_cursor")
-    for key in ("page_size", "max_pages", "max_records", "max_bytes"):
+    require(plan["read_mode"] in ("standard", "large_single_page"), "invalid_plan_read_mode")
+    for key in ("page_size", "max_pages", "max_records"):
         value = plan[key]
         require(type(value) is int and 1 <= value <= DEFAULTS[key], "invalid_plan_" + key)
+    byte_limit = plan["max_bytes"]
+    if plan["read_mode"] == "large_single_page":
+        require(plan["operation"] == "items" and plan["turn_id"] is not None, "invalid_large_page_scope")
+        require(all(type(supplied.get(key)) is int and supplied[key] == 1
+                    for key in ("page_size", "max_pages", "max_records")), "invalid_large_page_counts")
+        require("max_bytes" in supplied and type(byte_limit) is int
+                and DEFAULTS["max_bytes"] < byte_limit <= LARGE_MAX_BYTES, "invalid_plan_max_bytes")
+    else:
+        require(type(byte_limit) is int and 1 <= byte_limit <= DEFAULTS["max_bytes"], "invalid_plan_max_bytes")
     seconds = plan["max_seconds"]
     require(type(seconds) in (int, float) and 0 < seconds <= 15 and math.isfinite(seconds), "invalid_plan_max_seconds")
     return plan, digest(raw)

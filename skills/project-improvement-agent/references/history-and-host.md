@@ -51,7 +51,34 @@ Use a nonsymlink plan and a new private destination with existing parents outsid
 
 Required keys are schema_version, thread_id and operation. Use turns for metadata and items for original user text. The turns request uses notLoaded and accepts an empty items list with omitted itemsView metadata or an explicit notLoaded value. An omitted or null turn_id permits items across the selected thread, so set it when a known turn is sufficient. Any supplied turn must be from this API. For pagination, use an exact returned string cursor from the same operation, thread, optional turn and direction. The helper records it as caller-supplied provenance. Its presence does not prove that origin. Omit or use null to start the selected scope. The helper accepts no receipt-derived continuation or item-anchor object.
 
-Defaults are direction asc, page_size 20, max_pages 2, max_records 20, max_seconds 15 and max_bytes 131072. Page/record/byte bounds are positive integers. Time is a finite positive number. Bounds can be reduced, and the helper issues no automatic retry. Record each call and failed probe against the original audit's shared budget. An explicitly permitted smaller-page retry requires a separate plan and output within that budget.
+The standard profile is the default when read_mode is omitted. Explicit read_mode standard is equivalent. Standard defaults are direction asc, page_size 20, max_pages 2, max_records 20, max_seconds 15 and max_bytes 131072. Page/record/byte bounds are positive integers. Time is a finite positive number. Bounds can be reduced, and the helper issues no automatic retry. Record each call and failed probe against the original audit's shared budget. An explicitly permitted smaller-page retry requires a separate plan and output within that budget.
+
+#### Select a larger budget for one known turn and item
+
+If an authorized standard read stops at byte_limit with a known safe boundary, retain that receipt and the unread span. The optional large_single_page profile permits a separate, explicitly planned attempt at that exact boundary within the same audit budget. It uses the same thread/items/list call and its same selected turn, direction and opaque cursor. The helper does not retry, raise a limit automatically, skip an item, or change read access.
+
+This synthetic plan starts at the beginning of one known turn. For a resumed read, set cursor to the exact provider-returned string preserved for the same scope. Keep the prior attempt and use a new private output directory.
+
+```json
+{
+  "schema_version": 1,
+  "thread_id": "synthetic-chat",
+  "operation": "items",
+  "turn_id": "synthetic-turn",
+  "direction": "asc",
+  "cursor": null,
+  "read_mode": "large_single_page",
+  "page_size": 1,
+  "max_pages": 1,
+  "max_records": 1,
+  "max_seconds": 15,
+  "max_bytes": 4194304
+}
+```
+
+The larger profile requires a known non-null turn_id and explicitly supplied integer page_size, max_pages and max_records of 1. Choose an explicit integer max_bytes from 131073 through 4194304. The foreground time allowance remains at most 15 seconds, with the same cleanup margin. A missing mode defaults to standard. Null, unknown or incompatible profile values are rejected before launch. The private receipt records the effective mode and bound.
+
+The ceiling covers combined received bytes, including wire overhead and stderr. It does not measure the item's original size or bound process memory or serialized evidence size. This profile adds no role/body projection. An access denial or another size or time limit leaves the item unread. Even a recovered item with a next cursor is a bounded partial result.
 
 The wire counter covers bytes actually read from both pipes, including ignored notifications and opaque errors. The reader consumes at most the configured combined ceiling. If the budget is exhausted and a complete valid response still needs more bytes, it stops with byte_limit at the last safe boundary. A complete response can be accepted at the exact ceiling. The reader stops collecting once the selected operation settles. It reaps its owned process group with a separate margin of up to 2.5 seconds. If cleanup cannot be confirmed, stop dependent work and reconcile the process.
 

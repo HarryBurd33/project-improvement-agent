@@ -32,7 +32,7 @@ def main():
             log.flush()
             req_id = request.get("id")
             if request["method"] == "initialize":
-                if mode == "exact_mixed":
+                if mode in ("exact_mixed", "large_user"):
                     os.write(sys.stderr.fileno(), b"PRIVATE_STDERR" * 3)
                 emit({"method": "remoteControl/status/changed", "params": {"body": "PRIVATE_NOTIFICATION"},
                       "emittedAtMs": 10})
@@ -76,6 +76,19 @@ def main():
                 elif mode == "turn_view_explicit":
                     data[0]["itemsView"] = "notLoaded"
                 emit({"id": req_id, "result": {"data": data, "nextCursor": None}})
+                continue
+            if mode in ("large_user", "large_nonuser", "large_overcap"):
+                if mode == "large_user":
+                    row = entry("large-user")
+                    row["item"]["content"][0]["text"] = "Exact selected π 🌱\n  " * 12000
+                    row["completedAtMs"] = 42
+                else:
+                    row = entry("large-other", "reasoning")
+                    if mode == "large_overcap":
+                        row["item"]["text"] += "x" * (4 * 1024 * 1024)
+                    else:
+                        row["item"]["text"] *= 18000
+                emit({"id": req_id, "result": {"data": [row], "nextCursor": "opaque#1 ?\t"}})
                 continue
             if mode == "missing_cursor":
                 emit({"id": req_id, "result": {"data": [entry("first")]}})

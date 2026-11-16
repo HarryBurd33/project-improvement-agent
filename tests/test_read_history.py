@@ -31,9 +31,11 @@ class ReadHistoryTest(unittest.TestCase):
         self.env = dict(os.environ, PATH=str(self.root) + os.pathsep + os.environ["PATH"],
                         PIA_TEST_TRANSCRIPT=str(self.transcript))
 
-    def invoke(self, scenario="success", output=None, **overrides):
+    def invoke(self, scenario="success", output=None, omit=(), **overrides):
         plan = {"schema_version": 1, "thread_id": "fake-chat", "operation": "items", "turn_id": "fake-turn",
                 "page_size": 2, "max_pages": 2, "max_records": 4, **overrides}
+        for field in omit:
+            del plan[field]
         plan_bytes = json.dumps(plan).encode()
         self.plan.write_bytes(plan_bytes)
         result = subprocess.run([sys.executable, "-B", str(READER), "--plan", str(self.plan),
@@ -182,6 +184,100 @@ class ReadHistoryTest(unittest.TestCase):
         self.assertEqual(receipt["cleanup"]["signals"], ["SIGTERM", "SIGKILL"])
         self.assertLess(receipt["elapsed_seconds"], 3.3)
         self.assertEqual(rows, [])
+
+    def large(self, scenario, **overrides):
+        profile = {"read_mode": "large_single_page", "page_size": 1, "max_pages": 1,
+                   "max_records": 1, "max_bytes": 4 * 1024 * 1024, **overrides}
+        return self.invoke(scenario, **profile)
+
+    def test_standard_remains_capped_for_large_items(self):
+        for selection in ({}, {"read_mode": "standard"}):
+            self.output = self.root / ("standard-explicit" if selection else "standard-implicit")
+            result, _ = self.invoke("large_user", cursor="input-cursor", **selection)
+            receipt, rows = self.private(1, result)
+            self.assertEqual(receipt["plan"]["read_mode"], "standard")
+            self.assertEqual(receipt["received_bytes"], 131072)
+            self.assertEqual(receipt["reason"], "byte_limit")
+            self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+            self.assertEqual(rows, [])
+
+    def test_large_unicode_exact_cap_and_one_byte_short(self):
+        result, _ = self.large("large_user", cursor="input-cursor")
+        reference, rows = self.private(0, result)
+        self.assertGreater(reference["received_bytes"], 131072)
+        self.assertGreater(reference["stderr_bytes"], 0)
+        self.assertGreater(reference["notifications"], 0)
+        self.assertEqual(reference["plan"]["read_mode"], "large_single_page")
+        self.assertEqual(reference["accepted_records"], 1)
+        self.assertEqual(reference["attempted_page_count"], 1)
+        self.assertEqual(reference["last_safe_cursor"], "opaque#1 ?\t")
+        self.assertEqual((rows[0]["item_id"], rows[0]["turn_id"]), ("large-user", "fake-turn"))
+        self.assertEqual(rows[0]["text_parts"], ["Exact selected π 🌱\n  " * 12000])
+        self.assertNotIn("Exact selected", result.stdout)
+        self.assertEqual((rows[0]["started_at_ms"], rows[0]["completed_at_ms"]), (10, 42))
+        transcript = [json.loads(line) for line in self.transcript.read_text().splitlines()]
+        self.assertEqual([entry["method"] for entry in transcript[1:]],
+                         ["initialize", "initialized", "thread/items/list"])
+        self.assertEqual(transcript[-1]["params"], {"cursor": "input-cursor", "threadId": "fake-chat",
+                         "turnId": "fake-turn", "limit": 1, "sortDirection": "asc"})
+        for label, cap, code in (("exact", reference["received_bytes"], 0),
+                                 ("short", reference["received_bytes"] - 1, 1)):
+            with self.subTest(label=label):
+                self.output = self.root / label
+                result, _ = self.large("large_user", max_bytes=cap, cursor="input-cursor")
+                receipt, actual = self.private(code, result)
+                self.assertEqual(receipt["received_bytes"], cap)
+                self.assertEqual(actual, rows if code == 0 else [])
+                self.assertEqual(receipt["last_safe_cursor"], "input-cursor" if code else "opaque#1 ?\t")
+
+    def test_large_nonuser_exact_hash_and_privacy(self):
+        result, _ = self.large("large_nonuser")
+        receipt, rows = self.private(0, result)
+        self.assertGreater(receipt["received_bytes"], 131072)
+        item = {"id": "large-other", "type": "reasoning", "text": "PRIVATE_NONUSER_PAYLOAD" * 18000,
+                "arguments": {"instruction": "PRIVATE_NONUSER_PAYLOAD"}}
+        raw = (json.dumps(item, sort_keys=True, separators=(",", ":")) + "\n").encode("ascii")
+        self.assertEqual(rows[0]["serialized_item_sha256"], hashlib.sha256(raw).hexdigest())
+        self.assertNotIn("text_parts", rows[0])
+        self.assertIsNone(rows[0]["role"])
+
+    def test_large_profile_stops_at_four_mib_and_preserves_input_cursor(self):
+        result, _ = self.large("large_overcap", cursor="input-cursor")
+        receipt, rows = self.private(1, result)
+        self.assertEqual(receipt["received_bytes"], 4194304)
+        self.assertEqual(receipt["reason"], "byte_limit")
+        self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+        self.assertEqual(rows, [])
+
+    def test_large_profile_retains_page_validation_and_timeout(self):
+        for scenario, reason in (("overreturn", "overreturned_page"), ("wrong_turn", "wrong_turn_scope"),
+                                 ("truncated", "truncated_response"), ("server_request", "unexpected_server_request"),
+                                 ("timeout", "wall_limit")):
+            with self.subTest(scenario=scenario):
+                self.output = self.root / scenario
+                result, _ = self.large(scenario, cursor="input-cursor", max_seconds=0.75)
+                receipt, rows = self.private(1, result)
+                self.assertEqual(receipt["reason"], reason)
+                self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+                self.assertEqual(receipt["attempted_page_count"], 1)
+                self.assertEqual(rows, [])
+
+    def test_invalid_large_profiles_refuse_before_process_and_output(self):
+        invalid = [
+            {"read_mode": None}, {"read_mode": False}, {"read_mode": []}, {"read_mode": "large_single_pages"},
+            {"read_mode": "standard"}, {"max_bytes": True}, {"max_bytes": 131072}, {"max_bytes": 0},
+            {"max_bytes": -1}, {"max_bytes": 4194305}, {"max_bytes": 4194304.0}, {"max_bytes": "200000"},
+            {"page_size": 2}, {"max_pages": 2}, {"max_records": True}, {"max_seconds": 16},
+            {"operation": "turns", "turn_id": None}, {"turn_id": None}, {"turn_id": "bad turn"},
+            *({"omit": (key,)} for key in ("page_size", "max_pages", "max_records", "max_bytes", "turn_id")),
+        ]
+        for override in invalid:
+            with self.subTest(override=override):
+                result, summary = self.large("large_user", **override)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(summary["status"], "refused")
+                self.assertFalse(self.output.exists())
+                self.assertFalse(self.transcript.exists())
 
     def test_valid_empty_page_finishes_only_selected_scope(self):
         result, _ = self.invoke("empty")
