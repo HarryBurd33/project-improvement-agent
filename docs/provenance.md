@@ -7,3 +7,7 @@ Agent Forge's MIT contracts and templates informed AGENT.md, PLAYBOOK.md, agent.
 `scripts/install.py` adapts the MIT helper from https://github.com/HarryBurd33/codex-organizer , copyright 2026 HarryBurd33. The target/name changed; refusal to overwrite, path guards and hash verification were retained. NOTICE retains its license. Other workflows were inspected for suitability; their private audit records and source content were not copied.
 
 No model runtime, connectors or paid dependencies are bundled. Python standard-library code implements local records. Official skill guidance is linked rather than republished.
+
+## Selected-history reader
+
+The 1.4.0 reader and synthetic stdio peer are original Python standard-library code. They adapt the existing bounded audit procedure and reference the [Codex app-server protocol](https://learn.chatgpt.com/docs/app-server) and the installed 0.166.0 request and response schemas. The synthetic peer also mirrors integer notification emission timestamps observed in that version. No Codex implementation, generated schema, private prototype or real history is bundled. Existing MIT and upstream attribution records remain applicable.
