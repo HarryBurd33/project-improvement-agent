@@ -32,7 +32,7 @@ def main():
             log.flush()
             req_id = request.get("id")
             if request["method"] == "initialize":
-                if mode in ("exact_mixed", "large_user"):
+                if mode in ("exact_mixed", "large_user", "large_batch"):
                     os.write(sys.stderr.fileno(), b"PRIVATE_STDERR" * 3)
                 emit({"method": "remoteControl/status/changed", "params": {"body": "PRIVATE_NOTIFICATION"},
                       "emittedAtMs": 10})
@@ -76,6 +76,14 @@ def main():
                 elif mode == "turn_view_explicit":
                     data[0]["itemsView"] = "notLoaded"
                 emit({"id": req_id, "result": {"data": data, "nextCursor": None}})
+                continue
+            if mode in ("large_batch", "large_batch_repeat"):
+                user = entry("batch-user")
+                user["item"]["content"][0]["text"] = "Exact batch π 🌱\n  " * 9000
+                other = entry("batch-other", "reasoning")
+                other["item"]["text"] *= 9000
+                cursor = request["params"]["cursor"] if mode == "large_batch_repeat" else "batch-next"
+                emit({"id": req_id, "result": {"data": [user, other], "nextCursor": cursor}})
                 continue
             if mode in ("large_user", "large_nonuser", "large_overcap"):
                 if mode == "large_user":

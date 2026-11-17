@@ -15,3 +15,8 @@ The 1.4.0 reader and synthetic stdio peer are original Python standard-library c
 ### Explicit larger profile
 
 Version 1.5.0 adapts the existing MIT reader and synthetic peer. It adds plan validation for an opt-in receive limit while retaining the original transport, item schema, privacy and cleanup. The installed 0.166.0 schema and official protocol reference remain the connection contract. No external code or schema was copied.
+
+
+### Observed closed-prefix traversal
+
+Version 1.6.0 adds an original Python standard-library walker and a synthetic subprocess peer. The walker adapts the existing indexed procedure and reuses the original reader transport and record projection. An additive plan profile validates one explicitly selected batch page in a known turn. The walker uses the same plan validation as the standalone reader. No external implementation, private history or live request identifiers were copied. Project MIT and existing attribution notices are retained.
