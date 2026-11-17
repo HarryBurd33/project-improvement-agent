@@ -76,7 +76,7 @@
       "purpose": "Portfolio review PLAYBOOK.md",
       "kind": "instructions",
       "location": "PLAYBOOK.md",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -99,7 +99,7 @@
       "purpose": "Portfolio review SKILL.md",
       "kind": "instructions",
       "location": "SKILL.md",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -312,7 +312,7 @@
       "purpose": "Receipt validation and explicit history/host evidence procedure: references/history-and-host.md",
       "kind": "reference",
       "location": "references/history-and-host.md",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
       "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
       "dependencies": [],
@@ -433,7 +433,7 @@
       "purpose": "Inventory of reusable resources",
       "kind": "instructions",
       "location": "toolbox/index.json",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -533,9 +533,9 @@
       "purpose": "Bounded selected-history recovery for the existing manual audit",
       "kind": "tool",
       "location": "scripts/read_history.py",
-      "version": "1.6.0",
-      "input_contract": "One authorized private selected-thread plan, standard or explicit large_single_page or large_batch_page, and a new output path",
-      "output_contract": "Private minimized selected records and bounded read receipt with effective profile",
+      "version": "1.7.0",
+      "input_contract": "One authorized private selected-thread plan using an existing profile; optional one-message assistant ID and prior canonical hash in a known turn and one page",
+      "output_contract": "Private minimized selected records and bounded read receipt; explicit selection may add exact visible assistant text and observed phase to one matched record",
       "dependencies": [],
       "status": "validated",
       "used_by": [
@@ -549,7 +549,7 @@
         ]
       },
       "replaces": null,
-      "reuse_decision": "Extend the existing fixed stdio reader with explicit bounded single-item and batch profiles, preserving standard limits and privacy"
+      "reuse_decision": "Extend the existing fixed stdio reader with one hash-bound assistant projection and preserve default minimization"
     },
     {
       "id": "closed-history-walker",

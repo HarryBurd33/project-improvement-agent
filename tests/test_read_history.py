@@ -9,6 +9,8 @@ import sys
 import tempfile
 import unittest
 
+from history_peer import assistant_rows
+
 
 ROOT = Path(__file__).resolve().parents[1]
 READER = ROOT / "skills/project-improvement-agent/scripts/read_history.py"
@@ -336,6 +338,86 @@ class ReadHistoryTest(unittest.TestCase):
                 receipt, rows = self.private(1, result)
                 self.assertEqual(receipt["reason"], reason)
                 self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+                self.assertEqual(rows, [])
+
+    def selected_assistant_plan(self, scenario="assistant_final"):
+        item = assistant_rows(scenario)[1]["item"]
+        if scenario == "assistant_missing":
+            item = assistant_rows("assistant_final")[1]["item"]
+        canonical = json.dumps(item, sort_keys=True, ensure_ascii=True, separators=(",", ":")) + "\n"
+        return {"item_id": item["id"], "expected_sha256": hashlib.sha256(canonical.encode("ascii")).hexdigest()}
+
+    def test_default_omits_assistant_text_and_exact_selection_is_private(self):
+        result, _ = self.invoke("assistant_final", max_pages=1, page_size=5, max_records=5)
+        receipt, ordinary = self.private(0, result)
+        self.assertNotIn("assistant_text_selection", receipt["plan"])
+        self.assertNotIn("assistant_text", ordinary[1])
+        self.assertNotIn("assistant_phase", ordinary[1])
+        selection = self.selected_assistant_plan()
+        self.assertEqual(ordinary[1]["serialized_item_sha256"], selection["expected_sha256"])
+
+        self.output = self.root / "selected"
+        result, _ = self.invoke("assistant_final", max_pages=1, page_size=5, max_records=5,
+                                cursor="selected-input", assistant_text_selection=selection)
+        receipt, selected = self.private(0, result)
+        self.assertNotIn("Exact selected reply", result.stdout + result.stderr)
+        self.assertNotIn("Exact selected reply", (self.output / "receipt.json").read_text())
+        self.assertEqual(receipt["last_safe_cursor"], "assistant-next")
+        self.assertEqual(receipt["plan"]["assistant_text_selection"], selection)
+        self.assertEqual(receipt["requests"][0]["params"], {"threadId": "fake-chat", "turnId": "fake-turn",
+                         "cursor": "selected-input", "sortDirection": "asc", "limit": 5})
+        expected = {"assistant_text": "Exact selected reply π 🌱\n  ", "assistant_phase": "final_answer"}
+        self.assertEqual(selected[1], {**ordinary[1], **expected})
+        self.assertEqual(selected[:1] + selected[2:], ordinary[:1] + ordinary[2:])
+
+    def test_explicit_assistant_selection_retains_observed_phase_and_empty_text(self):
+        for scenario, phase in (("assistant_commentary", "commentary"), ("assistant_partial", "partial_answer"),
+                                ("assistant_phase_omitted", None), ("assistant_phase_null", None)):
+            with self.subTest(scenario=scenario):
+                self.output = self.root / scenario
+                result, _ = self.invoke(scenario, max_pages=1, page_size=5, max_records=5,
+                                        assistant_text_selection=self.selected_assistant_plan(scenario))
+                _, rows = self.private(0, result)
+                self.assertEqual(rows[1]["assistant_phase"], phase)
+                self.assertEqual(rows[1]["assistant_text"], assistant_rows(scenario)[1]["item"]["text"])
+
+    def test_invalid_assistant_selection_refuses_before_process_and_output(self):
+        selection = self.selected_assistant_plan()
+        plans = [{"assistant_text_selection": value} for value in (
+            None, [], "*", {}, {**selection, "extra": True}, {"item_id": "known"},
+            {**selection, "item_id": "*"}, {**selection, "item_id": "bad id"},
+            {**selection, "expected_sha256": selection["expected_sha256"].upper()},
+            {**selection, "expected_sha256": "a" * 63}, {**selection, "expected_sha256": 42},
+        )]
+        plans += [{"max_pages": 2}, {"max_pages": True}, {"operation": "turns", "turn_id": None},
+                  {"turn_id": None}, {"omit": ("max_pages",)}, {"omit": ("turn_id",)}]
+        for override in plans:
+            with self.subTest(override=override):
+                plan = {"max_pages": 1, "assistant_text_selection": selection, **override}
+                result, summary = self.invoke("assistant_final", **plan)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(summary["status"], "refused")
+                self.assertFalse(self.output.exists())
+                self.assertFalse(self.transcript.exists())
+
+    def test_assistant_selection_fails_atomically_when_any_page_requirement_fails(self):
+        cases = {"assistant_missing": "selected_assistant_item_missing", "assistant_duplicate": "record_no_progress",
+                 "assistant_wrong_type": "selected_assistant_item_wrong_type", "assistant_wrong_turn": "wrong_turn_scope",
+                 "assistant_bad_phase": "invalid_selected_assistant_content",
+                 "assistant_bad_text": "invalid_selected_assistant_content",
+                 "assistant_bad_neighbor": "invalid_record_timestamp", "assistant_wrong_hash": "selected_assistant_item_hash_mismatch"}
+        for scenario, reason in cases.items():
+            with self.subTest(scenario=scenario):
+                self.output = self.root / scenario
+                selection = self.selected_assistant_plan(scenario)
+                if scenario == "assistant_wrong_hash":
+                    selection["expected_sha256"] = "0" * 64
+                result, _ = self.invoke(scenario, page_size=5, max_pages=1, max_records=5,
+                                        cursor="selected-input", assistant_text_selection=selection)
+                receipt, rows = self.private(1, result)
+                self.assertEqual(receipt["reason"], reason)
+                self.assertEqual(receipt["last_safe_cursor"], "selected-input")
+                self.assertEqual(receipt["accepted_page_count"], 0)
                 self.assertEqual(rows, [])
 
     def test_valid_empty_page_finishes_only_selected_scope(self):

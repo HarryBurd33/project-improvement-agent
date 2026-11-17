@@ -348,6 +348,20 @@ walker.Progress.next_plan = at_old_limit
         self.assertEqual(receipt["plan"]["max_bytes"], 131072)
         self.assert_private_receipts()
 
+    def test_walker_keeps_assistant_rows_minimized(self):
+        report = self.invoke(mode="assistant")
+        self.assertEqual(report["coverage_status"], "complete_observed")
+        first_page = self.output / "probe-0002"
+        records = json.loads((first_page / "records.json").read_bytes())
+        assistant = records[1]
+        self.assertEqual(assistant["type"], "agentMessage")
+        self.assertEqual(assistant["role"], "assistant")
+        self.assertIn("serialized_item_sha256", assistant)
+        self.assertNotIn("assistant_text", assistant)
+        self.assertNotIn("assistant_phase", assistant)
+        self.assertNotIn("assistant_text_selection", json.loads((first_page / "receipt.json").read_bytes())["plan"])
+        self.assert_private_receipts()
+
     def test_resume_rejects_file_mutation_rollback_pending_and_live_lock(self):
         self.invoke(probes=2)
         before = len(self.transcript())

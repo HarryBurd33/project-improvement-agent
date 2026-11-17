@@ -17,13 +17,15 @@ import sys
 import time
 
 
-VERSION = "1.6.0"
+VERSION = "1.7.0"
 DEFAULTS = dict(direction="asc", page_size=20, max_pages=2, max_records=20, max_seconds=15, max_bytes=131072)
 REQUIRED = {"schema_version", "thread_id", "operation"}
-OPTIONAL = {"turn_id", "cursor", "read_mode"}
+OPTIONAL = {"turn_id", "cursor", "read_mode", "assistant_text_selection"}
 LARGE_MAX_BYTES = 4 * 1024 * 1024
 ID = re.compile(r"[A-Za-z0-9._:-]{1,200}")
 METHOD = re.compile(r"[A-Za-z0-9_./-]{1,160}")
+SHA256 = re.compile(r"[0-9a-f]{64}")
+ASSISTANT_PHASES = (None, "commentary", "partial_answer", "final_answer")
 ITEMS = {
     "userMessage", "hookPrompt", "agentMessage", "functionCallOutput", "plan", "reasoning",
     "commandExecution", "fileChange", "mcpToolCall", "dynamicToolCall", "collabAgentToolCall",
@@ -124,6 +126,14 @@ def validate_plan(supplied):
         require(type(byte_limit) is int and 1 <= byte_limit <= DEFAULTS["max_bytes"], "invalid_plan_max_bytes")
     seconds = plan["max_seconds"]
     require(type(seconds) in (int, float) and 0 < seconds <= 15 and math.isfinite(seconds), "invalid_plan_max_seconds")
+    if "assistant_text_selection" in supplied:
+        selection = supplied["assistant_text_selection"]
+        require(isinstance(selection, dict) and selection.keys() == {"item_id", "expected_sha256"}
+                and identifier(selection["item_id"]), "invalid_assistant_text_selection")
+        expected = selection["expected_sha256"]
+        require(isinstance(expected, str) and SHA256.fullmatch(expected), "invalid_assistant_text_selection")
+        require(plan["operation"] == "items" and plan["turn_id"] is not None and supplied.get("max_pages") == 1,
+                "invalid_assistant_text_selection_scope")
     return plan
 
 
@@ -381,6 +391,17 @@ def page_from(result, plan, limit, seen_cursors, seen_records):
     projected = [record(raw, plan) for raw in data]
     keys = {(row["turn_id"], row.get("item_id")) for row in projected}
     require(len(keys) == len(projected) and not keys & seen_records, "record_no_progress")
+    selection = plan.get("assistant_text_selection")
+    if selection is not None:
+        match = next(((raw["item"], row) for raw, row in zip(data, projected)
+                      if row["item_id"] == selection["item_id"]), None)
+        require(match is not None, "selected_assistant_item_missing")
+        item, row = match
+        require(row["type"] == "agentMessage", "selected_assistant_item_wrong_type")
+        require(row["serialized_item_sha256"] == selection["expected_sha256"], "selected_assistant_item_hash_mismatch")
+        text, phase = item.get("text"), item.get("phase")
+        require(isinstance(text, str) and phase in ASSISTANT_PHASES, "invalid_selected_assistant_content")
+        row.update(assistant_text=text, assistant_phase=phase)
     return projected, keys, next_cursor
 
 

@@ -59,7 +59,8 @@ def page(log, method, params, mode):
         first["item"]["text"] *= 18000
         records = [first]
     elif turn_id == "one" and not params.get("cursor"):
-        records = [item(turn_id, "one-user"), item(turn_id, "one-other", "reasoning")]
+        kind = "agentMessage" if mode == "assistant" else "reasoning"
+        records = [item(turn_id, "one-user"), item(turn_id, "one-other", kind)]
     elif turn_id == "one":
         records = [item(turn_id, "one-user" if mode == "item_duplicate" else "one-last")]
     else:

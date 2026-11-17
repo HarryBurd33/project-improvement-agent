@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.6.0
+# Portfolio review playbook — 1.7.0
 
 ## Inputs, authority, limits
 
@@ -121,8 +121,19 @@ Independently check the returned item identity, exact user text or minimized non
 Qualification of the explicit larger profile recovered the same previously unread item and matched an independently recorded identity, minimized non-user hash and returned cursor. A changed-turn read from this saved method also matched independently witnessed original user text. Both reads stopped at their one-record limits with confirmed cleanup; keep their remaining history partial. The normal mode continued to stop at its unchanged byte ceiling.
 
 
+### Resolve a reference to one historical assistant message
+
+The default reader retained the identity and hash of an earlier answer while omitting its body. That preserved privacy but left the user's reference to numbered recommendations unresolved. Keep the minimized receipt. When the exact referent is necessary and currently authorized, use the [one-message selection](references/history-and-host.md#recover-one-selected-visible-assistant-message). Save a new one-page plan bound to the already observed item ID and hash, the exact known turn and its returned page boundary. Keep the output private.
+
+Verify the new receipt and actual records against the expected identity, canonical hash, text, observed phase and returned boundary, including process cleanup. Treat a null phase as unknown. Compare the original user's wording with the recovered list in order, record which entries they selected, and preserve the original evidence status of the recommendations. A source finding does not establish reproduction or implementation. Leave unresolved references open if the page or evidence does not match.
+
+To qualify reuse with a changed item, choose another already identified visible assistant message from authorized evidence. Save its own ID, expected hash, verified page scope and expected observed phase before the read. Run the same procedure with a new plan and output. Check the actual private records and receipt against the independently observed changed item, boundary and phase. Keep commentary labeled commentary.
+
 ### Close a selected history prefix
 
 An actual bounded selected read can succeed while the chat's item coverage is still partial. Start a separate [closed-prefix walk](references/history-and-host.md#walk-a-complete-closed-prefix-when-needed) only when the requested audit needs full observed coverage of that one chat. Before it starts, bind the selected terminal cutoff and an explicit finite override for the actual probe, byte, elapsed and record costs. Keep active and after-cutoff inputs outside the closed-history claim.
 
 Stop after an orderly bounded prefix and inspect the saved state and probe hashes. Resume from that exact private directory, confirm fresh matching turn inventory before item progress, and preserve any unresolved scope. Check the original and resumed bytes against the recorded plans, per-turn cursors, ordered exact user text and minimized non-user identities, and verify confirmed process cleanup. A complete_observed result requires a final matching turn inventory and every selected turn's explicit end. A separate changed-input qualification uses its own selected cutoff and expected evidence and never spends the previous run's saved capacity again.
+
+
+The selected-context procedure has also been exercised on two different visible messages from a real bounded page. The primary recovered numbered recommendation context; the changed input retained its observed commentary phase. Keep these outcomes separate from the earlier proposals' implementation status. A baseline model's pre-RPC startup failure remained a failed attempt with unknown cause. Use the normal approved foreground route when required by the host; never turn a transport failure into guessed source text or silently retry under a different policy.
