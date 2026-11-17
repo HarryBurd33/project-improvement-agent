@@ -21,6 +21,40 @@ def entry(identity, kind="userMessage", turn="fake-turn"):
     return {"turnId": turn, "startedAtMs": 10, "item": item}
 
 
+def assistant_rows(mode):
+    selected = entry("selected-answer", "agentMessage")
+    selected["completedAtMs"] = 23
+    item = selected["item"]
+    item["text"] = "Exact selected reply π 🌱\n  "
+    item["phase"] = "final_answer"
+    if mode == "assistant_commentary":
+        item["phase"] = "commentary"
+    elif mode == "assistant_partial":
+        item["phase"] = "partial_answer"
+    elif mode == "assistant_phase_omitted":
+        del item["phase"]
+    elif mode == "assistant_phase_null":
+        item["phase"] = None
+        item["text"] = ""
+    elif mode == "assistant_wrong_type":
+        item["type"] = "reasoning"
+    elif mode == "assistant_bad_phase":
+        item["phase"] = {"body": "PRIVATE_PHASE"}
+    elif mode == "assistant_bad_text":
+        item["text"] = ["PRIVATE_BAD_TEXT"]
+    elif mode == "assistant_wrong_turn":
+        selected["turnId"] = "other-turn"
+    rows = [entry("user"), selected, entry("other-answer", "agentMessage"),
+            entry("analysis", "reasoning"), entry("tool", "functionCallOutput")]
+    if mode == "assistant_missing":
+        rows.remove(selected)
+    elif mode == "assistant_duplicate":
+        rows[2] = selected
+    elif mode == "assistant_bad_neighbor":
+        rows[-1]["completedAtMs"] = "PRIVATE_BAD_NEIGHBOR"
+    return rows
+
+
 def main():
     mode = os.environ["PIA_TEST_SCENARIO"]
     with open(os.environ["PIA_TEST_TRANSCRIPT"], "a", encoding="utf-8") as log:
@@ -32,7 +66,7 @@ def main():
             log.flush()
             req_id = request.get("id")
             if request["method"] == "initialize":
-                if mode in ("exact_mixed", "large_user", "large_batch"):
+                if mode.startswith("assistant_") or mode in ("exact_mixed", "large_user", "large_batch"):
                     os.write(sys.stderr.fileno(), b"PRIVATE_STDERR" * 3)
                 emit({"method": "remoteControl/status/changed", "params": {"body": "PRIVATE_NOTIFICATION"},
                       "emittedAtMs": 10})
@@ -76,6 +110,10 @@ def main():
                 elif mode == "turn_view_explicit":
                     data[0]["itemsView"] = "notLoaded"
                 emit({"id": req_id, "result": {"data": data, "nextCursor": None}})
+                continue
+            if mode.startswith("assistant_"):
+                emit({"id": req_id, "result": {"data": assistant_rows(mode), "nextCursor": "assistant-next",
+                                               "unrecognized": {"body": "PRIVATE_RESULT"}}})
                 continue
             if mode in ("large_batch", "large_batch_repeat"):
                 user = entry("batch-user")

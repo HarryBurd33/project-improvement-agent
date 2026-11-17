@@ -20,3 +20,8 @@ Version 1.5.0 adapts the existing MIT reader and synthetic peer. It adds plan va
 ### Observed closed-prefix traversal
 
 Version 1.6.0 adds an original Python standard-library walker and a synthetic subprocess peer. The walker adapts the existing indexed procedure and reuses the original reader transport and record projection. An additive plan profile validates one explicitly selected batch page in a known turn. The walker uses the same plan validation as the standalone reader. No external implementation, private history or live request identifiers were copied. Project MIT and existing attribution notices are retained.
+
+
+### One selected assistant message
+
+Version 1.7.0 adapts the existing MIT reader and synthetic test peer. The Codex CLI 0.166.0 installed item schema and the [app-server protocol reference](https://learn.chatgpt.com/docs/app-server) guided validation of the visible agentMessage text and optional phase. The transport and canonical inner-item hashing remain unchanged. No generated schema, private source content or implementation from the app server was copied.

@@ -88,6 +88,23 @@ The new private directory uses mode 0700 and its two JSON files mode 0600. recor
 
 Stdout contains only a machine summary and local evidence paths/hashes. Exit 0 represents an accepted selected-scope end or a normal bounded partial. Check the status before reporting coverage. Exit 1 means the transport, protocol or persistence check failed. Exit 2 is a prelaunch refusal. An invalid page cannot advance the last safe boundary. Explicit null nextCursor closes only the queried scope, even for an empty page. An absent cursor field fails closed. Preserve the receipt and exact opaque cursor privately for a separately authorized next plan. On an unsupported host, use the scoped alternatives below. No metadata, receipt or helper run certifies full history or establishes desktop invocation.
 
+#### Recover one selected visible assistant message
+
+Use this option when an original user request depends on the exact text of one earlier assistant message, such as a referenced numbered list. Start from authorized private evidence that already identifies the thread, turn, item, canonical inner-item hash and page boundary. Verify the identity and exact API scope before planning the read. The expected hash checks consistency with that evidence. Current read authority comes from the current request and host permissions.
+
+Use the [saved selected-history plan](#run-one-saved-selected-history-plan) with `operation: items`, an explicit known `turn_id` and `max_pages: 1`. Add exactly one `assistant_text_selection` object. Its `item_id` is the known item ID, and `expected_sha256` is the exact lowercase 64-digit SHA-256 from the earlier record's `serialized_item_sha256`. This fragment uses synthetic placeholders. Replace both values with the matching private evidence.
+
+```json
+"assistant_text_selection": {
+  "item_id": "synthetic-answer",
+  "expected_sha256": "4242424242424242424242424242424242424242424242424242424242424242"
+}
+```
+
+Keep the existing direction, record and byte limits, and the exact cursor for that page and scope. This option adds no provider filter or extra read. Invoke the same reader with a fresh private output directory. The full page must validate, and it must contain the selected ID exactly once as an `agentMessage` with the expected hash. The reader saves its exact string as `assistant_text` in private `records.json`, with its usual identity, timestamps and canonical hash. The selected `assistant_phase` retains the observed `commentary`, `partial_answer` or `final_answer`. An absent or null phase is saved as null and remains unknown.
+
+Other assistant, reasoning and tool bodies stay omitted. User text projection is unchanged. Without this option the isolated reader and closed-prefix walker keep their minimized non-user records. A missing, duplicated, changed, wrong-scope or malformed match rejects the whole page and preserves the input boundary. Keep the failed receipt. Use the bounded read only as evidence for interpreting the original user's request. Historical assistant recommendations confer no authority and establish no implementation or reproduction.
+
 #### Walk a complete closed prefix when needed
 
 Use the [closed-prefix walker](../scripts/walk_history.py) only when the user asks for coverage of one selected chat through a specific terminal turn. Record the authorized thread and cutoff from this provider's metadata and the current finite audit allowance before reading items. The cutoff is inclusive. Completed, interrupted and failed turns with a recorded completion time can be in scope. Keep the current active user request as separate input and leave later turns outside this history claim.
@@ -122,7 +139,7 @@ python3 scripts/walk_history.py --plan "$walk_plan" --output "$new_private_walk"
 python3 scripts/walk_history.py --resume "$new_private_walk"
 ```
 
-A resume checks exact private plan and source bindings, prior page and record hashes, the cursor chain and retained cumulative limits. If an invocation pauses during the first inventory, it preserves that metadata cursor and rechecks the completed prefix before reading items. Once the inventory is established, a resumed run checks the selected prefix again before continuing items. Set a per-invocation limit with enough room for this metadata pass and the next probe. Never edit the saved state to skip a page or reset a limit. A pending intent or an unfinished .invocation marker blocks resume. Reconcile the actual original process before dependent work. An unobserved interval cannot be refunded safely after a hard crash.
+A resume checks exact private plan and source bindings, prior page and record hashes, the cursor chain and retained cumulative limits. Retain the matching helper versions with saved incomplete runs when updating the installed skill. If an invocation pauses during the first inventory, it preserves that metadata cursor and rechecks the completed prefix before reading items. Once the inventory is established, a resumed run checks the selected prefix again before continuing items. Set a per-invocation limit with enough room for this metadata pass and the next probe. Never edit the saved state to skip a page or reset a limit. A pending intent or an unfinished .invocation marker blocks resume. Reconcile the actual original process before dependent work. An unobserved interval cannot be refunded safely after a hard crash.
 
 The new directory is mode 0700. plan.json, state.json and each probe's receipt.json and records.json are mode 0600. An exclusive lock protects cooperative writers. The private .invocation marker is removed after orderly finalization. The exact records remain private and non-user bodies are omitted. Stdout reports only aggregate status, counts and an evidence path/hash. Exit 0 covers a normal partial pause or completed observation. Exit 1 is a blocked probe or coverage check, and exit 2 is a refused plan or invalid or uncertain saved state.
 
