@@ -279,6 +279,65 @@ class ReadHistoryTest(unittest.TestCase):
                 self.assertFalse(self.output.exists())
                 self.assertFalse(self.transcript.exists())
 
+    def batch(self, scenario, **overrides):
+        profile = {"read_mode": "large_batch_page", "page_size": 2, "max_pages": 1,
+                   "max_records": 2, "max_bytes": 4194304, "cursor": "input-cursor", **overrides}
+        return self.invoke(scenario, **profile)
+
+    def test_large_batch_exact_limit_and_unadvanced_short_limit(self):
+        result, _ = self.batch("large_batch")
+        receipt, rows = self.private(0, result)
+        cap = receipt["received_bytes"]
+        self.assertGreater(cap, 131072)
+        self.assertGreater(receipt["stderr_bytes"], 0)
+        self.assertEqual(receipt["accepted_records"], 2)
+        self.assertEqual(receipt["plan"]["read_mode"], "large_batch_page")
+        self.assertEqual(receipt["requests"], [{"id": 2, "method": "thread/items/list", "params": {
+            "cursor": "input-cursor", "threadId": "fake-chat", "turnId": "fake-turn", "limit": 2,
+            "sortDirection": "asc"}}])
+        self.assertEqual(rows[0]["text_parts"], ["Exact batch π 🌱\n  " * 9000])
+        self.assertNotIn("text_parts", rows[1])
+        self.assertNotIn("Exact batch", result.stdout)
+        for name, ceiling, code in (("exact", cap, 0), ("short", cap - 1, 1)):
+            self.output = self.root / name
+            result, _ = self.batch("large_batch", max_bytes=ceiling)
+            exact, actual = self.private(code, result)
+            self.assertEqual(exact["received_bytes"], ceiling)
+            self.assertEqual(exact["last_safe_cursor"], "input-cursor" if code else "batch-next")
+            self.assertEqual(actual, [] if code else rows)
+
+    def test_large_batch_preserves_default_caps_and_rejects_unsafe_plans(self):
+        for override in ({"read_mode": None}, {"read_mode": False}, {"read_mode": []}, {"read_mode": "standard"},
+                         {"read_mode": "large_single_page"}, {"max_bytes": True}, {"max_bytes": 131072},
+                         {"max_bytes": 4194305}, {"max_bytes": 4194304.0}, {"operation": "turns", "turn_id": None},
+                         {"page_size": False}, {"page_size": 21}, {"max_records": 1}, {"max_pages": 2},
+                         {"turn_id": None}, {"turn_id": "bad turn"},
+                         *({"omit": (field,)} for field in ("turn_id", "page_size", "max_pages", "max_records",
+                                                          "max_bytes", "read_mode"))):
+            with self.subTest(override=override):
+                result, summary = self.batch("large_batch", **override)
+                self.assertEqual(result.returncode, 2)
+                self.assertEqual(summary["status"], "refused")
+                self.assertFalse(self.output.exists())
+                self.assertFalse(self.transcript.exists())
+        result, _ = self.invoke("large_batch", max_pages=1, cursor="input-cursor")
+        receipt, rows = self.private(1, result)
+        self.assertEqual(receipt["reason"], "byte_limit")
+        self.assertEqual(receipt["received_bytes"], 131072)
+        self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+        self.assertEqual(rows, [])
+
+    def test_large_batch_rejects_overreturn_repeat_scope_and_malformed_pages(self):
+        for scenario, reason in (("overreturn", "overreturned_page"), ("large_batch_repeat", "cursor_no_progress"),
+                                 ("wrong_turn", "wrong_turn_scope"), ("missing_cursor", "missing_response_cursor")):
+            with self.subTest(scenario=scenario):
+                self.output = self.root / scenario
+                result, _ = self.batch(scenario)
+                receipt, rows = self.private(1, result)
+                self.assertEqual(receipt["reason"], reason)
+                self.assertEqual(receipt["last_safe_cursor"], "input-cursor")
+                self.assertEqual(rows, [])
+
     def test_valid_empty_page_finishes_only_selected_scope(self):
         result, _ = self.invoke("empty")
         receipt, rows = self.private(0, result)

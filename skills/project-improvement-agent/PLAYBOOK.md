@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.5.0
+# Portfolio review playbook — 1.6.0
 
 ## Inputs, authority, limits
 
@@ -47,6 +47,10 @@ Every recommendation needs project identity/targets, specific evidence and confi
 A finished run may use the opt-in [session finalizer](references/session.md) to preserve its narrative, generate recorded facts and bind the actual final report. Validate declared intake/evidence order separately and independently inspect command classifications. The current audit cannot certify its own totals before its trace finishes.
 
 When execution claims rely on a supported saved trace, follow [receipt verification](references/receipts.md): generate evidence facts, bind the structured claims to the exact report and trace, and run the checker before delivery. A failed/partial gate blocks the affected verified claim; unsupported hosts or unavailable receipts remain explicit unknowns. Keep raw traces private. Use [history and host recovery](references/history-and-host.md) for oversized original turns and invocation observations. Save a one-operation selected plan before invoking its optional reader. Verify the actual evidence bytes and last accepted boundary, then run a separately authorized changed-turn check from the saved method when qualifying reuse.
+
+When the request calls for the whole selected history, choose an explicit terminal cutoff and use the [closed-history walk](references/history-and-host.md) with a saved private plan. Keep the active request separately as current input. In live qualification, standard pages with single-item fallback ended 15 of 24 selected turns at 512 probes and 16 at 1024. A fresh `bounded_large_pages` plan then ended 17 turns at its 128 MiB ceiling. A separately authorized 512 MiB plan using the same strategy completed all 24 selected turns, matching 6,790 ordered items against an independent read. Choose the finite limits from observed volume and retain each prior receipt with its original plan. The walker charges local work and rechecks time after saving intent because a delayed write previously led to a launch after the active deadline.
+
+For changed-input qualification, save a fresh plan and output with the newly selected cutoff. Compare the independently observed scope, ordered records, per-turn ends and totals, and check the remaining limits. Record complete observed coverage only for that cutoff, with snapshot consistency unverified.
 
 Before finalizing, independently compare each claim to the examined materials, check that alternative explanations were considered, and verify that acceptance checks could fail if the issue persists. Separate suggested change from tested benefit. Report a count of inventory, assessment, depth, blocked and deferred work only when supported. Distinguish new/changed/resolved/unchanged findings. Rejected findings do not return without materially new evidence or explicit user reconsideration; explain any reopening. Never infer resolution just because a finding disappeared.
 
@@ -115,3 +119,10 @@ An actual standard read at a saved selected-turn cursor stopped at 131072 receiv
 Independently check the returned item identity, exact user text or minimized non-user hash, returned cursor, actual received count and confirmed process cleanup. Preserve a size/time stop and its unread boundary. For a changed-input qualification, save the new known turn or exact cursor and expected item before the run. Use the same procedure with a new private plan and output directory, then compare the original and changed receipts and retain remaining gaps.
 
 Qualification of the explicit larger profile recovered the same previously unread item and matched an independently recorded identity, minimized non-user hash and returned cursor. A changed-turn read from this saved method also matched independently witnessed original user text. Both reads stopped at their one-record limits with confirmed cleanup; keep their remaining history partial. The normal mode continued to stop at its unchanged byte ceiling.
+
+
+### Close a selected history prefix
+
+An actual bounded selected read can succeed while the chat's item coverage is still partial. Start a separate [closed-prefix walk](references/history-and-host.md#walk-a-complete-closed-prefix-when-needed) only when the requested audit needs full observed coverage of that one chat. Before it starts, bind the selected terminal cutoff and an explicit finite override for the actual probe, byte, elapsed and record costs. Keep active and after-cutoff inputs outside the closed-history claim.
+
+Stop after an orderly bounded prefix and inspect the saved state and probe hashes. Resume from that exact private directory, confirm fresh matching turn inventory before item progress, and preserve any unresolved scope. Check the original and resumed bytes against the recorded plans, per-turn cursors, ordered exact user text and minimized non-user identities, and verify confirmed process cleanup. A complete_observed result requires a final matching turn inventory and every selected turn's explicit end. A separate changed-input qualification uses its own selected cutoff and expected evidence and never spends the previous run's saved capacity again.
