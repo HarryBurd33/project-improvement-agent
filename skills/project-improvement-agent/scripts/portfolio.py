@@ -7,6 +7,7 @@ import fcntl
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import tempfile
 import time
@@ -536,6 +537,29 @@ def requirement(d, r, e):
     return rid
 
 
+def prompt_value(fields, name):
+    if name not in fields:
+        return 'Unknown (not supplied)'
+    value = fields[name]
+    return value if isinstance(value, str) and value.strip() else 'Unknown (invalid supplied value)'
+
+
+def copied_prompt(record, requirement=None):
+    effort = 'effort' if requirement is not None else 'reasoning_effort'
+    content = ['Starting model/effort: ' + prompt_value(record, 'model') + ' / ' + prompt_value(record, effort),
+               'Destination: ' + prompt_value(record, 'destination'),
+               'Dependencies: ' + prompt_value(record, 'dependencies')]
+    if requirement is not None:
+        content += ['Requirement: ' + requirement,
+                    'Original request/opportunity basis: ' + prompt_value(record, 'basis')]
+    prompt = record.get('prompt')
+    prompt = prompt if isinstance(prompt, dict) else {}
+    content += [name.title() + ': ' + prompt_value(prompt, name) for name in PROMPT_FIELDS]
+    body = '\n'.join(content)
+    fence = '`' * max(3, 1 + max((len(run) for run in re.findall(r"`+", body)), default=0))
+    return [fence + 'text', body, fence]
+
+
 def requirement_report(d):
     run = d['active'] or (d['runs'][-1] if d['runs'] else {})
     scope = run.get('scope') or {}
@@ -569,10 +593,8 @@ def requirement_report(d):
             a = row['action']
             lines += ['', '### ' + str(a['rank']) + '. ' + row['title'] + ' (' + rid + ')']
             for k in ('basis', 'impact', 'dependencies', 'next_action', 'acceptance', 'destination', 'model', 'effort', 'ranking_reason'):
-                lines += [k.replace('_', ' ').title() + ': ' + a[k]]
-            lines += ['```text', 'Starting model/effort: ' + a['model'] + ' / ' + a['effort'],
-                      'Destination: ' + a['destination'], 'Requirement: ' + rid,
-                      'Original request/opportunity basis: ' + a['basis']] + [k.title() + ': ' + a['prompt'][k] for k in PROMPT_FIELDS] + ['```']
+                lines += [k.replace('_', ' ').title() + ': ' + prompt_value(a, k)]
+            lines += copied_prompt(a, rid)
     lines += ['', '## Reinspection queue'] + [rid + ': ' + row['next_check'] for rid, row, stale in selected if stale]
     # Only this run's observed sources; never imply that an old portfolio scan is this audit's coverage.
     lines += ['', '## Source coverage', json.dumps({k:v for k,v in d['sources'].items()
@@ -630,11 +652,11 @@ def report(d):
                   f['kind'] + '; confidence ' + f['confidence'] + '; score ' + str(f['score']),
                   'Ranking: ' + f['ranking_reason']]
         for field in ('improvement','benefit','effort','tradeoffs','dependencies','questions'):
-            lines += [field.title() + ': ' + f[field]]
+            lines += [('Work estimate' if field == 'effort' else field.title()) + ': ' + prompt_value(f, field)]
         for eid in f['evidence']:
             ev=d['evidence'][eid]; m=d['materials'][ev['material']]
             lines += ['Evidence '+eid+': '+m['locator']+' '+ev['location']+'; version '+str(ev['version'])+'; examined '+ev['examined_at']+'; '+ev['observation']]
-        lines += ['', '```text'] + [k.title()+': '+f['prompt'][k] for k in PROMPT_FIELDS] + ['```']
+        lines += [''] + copied_prompt(f)
     lines += ['', '## Project progress']
     for pid,p in d['projects'].items():
         if p.get('merged_into'):

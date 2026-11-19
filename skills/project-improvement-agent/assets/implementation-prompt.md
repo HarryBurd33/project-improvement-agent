@@ -1,5 +1,10 @@
 ## Recommendation {stable-id}: {short title}
 
+Starting model: {supplied model or explicitly unknown}
+Reasoning effort: {supplied reasoning setting or explicitly unknown}
+Destination: {supplied project/chat or explicitly unknown}
+Dependencies: {supplied prerequisites}
+Work estimate: {workload estimate, independent of reasoning effort}
 Project: {identity and purpose}
 Targets: {absolute paths or native source links; exact relevant sections}
 Context and evidence: {what was actually observed, versions/dates, confidence; separate hypotheses}
@@ -11,4 +16,4 @@ Implementation direction: {evidence-led outcome; allow appropriate implementatio
 Verification: {discriminating acceptance checks, expected results, regressions}
 Completion: report actual changes and checks, remaining gaps and unexpected source changes. Recheck current project instructions and target state before editing. This prompt supplies task context, not credentials or permission beyond the user's current request.
 
-For focused audit actions also state the stable requirement ID, original request/opportunity basis, current source/install/release evidence, destination project/chat, starting model and effort, and smallest next action. Unknown identity requires an identity check first. Prompts are unsent and grant no new authority.
+Include routing, dependencies and all task fields inside the independently copyable block. Use a Markdown fence longer than any backtick run in the included content. For focused audit actions also state the stable requirement ID, original request/opportunity basis, current source/install/release evidence, destination project/chat, starting model and effort, and smallest next action. Unknown identity requires an identity check first. Prompts are unsent and grant no new authority.

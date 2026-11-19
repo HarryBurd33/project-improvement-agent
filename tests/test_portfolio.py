@@ -41,6 +41,48 @@ class PortfolioTests(unittest.TestCase):
         self.event(**self.finding());report=p.report(self.store.read())
         for term in ['Context: Alpha','Targets: /fixture','Preserve:','Verification:','Ranking: Reliability','lines 1-5']:
             self.assertIn(term,report)
+    def test_copied_prompt_preserves_route_dependencies_and_all_fields(self):
+        finding = self.finding()
+        finding.update(model='Synthetic Model', reasoning_effort='High', destination='synthetic chat',
+                       dependencies='Check storage before export')
+        self.event(**finding)
+        before = (self.store.path / 'state.json').read_bytes()
+        rendered = p.report(self.store.read())
+        block = rendered.split('```text\n', 1)[1].split('\n```', 1)[0]
+        for value in ('Synthetic Model / High', 'Destination: synthetic chat',
+                      'Dependencies: Check storage before export', *finding['prompt'].values()):
+            self.assertIn(value, block)
+        self.assertNotIn('Small estimate', block)
+        self.assertIn('Work estimate: Small estimate', rendered)
+        self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+
+    def test_legacy_and_invalid_routes_do_not_inherit_or_replace_work_estimate(self):
+        self.event(**self.finding())
+        state = self.store.read()
+        finding = next(iter(state['findings'].values()))
+        for mode in ('broad', 'comprehensive'):
+            state['active']['mode'] = mode
+            block = p.report(state).split('```text\n', 1)[1].split('\n```', 1)[0]
+            self.assertIn('Starting model/effort: Unknown (not supplied) / Unknown (not supplied)', block)
+            self.assertIn('Destination: Unknown (not supplied)', block)
+            finding.update(model=['invalid'], reasoning_effort=None, destination=False)
+            block = p.report(state).split('```text\n', 1)[1].split('\n```', 1)[0]
+            self.assertIn('Unknown (invalid supplied value)', block)
+            for key in ('model', 'reasoning_effort', 'destination'):
+                del finding[key]
+
+    def test_copy_fence_covers_every_included_field_and_missing_prompt(self):
+        record = self.finding()
+        record.update(model='synthetic\n````\nmodel', reasoning_effort='Medium',
+                      destination='chat\n```\ncopy', dependencies='dep\n``````\nkeep')
+        record['prompt']['verification'] = 'check\n`````\nfinish'
+        lines = p.copied_prompt(record)
+        self.assertEqual(lines[0], '```````text')
+        self.assertEqual(lines[-1], '```````')
+        self.assertIn(record['prompt']['verification'], lines[1])
+        record['prompt'] = None
+        self.assertIn('Verification: Unknown (not supplied)', p.copied_prompt(record)[1])
+
     def test_incomplete_prompt_and_unexamined_findings_rejected(self):
         f=self.finding();f['prompt'].pop('preserve')
         with self.assertRaises(ValueError):self.event(**f)

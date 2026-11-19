@@ -40,6 +40,20 @@ class FocusedTests(unittest.TestCase):
         action=dict(basis='Original user u1 requests CSV; source fixture lacks it.',impact='User can export data.',dependencies='None known.',next_action='Implement the CSV format in the existing exporter.',acceptance='CSV output round-trips representative rows.',destination='fixture:app / fixture-chat',model='GPT-6.1 Sol',effort='Medium',rank=1,ranking_reason='Supported requested capability before optional convenience.',prompt=dict(context='Fixture App exports JSON; user u1 requested CSV, complete source record code lacks CSV.',targets='/fixture/app exporter and tests',outcome='CSV export',scope='CSV format only',constraints='Verify current source and authority',preserve='JSON exports and saved data',verification='CSV round-trip and existing JSON acceptance pass'))
         e=dict(op='requirement',project=self.project,key='chat/u1:csv',title='CSV export',kind='user_request',origins=[self.user],evidence=[self.code],coverage='Complete bounded fixture source; older unrelated page unread.',next_check='Run CSV acceptance on current revision.',layers=dict(source=layer,installation=copy.deepcopy(unknown),release=copy.deepcopy(unknown)),required_layers=['source'],action=action)
         e.update(updates);return e
+    def test_focused_copy_keeps_dependencies_identity_and_literal_fences(self):
+        entry = self.row()
+        entry['action']['dependencies'] = 'synthetic prerequisite\n`````\nkeep this line'
+        rid = self.event(**entry)
+        before = (self.store.path / 'state.json').read_bytes()
+        rendered = p.report(self.store.read())
+        block = rendered.split('``````text\n', 1)[1].split('\n``````', 1)[0]
+        for value in (entry['action']['dependencies'], 'Requirement: ' + rid,
+                      'Starting model/effort: ' + entry['action']['model'] + ' / ' + entry['action']['effort'],
+                      entry['action']['destination'], entry['action']['basis'],
+                      *entry['action']['prompt'].values()):
+            self.assertIn(value, block)
+        self.assertEqual(before, (self.store.path / 'state.json').read_bytes())
+
     def test_absence_requires_discriminating_evidence(self):
         e=self.row();e['layers']['source'].pop('absence_established')
         with self.assertRaises(ValueError):self.event(**e)

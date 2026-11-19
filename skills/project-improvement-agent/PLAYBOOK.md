@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.7.1
+# Portfolio review playbook — 1.8.0
 
 ## Inputs, authority, limits
 
@@ -42,7 +42,7 @@ Each facet links examined evidence, not merely a checked box. A missing facet pr
 
 ## step-04 — Recommend and verify
 
-Every recommendation needs project identity/targets, specific evidence and confidence, problem/opportunity, proposed change, benefit, effort, tradeoffs, dependencies, questions, observable acceptance checks, preservation constraints and a standalone implementation prompt. Follow assets/implementation-prompt.md. The prompt must work without this chat; include the context and evidence locators rather than “as discussed.” Allow implementation choices to follow current evidence. Do not include secrets or unnecessary private text. Prompts remain private and unsent.
+Every recommendation needs project identity/targets, specific evidence and confidence, problem/opportunity, proposed change, benefit, effort, tradeoffs, dependencies, questions, observable acceptance checks, preservation constraints and a standalone implementation prompt. Follow assets/implementation-prompt.md. The prompt must work without this chat; include the context and evidence locators rather than “as discussed.” Allow implementation choices to follow current evidence. Do not include secrets or unnecessary private text. For broad/comprehensive finding records, save optional model, reasoning_effort and destination fields when supplied. The existing effort field is a workload estimate. A copied prompt includes supplied dependencies and routing. Missing routing stays explicitly unknown. Prompts remain private and unsent.
 
 A finished run may use the opt-in [session finalizer](references/session.md) to preserve its narrative, generate recorded facts and bind the actual final report. Validate declared intake/evidence order separately and independently inspect command classifications. The current audit cannot certify its own totals before its trace finishes.
 
@@ -139,3 +139,11 @@ Stop after an orderly bounded prefix and inspect the saved state and probe hashe
 The selected-context procedure has also been exercised on two different visible messages from a real bounded page. The primary recovered numbered recommendation context; the changed input retained its observed commentary phase. Keep these outcomes separate from the earlier proposals' implementation status. A baseline model's pre-RPC startup failure remained a failed attempt with unknown cause. Use the normal approved foreground route when required by the host; never turn a transport failure into guessed source text or silently retry under a different policy.
 
 - Before resuming a saved history gap, compare newer verified coverage for the same thread and cutoff. When a batch exceeded its byte cap and a one-item probe advanced the cursor, continue that turn with one-item pages. The adaptive walker restores batching at the next turn.
+
+### Check copied recommendation prompts
+
+A report formerly showed routing or dependencies elsewhere while omitting them from the copied block. Literal backtick fences inside a field could also end that block early. The shared renderer now includes model, reasoning effort, destination, dependencies and every prompt field in one fence longer than any backtick run in its content. Focused actions also retain their requirement ID and original request basis.
+
+Before handing off a recommendation, copy only its block and compare it against that record's supplied routing, dependencies and seven prompt fields. Keep workload effort separate from reasoning effort. Legacy records with missing routing show Unknown (not supplied). Empty or invalid supplied routing shows Unknown (invalid supplied value), requiring clarification in the report rather than a guessed model choice.
+
+For changed-input qualification, save a second synthetic finding with a different model, reasoning effort, destination, dependency and context. Include a literal multiline fence. Run the same read-only report command from the [state procedure](references/state.md), compare the actual copied block with those new fields and ensure verification remains inside its fence. Compare state bytes before and after both reports. Record source findings and planned checks with their original evidence status.

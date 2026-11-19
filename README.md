@@ -101,3 +101,5 @@ Version 1.7.0 adds [explicit one-message assistant context recovery](skills/proj
 The [desktop checklist](skills/project-improvement-agent/assets/invocation-checklist.md) accepts inspected user-supplied screenshots as a distinct evidence kind. It records visible state and unknowns separately for natural, explicit and non-audit cases. A screenshot or user-observed result does not imply agent GUI access or certify unseen state. Host-dependent checks retain concrete operator and host-owner acceptance steps.
 
 Version 1.7.1 preserves one-item reads through the rest of a turn after the standard adaptive walker recovers an oversized page. An orderly resume retains the recovered size.
+
+Version 1.8.0 preserves each recommendation's supplied routing, dependencies and full prompt inside its copyable block. Missing legacy routing is explicitly unknown, workload estimates remain separate, and embedded backtick fences are enclosed safely.
