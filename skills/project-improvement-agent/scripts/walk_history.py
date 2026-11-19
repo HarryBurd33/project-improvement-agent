@@ -15,7 +15,7 @@ sys.dont_write_bytecode = True
 import read_history as reader
 
 
-VERSION = "1.6.0"
+VERSION = "1.7.1"
 MAXIMA = {"max_probes": 1024, "max_bytes": 536870912, "max_seconds": 900, "max_records": 20000}
 REQUIRED = {"schema_version", "thread_id", "through_turn_id", *MAXIMA}
 LARGE_BATCH_STRATEGY = "bounded_large_pages"
@@ -203,7 +203,9 @@ class Progress:
         users = sum(row["type"] == "userMessage" for row in records)
         self.used["user_items"] += users
         self.used["nonuser_items"] += len(records) - users
-        self.stage = 0
+        # A successful fallback establishes a workable page size for this turn.
+        # Start each new cursor with the standard byte cap, including after replay.
+        self.stage = 1 if self.stage and next_cursor is not None else 0
         self.batch_limit = ITEM_PAGE_SIZE
         if next_cursor is not None:
             self.cursor = next_cursor

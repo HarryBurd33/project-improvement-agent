@@ -168,3 +168,17 @@ An independently frozen, approved read of the selected real page confirmed that 
 The separate first baseline model attempt stopped with `peer_exited` before any list RPC. Its cause is unknown and the failure is preserved privately. Subsequent model qualification used the normal host approval boundary for the exact foreground command, matching the successful independent baseline/observer route. This asymmetric model transport outcome is not evidence of a speed or model-quality improvement; the independently witnessed projection difference establishes the new bounded capability.
 
 Independent subprocess checks passed 49 new selection cases and 111 retained reader cases. Three deliberately incorrect output-pipeline controls were rejected for leaking unselected text, accepting a wrong hash, and inventing finality. The 146 local tests, public inventory, links and readiness checks supplement actual execution. Exact active installation, native discovery/invocation, rollback, release and CI remain separately recorded delivery gates. Private identities, text, cursors, model traces and evaluator inputs are excluded from this repository.
+
+## Same-turn fallback sizing in 1.7.1
+
+The standard adaptive walker used to request a full batch at the next cursor after successfully recovering a single item. Two subprocess cases reproduced this on 1.7.0. One accepts the standard singleton and the other requires the larger singleton profile. Both now pause after recovery, resume from disk, issue a standard one-item request at the next cursor, and restore the normal batch on the next turn. The full local suite passed 147 tests.
+
+## Copied recommendation prompts 1.8.0
+
+The shared report renderer includes supplied model, reasoning effort, destination, dependencies and all seven task fields inside each copied prompt. Focused actions retain their requirement ID and request basis. Broad/comprehensive finding effort is displayed as a work estimate. Legacy findings with missing routing render explicit unknowns, and invalid supplied routing is marked invalid. A fence longer than every included backtick run protects literal multiline examples.
+
+All 150 local tests passed on Python 3.9.6 and Python 3.15.0. Four new tests cover routing and dependencies, legacy and invalid route fields, nested fences and missing prompt data, focused identity and basis, and unchanged state bytes. An actual foreground helper report also preserved state bytes and kept final verification inside its copied fence. Eight independently frozen synthetic report cases passed against the exact renderer bytes. The exact inventory/link and ready checks passed.
+
+These observations concern rendering supplied records. Current source review, fresh generated-agent runs, active installation and remote release are separately checked during delivery.
+
+After integration with version 1.7.1, all 151 tests passed, including the same-turn history recovery regression.

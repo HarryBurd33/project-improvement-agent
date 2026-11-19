@@ -25,3 +25,8 @@ Version 1.6.0 adds an original Python standard-library walker and a synthetic su
 ### One selected assistant message
 
 Version 1.7.0 adapts the existing MIT reader and synthetic test peer. The Codex CLI 0.166.0 installed item schema and the [app-server protocol reference](https://learn.chatgpt.com/docs/app-server) guided validation of the visible agentMessage text and optional phase. The transport and canonical inner-item hashing remain unchanged. No generated schema, private source content or implementation from the app server was copied.
+
+
+### Recommendation report rendering
+
+Version 1.8.0 adapts the existing MIT portfolio report and tests with an original shared prompt renderer. It preserves supplied routing and dependencies across report modes and chooses the enclosing fence from the complete copied content. No new runtime or dependency was added.
