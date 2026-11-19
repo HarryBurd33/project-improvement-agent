@@ -186,6 +186,32 @@ class WalkTest(unittest.TestCase):
         self.assertEqual(requests[3]["cursor"], "one-next")
         self.assert_private_receipts()
 
+    def test_recovered_single_item_size_survives_resume_until_turn_end(self):
+        for mode, expected_failures in (("batch_halve", 1), ("fallback", 2)):
+            with self.subTest(mode=mode):
+                self.output = self.root / mode
+                self.log.unlink(missing_ok=True)
+                first = self.invoke(mode=mode, probes=2 + expected_failures,
+                                    page_strategy="standard_then_single_then_large")
+                self.assertEqual(first["coverage_status"], "partial")
+                self.assertEqual(first["usage"]["failed_probes"], expected_failures)
+                self.assertEqual(self.state()["coverage"]["item_cursor"], "one-next")
+                boundary = len(self.transcript())
+                result = self.invoke(mode=mode, resume=True)
+                self.assertEqual(result["coverage_status"], "complete_observed")
+                requests = [row["params"] for row in self.transcript()[boundary:]
+                            if row.get("method") == "thread/items/list"]
+                self.assertEqual([(p["turnId"], p.get("cursor"), p["limit"]) for p in requests],
+                                 [("one", "one-next", 1), ("two", None, 20)])
+                for entry in self.state()["journal"]:
+                    if entry["kind"] == "probe":
+                        receipt = json.loads((self.output / entry["slot"] / "receipt.json").read_bytes())
+                        if receipt["plan"]["cursor"] == "one-next":
+                            self.assertEqual(receipt["plan"]["read_mode"], "standard")
+                            self.assertEqual(receipt["plan"]["max_bytes"], 131072)
+                self.assertEqual(result["usage"]["selected_items"], 2)
+                self.assertEqual(result["usage"]["user_items"], 1)
+
     def test_large_batch_halves_same_cursor_across_resume_then_resets(self):
         first = self.invoke(mode="batch_halve", probes=3, max_bytes=32 * 1024 * 1024,
                             page_strategy="bounded_large_pages")

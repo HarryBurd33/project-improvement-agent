@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.7.0
+# Portfolio review playbook — 1.7.1
 
 ## Inputs, authority, limits
 
@@ -137,3 +137,5 @@ Stop after an orderly bounded prefix and inspect the saved state and probe hashe
 
 
 The selected-context procedure has also been exercised on two different visible messages from a real bounded page. The primary recovered numbered recommendation context; the changed input retained its observed commentary phase. Keep these outcomes separate from the earlier proposals' implementation status. A baseline model's pre-RPC startup failure remained a failed attempt with unknown cause. Use the normal approved foreground route when required by the host; never turn a transport failure into guessed source text or silently retry under a different policy.
+
+- Before resuming a saved history gap, compare newer verified coverage for the same thread and cutoff. When a batch exceeded its byte cap and a one-item probe advanced the cursor, continue that turn with one-item pages. The adaptive walker restores batching at the next turn.
