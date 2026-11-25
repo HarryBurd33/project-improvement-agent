@@ -153,6 +153,29 @@ Use the same walker invocation with a fresh plan and output directory. For examp
 
 The range output identifies its exclusive and inclusive endpoints and records earlier_item_coverage as excluded. Private state stores observed_anchor and only the selected suffix as observed_inventory. Resume and final scans compare the exact anchor and selected metadata. A completed range receives its own observation digest, bound to both endpoints, anchor and selected record projection. A partial range has no completed digest. Keep the independent prior-prefix receipt when combining coverage claims. An empty range establishes no item observation. The same turn-inventory-only mutation check and unverified snapshot consistency apply.
 
+#### Verify a witnessed final write
+
+A timing-only final write stop can leave complete item observations in a frozen partial snapshot. Keep both that directory and its captured stdout. When all observations and final inventory are terminal, the walker precommits a random nonce and exact snapshot identity in its marker. It releases the nonce in finalization_witness only after the last real durable write returns within the original plan deadline. Without that release, the marker conveys no verification permission. Preserve older runs with their pinned helpers; this feature does not migrate old snapshots.
+
+Save stdout in a new private capture outside the run directory. A partial run may return a nonzero exit, so inspect its actual status and retain the capture.
+
+```sh
+umask 077
+python3 scripts/walk_history.py --plan "$private_plan" --output "$new_private_walk" > "$private_capture"
+```
+
+After the originating process exits, invoke the verifier as a separate foreground process. Save that run's full JSON stdout object as the capture. Only its finalization_witness is used for the release check; other captured claims are not attested.
+
+```sh
+python3 scripts/walk_history.py --verify-finalization "$new_private_walk" --capture "$private_capture"
+```
+
+The verifier requires the existing exclusive lock, a gone origin, an exact nonce/snapshot/marker commitment, unchanged helper sources and raw plan, valid receipt and record hashes, no pending probe and terminal scope replay. It reads files and returns JSON without changing the run or contacting the provider. The derived result reports verification_status verified and complete_observed with its observation_sha256. The saved coverage remains partial and the original collection budget remains frozen. Ordinary resume continues to refuse this marker. Repeat verification is idempotent validation of the same frozen evidence.
+
+Local artifact verification has a separately named fixed envelope of 15 seconds, 536870912 aggregate file bytes, 20000 parsed records and 1024 probe receipts. Reads include the capture, marker, plan, state, both helper sources, receipts and records. Directory and journal loops are bounded. A failure or observed time overrun yields no completed observation digest. Blocking filesystem calls can overrun a wall deadline physically, so the next check must report failure. These limits never extend the collection's original allowance.
+
+Only disk-bound stored_collection_usage is returned as saved accounting. Editable captured summary timing/usage is ignored. The released witness attests the original deadline bound, while exact_closing_elapsed_seconds remains null. This is a local release-condition witness for trusted private files, not a signature against a malicious filesystem owner. Provider snapshot consistency remains unverified, and range verification excludes earlier item coverage. Verification exit 0 indicates the derived result passed, and exit 2 indicates refusal or invalid evidence. Use these flags exclusively with each other, without collection options.
+
 If the installed CLI supports a selected-thread, read-only `codex migrate-rollouts --thread <selected-thread-id> --json` diagnostic, record its result and CLI version. `already_paginated` is not recovery of the unread text and does not justify `--apply`. An already-paginated chat with neither an exposed item interface nor an authorized supported CLI read route remains blocked. This procedure authorizes no migration mutation.
 
 Search the existing task's indexed, selected-message records before requesting new material. A prior summary, build plan or acceptance receipt may show what was implemented, but cannot replace missing original user wording. Reconcile only original excerpts with preserved origin/version information; report partial coverage when provenance is incomplete. Retain stable IDs and distinguish portfolio jobs from reusable-system commitments.

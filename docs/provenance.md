@@ -38,3 +38,7 @@ Version 1.9.0 adapts the original MIT reader with validation of the six non-text
 ### Closed range after a terminal anchor
 
 Version 1.10.0 adapts the original MIT walker with an explicit exclusive start turn and the existing inclusive cutoff. It reuses the existing read-only turn/item methods, bounded reader and minimized record projection. No provider code or private continuation script was copied.
+
+### Witnessed final-write verification
+
+Version 1.11.0 adapts the original MIT walker and receipt replay with a random nonce release condition, exact local snapshot binding and a bounded read-only verifier. The transport and reader implementation are reused. No external recovery framework, runtime hooks or private provider histories are bundled.

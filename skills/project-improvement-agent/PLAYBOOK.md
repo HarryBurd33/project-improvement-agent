@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.10.0
+# Portfolio review playbook — 1.11.0
 
 ## Inputs, authority, limits
 
@@ -169,3 +169,12 @@ A small continuation after a previously covered prefix needed a separate private
 Check that the provider inventory contains both endpoints in order. The walker inventories turn metadata, rechecks the anchor and selected rows, and requests item bodies only after the anchor through the new cutoff. Equal endpoints cover an empty range only after metadata revalidation. Missing, reversed or changed boundaries leave the read partial. The range digest identifies both endpoints, anchor metadata and selected projection; it cannot establish earlier item coverage.
 
 To qualify changed input, save a fresh plan selecting a different known terminal anchor/cutoff from the same authorized provider scope. Independently compare item requests, ordered selected records and closed item scopes against that interval. Pause at a finite probe limit, verify a partial digest is absent, then resume with the same source versions and confirm fresh matching anchor/suffix metadata before additional item calls. Check cleanup and retained shared usage. Preserve snapshot consistency as unverified.
+
+
+### Verify a witnessed slow final write
+
+A hosted scope test reached its terminal observation but a final durable write exceeded the reserved 250 ms. The walker correctly left a partial snapshot and invocation marker, which ordinary resume refused. When this timing-only stop follows complete observations and the final durable marker write still finishes within the original deadline, version 1.11.0 can release a finalization_witness in captured stdout. It binds the exact frozen snapshot and invocation. Keep that capture private with the original run.
+
+Follow [final-write verification](references/history-and-host.md#verify-a-witnessed-final-write) after the originating process has exited. Run the public verifier from a distinct process with the run directory and captured stdout. It replays the exact source/plan/journal/receipts and selected ends under its own finite local verification limits. A derived complete result and digest do not change the original partial snapshot or reopen collection. Missing or conflicting witnesses, active origins, pending probes and old uninstrumented markers remain refused.
+
+For changed-input qualification, save a fresh selected plan, private output and stdout capture for a different terminal scope. Use the same saved verification command after that originating process exits. Compare the derived digest and selected records against independently observed changed evidence. Check run-file hashes and provider call counts before and after verification, repeat it to confirm idempotence, and keep any failed or over-budget result partial. Keep exact closing duration unknown when the witness only certifies the original deadline bound.

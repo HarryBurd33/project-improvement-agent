@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True
 import read_history as reader
 
 
-VERSION = "1.10.0"
+VERSION = "1.11.0"
 MAXIMA = {"max_probes": 1024, "max_bytes": 536870912, "max_seconds": 900, "max_records": 20000}
 REQUIRED = {"schema_version", "thread_id", "through_turn_id", *MAXIMA}
 LARGE_BATCH_STRATEGY = "bounded_large_pages"
@@ -29,11 +29,14 @@ PERSISTENCE_RESERVE = 250000
 DISPATCH_RESERVE = CLEANUP_RESERVE + 2 * PERSISTENCE_RESERVE
 INVOCATION_MARKER = ".invocation"
 BASE_FILES = {"plan.json", "state.json", ".lock"}
+VERIFY_LIMITS = {"seconds": 15, "bytes": 536870912, "records": 20000, "probe_receipts": 1024}
 require = reader.require
 Failure = reader.ReadFailure
 
 
-def blob(path, limit, private=False):
+def blob(path, limit, private=False, budget=None):
+    if budget is not None:
+        return budget.read(path, limit, private)
     fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
     with os.fdopen(fd, "rb") as stream:
         mode = os.fstat(stream.fileno()).st_mode
@@ -89,7 +92,10 @@ def publish(directory, name, raw, replace=False):
     return reader.digest(raw)
 
 
-def source_binding():
+def source_binding(budget=None):
+    if budget is not None:
+        return {"walker_sha256": reader.digest(blob(Path(__file__), 1048576, budget=budget)),
+                "reader_sha256": reader.digest(blob(Path(reader.__file__), 1048576, budget=budget))}
     return {"walker_sha256": reader.digest(Path(__file__).read_bytes()),
             "reader_sha256": reader.digest(Path(reader.__file__).read_bytes())}
 
@@ -386,9 +392,9 @@ def persist_state(directory, state, progress, reason):
     return publish(directory, "state.json", reader.encoded(state), replace=True)
 
 
-def replay(directory, state, plan, raw):
+def replay(directory, state, plan, raw, budget=None):
     require(state["schema_version"] == 1 and state["walker_version"] == VERSION and state["plan"] == plan
-            and state["plan_sha256"] == reader.digest(raw) and state["source"] == source_binding(), "walk_binding_mismatch")
+            and state["plan_sha256"] == reader.digest(raw) and state["source"] == source_binding(budget), "walk_binding_mismatch")
     require(state["pending"] is None, "uncertain_pending_probe")
     entries = state["journal"]
     require(isinstance(entries, list) and len(entries) <= 8 * MAXIMA["max_probes"], "invalid_walk_journal")
@@ -396,6 +402,12 @@ def replay(directory, state, plan, raw):
     progress.reset_scan()
     names = BASE_FILES | {INVOCATION_MARKER}
     for entry in entries:
+        if budget is not None:
+            budget.check()
+        if entry == {"kind": "finalization_time_uncertain"}:
+            require(progress.phase == "done" and progress.blocked is None, "invalid_finalization_stop")
+            progress.blocked = "finalization_time_uncertain"
+            continue
         if isinstance(entry, dict) and entry.keys() == {"kind", "category", "duration_us"} and entry["kind"] == "time":
             progress.charge_time(entry["category"], entry["duration_us"])
             continue
@@ -411,17 +423,22 @@ def replay(directory, state, plan, raw):
         names.add(slot)
         root = directory / slot
         private_directory(root)
-        require({path.name for path in root.iterdir()} == {"records.json", "receipt.json"}, "unexpected_probe_files")
-        receipt_raw = blob(root / "receipt.json", 256 * 1024, private=True)
-        records_raw = blob(root / "records.json", 32 * 1024 * 1024, private=True)
+        require(directory_names(root, 2, budget) == {"records.json", "receipt.json"}, "unexpected_probe_files")
+        receipt_raw = blob(root / "receipt.json", 256 * 1024, private=True, budget=budget)
+        records_raw = blob(root / "records.json", 32 * 1024 * 1024, private=True, budget=budget)
         require(reader.digest(receipt_raw) == entry["receipt_sha256"]
                 and reader.digest(records_raw) == entry["records_sha256"], "probe_evidence_hash_mismatch")
         receipt = reader.parse(receipt_raw, "invalid_saved_receipt")
         records = reader.parse(records_raw, "invalid_saved_records")
+        if budget is not None:
+            require(isinstance(records, list), "invalid_saved_records")
+            budget.records += len(records)
+            budget.probes += 1
+            budget.check()
         require(receipt["records_sha256"] == entry["records_sha256"]
                 and receipt["executable"] == state["executable"], "probe_evidence_binding_mismatch")
         progress.apply(probe, receipt, records, entry["calls"], entry["exit_code"])
-    require({path.name for path in directory.iterdir()} == names, "unexpected_walk_files")
+    require(directory_names(directory, MAXIMA["max_probes"] + len(BASE_FILES) + 1, budget) == names, "unexpected_walk_files")
     require(state["coverage"] == progress.view(), "saved_coverage_mismatch")
     require((state["coverage_status"] == "complete_observed") == (progress.phase == "done" and not progress.blocked),
             "saved_completion_mismatch")
@@ -498,7 +515,10 @@ def walk(args):
             state = reader.parse(blob(directory / "state.json", 16 * 1024 * 1024, private=True), "invalid_walk_state")
             require(state["pending"] is None, "uncertain_pending_probe")
         require(not os.path.lexists(marker), "uncertain_previous_invocation")
-        publish(directory, INVOCATION_MARKER, reader.encoded({"started_at": reader.utc(), "pid": os.getpid()}))
+        nonce = os.urandom(32).hex()
+        invocation = {"started_at": reader.utc(), "pid": os.getpid(), "invocation_id": uuid.uuid4().hex,
+                      "nonce_sha256": reader.digest(nonce.encode("ascii"))}
+        publish(directory, INVOCATION_MARKER, reader.encoded(invocation))
         own_marker = True
         if create:
             publish(directory, "plan.json", raw)
@@ -559,6 +579,8 @@ def walk(args):
         elapsed = clock.elapsed()
         if elapsed > progress.used["elapsed_us"]:
             clock.observe()
+            if progress.blocked is None and progress.phase == "done":
+                state["journal"].append({"kind": "finalization_time_uncertain"})
             progress.blocked = progress.blocked or "finalization_time_uncertain"
             reason = progress.blocked
             state_sha = persist_state(directory, state, progress, reason)
@@ -568,7 +590,17 @@ def walk(args):
         else:
             marker.unlink()
             finalization_uncertain = False
-        return ({"coverage_status": "partial" if finalization_uncertain else state["coverage_status"],
+        witness = {}
+        if (finalization_uncertain and progress.phase == "done"
+                and progress.blocked == "finalization_time_uncertain"):
+            invocation.update(terminal_state_sha256=state_sha,
+                              terminal_commitment=reader.digest(reader.encoded([invocation["invocation_id"], nonce, state_sha])))
+            marker_sha = publish(directory, INVOCATION_MARKER, reader.encoded(invocation), replace=True)
+            # Release only after the last real durable write and within the original deadline.
+            if clock.elapsed() <= clock.limit:
+                witness = {"finalization_witness": {"schema_version": 1, "nonce": nonce,
+                           "state_sha256": state_sha, "marker_sha256": marker_sha}}
+        return ({**witness, "coverage_status": "partial" if finalization_uncertain else state["coverage_status"],
                 "reason": reason, "state": str(directory / "state.json"), "state_sha256": state_sha,
                 "usage": progress.used, "measured_elapsed_us_before_summary": clock.elapsed(),
                 "snapshot_consistency": "unverified", "mutation_check": "turn_inventory_only",
@@ -581,14 +613,135 @@ def walk(args):
         os.close(lock)
 
 
+class VerificationBudget:
+    def __init__(self):
+        self.start = time.monotonic()
+        self.received = 0
+        self.records = 0
+        self.probes = 0
+
+    def check(self):
+        require(time.monotonic() - self.start <= VERIFY_LIMITS["seconds"], "verification_wall_limit")
+        require(self.received <= VERIFY_LIMITS["bytes"], "verification_byte_limit")
+        require(self.records <= VERIFY_LIMITS["records"], "verification_record_limit")
+        require(self.probes <= VERIFY_LIMITS["probe_receipts"], "verification_probe_limit")
+
+    def read(self, path, limit, private):
+        self.check()
+        fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
+        with os.fdopen(fd, "rb") as stream:
+            info = os.fstat(stream.fileno())
+            require(stat.S_ISREG(info.st_mode) and (not private or stat.S_IMODE(info.st_mode) == 0o600),
+                    "invalid_private_file")
+            require(info.st_size <= limit, "state_file_too_large")
+            require(info.st_size <= VERIFY_LIMITS["bytes"] - self.received, "verification_byte_limit")
+            parts = []
+            remaining = info.st_size
+            while remaining:
+                self.check()
+                chunk = stream.read(min(65536, remaining))
+                require(chunk, "verification_file_changed")
+                self.received += len(chunk)
+                remaining -= len(chunk)
+                parts.append(chunk)
+            require(os.fstat(stream.fileno()).st_size == info.st_size, "verification_file_changed")
+        self.check()
+        return b"".join(parts)
+
+    def view(self):
+        return {"received_bytes": self.received, "records": self.records, "probe_receipts": self.probes,
+                "elapsed_seconds": time.monotonic() - self.start, "limits": VERIFY_LIMITS}
+
+
+def directory_names(directory, maximum, budget=None):
+    names = set()
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            if budget is not None:
+                budget.check()
+            names.add(entry.name)
+            require(len(names) <= maximum, "unexpected_walk_files")
+    return names
+
+
+def verify_finalization(directory, capture):
+    budget = VerificationBudget()
+    directory = reader.canonical(directory)
+    private_directory(directory)
+    lock = lock_directory(directory, False)
+    try:
+        captured = reader.parse(blob(reader.canonical(capture), 65536, private=True, budget=budget), "invalid_finalization_capture")
+        require(isinstance(captured, dict), "invalid_finalization_capture")
+        witness = captured.get("finalization_witness")
+        require(isinstance(witness, dict) and witness.keys() ==
+                {"schema_version", "nonce", "state_sha256", "marker_sha256"}, "invalid_finalization_witness")
+        require(type(witness["schema_version"]) is int and witness["schema_version"] == 1
+                and all(isinstance(witness[key], str) and reader.SHA256.fullmatch(witness[key])
+                        for key in ("nonce", "state_sha256", "marker_sha256")), "invalid_finalization_witness")
+        marker_raw = blob(directory / INVOCATION_MARKER, 4096, private=True, budget=budget)
+        require(reader.digest(marker_raw) == witness["marker_sha256"], "finalization_marker_mismatch")
+        marker = reader.parse(marker_raw, "invalid_finalization_marker")
+        require(isinstance(marker, dict) and marker.keys() == {"started_at", "pid", "invocation_id", "nonce_sha256",
+                "terminal_state_sha256", "terminal_commitment"}, "invalid_finalization_marker")
+        require(type(marker["pid"]) is int and 0 < marker["pid"] <= 2147483647 and reader.identifier(marker["invocation_id"]),
+                "invalid_finalization_marker")
+        try:
+            os.kill(marker["pid"], 0)
+        except ProcessLookupError:
+            pass
+        else:
+            raise Failure("finalization_origin_active")
+        require(marker["nonce_sha256"] == reader.digest(witness["nonce"].encode("ascii"))
+                and marker["terminal_state_sha256"] == witness["state_sha256"]
+                and marker["terminal_commitment"] == reader.digest(reader.encoded(
+                    [marker["invocation_id"], witness["nonce"], witness["state_sha256"]])), "finalization_commitment_mismatch")
+        raw = blob(directory / "plan.json", reader.PLAN_MAX, private=True, budget=budget)
+        plan = parse_plan(raw)
+        state_raw = blob(directory / "state.json", 16 * 1024 * 1024, private=True, budget=budget)
+        require(reader.digest(state_raw) == witness["state_sha256"], "finalization_state_mismatch")
+        state = reader.parse(state_raw, "invalid_walk_state")
+        require(state["coverage_status"] == "partial" and state["reason"] == "finalization_time_uncertain"
+                and state["pending"] is None, "ineligible_finalization_state")
+        progress = replay(directory, state, plan, raw, budget)
+        require(progress.phase == "done" and progress.blocked == "finalization_time_uncertain"
+                and progress.used["elapsed_us"] < plan["max_seconds"] * MICROS, "ineligible_finalization_state")
+        # This derived observation does not alter any frozen run file or allowance.
+        progress.blocked = None
+        digest = progress.view()["observation_sha256"]
+        require(digest is not None, "ineligible_finalization_state")
+        result = {"coverage_status": "complete_observed", "verification_status": "verified",
+                  "observation_sha256": digest, "stored_coverage_status": "partial",
+                  "stored_collection_usage": state["coverage"]["usage"],
+                  "original_deadline_witness": "released_after_final_durable_write",
+                  "exact_closing_elapsed_seconds": None, "verification": budget.view(),
+                  "snapshot_consistency": "unverified", "mutation_check": "turn_inventory_only"}
+        if "after_turn_id" in plan:
+            result.update(range=progress.view()["range"], earlier_item_coverage="excluded")
+        budget.check()
+        return result
+    finally:
+        os.close(lock)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--plan", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--resume", type=Path)
-    parser.add_argument("--max-probes-this-run", type=int, default=MAXIMA["max_probes"])
+    parser.add_argument("--verify-finalization", type=Path)
+    parser.add_argument("--capture", type=Path)
+    parser.add_argument("--max-probes-this-run", type=int)
     args = parser.parse_args(argv)
     try:
+        if args.verify_finalization is not None:
+            require(args.capture is not None and args.plan is None and args.output is None and args.resume is None
+                    and args.max_probes_this_run is None, "invalid_verification_invocation")
+            result = verify_finalization(args.verify_finalization, args.capture)
+            sys.stdout.write(reader.encoded(result).decode("ascii"))
+            return 0
+        require(args.capture is None, "invalid_walk_invocation")
+        if args.max_probes_this_run is None:
+            args.max_probes_this_run = MAXIMA["max_probes"]
         require((args.resume is None and args.plan is not None and args.output is not None) or
                 (args.resume is not None and args.plan is None and args.output is None), "invalid_walk_invocation")
         require(1 <= args.max_probes_this_run <= MAXIMA["max_probes"], "invalid_invocation_probe_limit")
@@ -597,6 +750,8 @@ def main(argv=None):
         result, code = {"coverage_status": "error", "reason": str(error)}, 2
     except (OSError, KeyError, TypeError, ValueError, AssertionError, RecursionError, KeyboardInterrupt):
         result, code = {"coverage_status": "error", "reason": "invalid_or_uncertain_walk_state"}, 2
+    if args.verify_finalization is not None:
+        result["verification_status"] = "failed"
     result.update(snapshot_consistency="unverified", mutation_check="turn_inventory_only")
     sys.stdout.write(reader.encoded(result).decode("ascii"))
     return code
