@@ -13,7 +13,7 @@ import walk_history as walker
 
 reader = walker.reader
 require = walker.require
-VERSION = "1.12.0"
+VERSION = "1.13.0"
 READER_SHA256 = "93e171abe75a7e4e4413881a27af1d2899addc5eaa6353785995ed04e9dfad25"
 PRODUCERS = {
     "1.9.0": ("475e661a2bb8cf7381f8fdca106f278ab94731963ae66914af506c836633921e",
@@ -23,6 +23,70 @@ PRODUCERS = {
     "1.11.0": ("956e70e10fe8ca29b54b506cd85c83a8033437fa175121a4b2642a657553c46e",
                "53ecb693eb51b8d14d02abff5cb5503499763562"),
 }
+
+# Exact observed walker version, walker bytes and reader bytes select one profile.
+EARLY_PRODUCERS = {
+    ("1.6.0", "d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95",
+     "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743"):
+        ("1.6.0", "v1.6.0", "45e589c72bbd2f141394ec9bceed61616f0e486c", True),
+    ("1.6.0", "d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95",
+     "5d7deaea2f26c240f89e6a513a4a6bf73ca549c029ad6b6fa7b02613a2524075"):
+        ("1.7.0", "v1.7.0", "bd27cdcda687a4e50bc806b66ef13e87056ca8e6", True),
+    ("1.7.1", "53facc5c07e0ee404f981d2812f402025140c24b851deb17dc75359066dbc98e",
+     "5d7deaea2f26c240f89e6a513a4a6bf73ca549c029ad6b6fa7b02613a2524075"):
+        ("1.7.0", "v1.8.0", "380078ae3a2609422193407f2676e63dea4aafdd", False),
+}
+
+
+def producer_profile(state):
+    version, source = state.get("walker_version"), state["source"]
+    require(isinstance(version, str) and (version in PRODUCERS or any(key[0] == version for key in EARLY_PRODUCERS)),
+            "unsupported_producer")
+    require(isinstance(source, dict) and source.keys() == {"walker_sha256", "reader_sha256"}
+            and all(isinstance(value, str) for value in source.values()), "unsupported_producer_source")
+    if version in PRODUCERS:
+        sha, commit = PRODUCERS[version]
+        require(source == {"walker_sha256": sha, "reader_sha256": READER_SHA256}, "unsupported_producer_source")
+        producer = {"walker_version": version, "reader_version": reader.VERSION,
+                    "source": source, "released_commit": commit}
+        profile = {"reader_version": reader.VERSION, "old_view": False, "reset_stage": False,
+                   "prefix_only": version == "1.9.0", "unjournaled_timing": version != "1.11.0"}
+    else:
+        key = (version, source["walker_sha256"], source["reader_sha256"])
+        require(key in EARLY_PRODUCERS, "unsupported_producer_source")
+        reader_version, tag, commit, reset = EARLY_PRODUCERS[key]
+        producer = {"walker_version": version, "reader_version": reader_version, "source": source,
+                    "released_commit": commit, "compatible_release_tags": [tag],
+                    "original_package_identity": "unverified"}
+        profile = {"reader_version": reader_version, "old_view": True, "reset_stage": reset,
+                   "prefix_only": True, "unjournaled_timing": True}
+    return producer, profile
+
+
+class ProfileProgress(walker.Progress):
+    def __init__(self, plan, profile):
+        super().__init__(plan)
+        self.profile = profile
+
+    def items(self, records, next_cursor):
+        super().items(records, next_cursor)
+        if self.profile["reset_stage"]:
+            self.stage = 0
+
+    def apply(self, plan, receipt, records, calls, exit_code):
+        require(receipt["reader_version"] == self.profile["reader_version"], "receipt_reader_version_mismatch")
+        # The raw historical header was checked after its exact receipt hash.
+        # Adapt a copy for the current pure checker without modifying globals/files.
+        checked = receipt
+        if self.profile["reader_version"] != reader.VERSION:
+            checked = {**receipt, "reader_version": reader.VERSION}
+        super().apply(plan, checked, records, calls, exit_code)
+
+    def view(self):
+        view = super().view()
+        if self.profile["old_view"]:
+            del view["observation_sha256"]
+        return view
 
 
 def quiescent_marker(directory, budget):
@@ -70,10 +134,10 @@ def pending_slot(directory, state, progress, marker_present, budget):
     return {"slot": slot, "outcome": "unknown", "excluded": True, "directory_present": path.exists()}
 
 
-def replay_committed(directory, state, plan, budget, producer):
+def replay_committed(directory, state, plan, budget, producer, profile):
     entries = state["journal"]
     require(isinstance(entries, list) and len(entries) <= 8 * walker.MAXIMA["max_probes"], "invalid_walk_journal")
-    progress = walker.Progress(plan)
+    progress = ProfileProgress(plan, profile)
     progress.reset_scan()
     scope = {"thread_id": plan["thread_id"], "through_turn_id": plan["through_turn_id"]}
     if "after_turn_id" in plan:
@@ -127,7 +191,7 @@ def replay_committed(directory, state, plan, budget, producer):
                          "receipt_sha256": entry["receipt_sha256"], "records_sha256": entry["records_sha256"]})
     # 1.9 and 1.10 recorded this timing-only classifier after the committed journal.
     # No other view field or producer discrepancy is waived.
-    adapted = (producer["walker_version"] in ("1.9.0", "1.10.0") and progress.blocked is None
+    adapted = (profile["unjournaled_timing"] and progress.blocked is None
                and state["reason"] == "finalization_time_uncertain"
                and state["coverage"].get("blocked") == "finalization_time_uncertain")
     if adapted:
@@ -152,19 +216,14 @@ def inspect_run(path):
         state = reader.parse(walker.blob(directory / "state.json", 16777216, private=True, budget=budget), "invalid_walk_state")
         require(isinstance(state, dict) and type(state.get("schema_version")) is int
                 and state["schema_version"] == 1, "unsupported_walk_schema")
-        version = state.get("walker_version")
-        require(isinstance(version, str) and version in PRODUCERS, "unsupported_producer")
-        sha, commit = PRODUCERS[version]
-        require(state["source"] == {"walker_sha256": sha, "reader_sha256": READER_SHA256}, "unsupported_producer_source")
+        producer, profile = producer_profile(state)
         plan = walker.parse_plan(raw)
-        require(version != "1.9.0" or "after_turn_id" not in plan, "unsupported_producer_range")
+        require(not profile["prefix_only"] or "after_turn_id" not in plan, "unsupported_producer_range")
         require(reader.encoded(state["plan"]) == reader.encoded(plan)
                 and state["plan_sha256"] == reader.digest(raw), "walk_plan_mismatch")
         require(isinstance(state["coverage"], dict) and isinstance(state["reason"], str)
                 and isinstance(state["executable"], str) and state["executable"], "invalid_walk_state")
-        producer = {"walker_version": version, "reader_version": reader.VERSION,
-                    "source": state["source"], "released_commit": commit}
-        progress, scope, evidence, unique_items, digest, adapted = replay_committed(directory, state, plan, budget, producer)
+        progress, scope, evidence, unique_items, digest, adapted = replay_committed(directory, state, plan, budget, producer, profile)
         pending = pending_slot(directory, state, progress, marker_present, budget)
         expected = walker.BASE_FILES | {row["slot"] for row in evidence}
         if marker_present:

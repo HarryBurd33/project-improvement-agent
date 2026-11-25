@@ -99,7 +99,7 @@
       "purpose": "Reusable release README.md",
       "kind": "reference",
       "location": "README.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -122,7 +122,7 @@
       "purpose": "Reusable release docs/provenance.md",
       "kind": "reference",
       "location": "docs/provenance.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -145,7 +145,7 @@
       "purpose": "Reusable release docs/validation.md",
       "kind": "reference",
       "location": "docs/validation.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -214,7 +214,7 @@
       "purpose": "Reusable release scripts/validate.py",
       "kind": "script",
       "location": "scripts/validate.py",
-      "version": "1.6.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -306,7 +306,7 @@
       "purpose": "Reusable release skills/project-improvement-agent/PLAYBOOK.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/PLAYBOOK.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -329,7 +329,7 @@
       "purpose": "Reusable release skills/project-improvement-agent/SKILL.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/SKILL.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -542,7 +542,7 @@
       "purpose": "Receipt validation and explicit history/host evidence procedure: skills/project-improvement-agent/references/history-and-host.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/references/history-and-host.md",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
       "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
       "dependencies": [],
@@ -1091,9 +1091,9 @@
       "purpose": "Bounded read-only inspection of exact released committed history evidence",
       "kind": "tool",
       "location": "skills/project-improvement-agent/scripts/inspect_history.py",
-      "version": "1.12.0",
-      "input_contract": "One quiescent private saved walk from an exact supported released producer; fixed local verification limits",
-      "output_contract": "Committed counts, scope, evidence-relative paths and distinct digest; original completion/deadline unverified; pending bytes excluded",
+      "version": "1.13.0",
+      "input_contract": "Quiescent saved walk matched by exact observed walker version and both source hashes from qualified tagged/released profiles; fixed local limits",
+      "output_contract": "Committed evidence counts and digest with compatible tagged references; original package/completion/deadline unverified, pending bytes excluded",
       "dependencies": [
         "closed-history-walker",
         "selected-history-reader"
@@ -1110,18 +1110,19 @@
         ]
       },
       "replaces": null,
-      "reuse_decision": "Adapt trusted current replay primitives without altering existing walker or loading historical bundle code"
+      "reuse_decision": "Extend the existing offline replay with small inspected early-source profiles; preserve current walker/reader bytes and modern fingerprints"
     },
     {
       "id": "committed-history-tests",
       "purpose": "Synthetic subprocess regressions for committed evidence inspection",
       "kind": "code",
       "location": "tests/test_inspect_history.py",
-      "version": "1.12.0",
+      "version": "1.13.0",
       "input_contract": "Synthetic current producer and corrupt or uncertain saved fixtures",
       "output_contract": "Independent assertions of counts, exclusion, strict failures and immutable files",
       "dependencies": [
-        "committed-history-inspector"
+        "committed-history-inspector",
+        "early-history-fixtures"
       ],
       "status": "validated",
       "used_by": [
@@ -1136,6 +1137,29 @@
       },
       "replaces": null,
       "reuse_decision": "Reuse the indexed closed-history synthetic peer for new read-only inspection branches"
+    },
+    {
+      "id": "early-history-fixtures",
+      "purpose": "Sanitized genuine tagged-producer synthetic history layouts",
+      "kind": "data",
+      "location": "tests/early_history_fixtures.json",
+      "version": "1.13.0",
+      "input_contract": "Known tagged synthetic producer outputs; transport metadata sanitized",
+      "output_contract": "Portable old-view, reader-header and persisted page-strategy fixtures without private user data",
+      "dependencies": [],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Actual synthetic subprocess integrity/partial/pending tests and trusted released format qualification",
+        "evidence": [
+          "skills/project-improvement-agent/references/history-and-host.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Retain genuine tagged producer data for portable CI without executing archived code or requiring full git history"
     }
   ]
 }

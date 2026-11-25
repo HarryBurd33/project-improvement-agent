@@ -11,7 +11,7 @@ SKILL=ROOT/'skills/project-improvement-agent'
 
 def files():
     patterns=['README.md','LICENSE','NOTICE','.gitignore','.github/workflows/*.yml',
-              'docs/*.md','docs/*.json','examples/*.md','scripts/*.py','tests/*.py',
+              'docs/*.md','docs/*.json','examples/*.md','scripts/*.py','tests/*.py','tests/*.json',
               'skills/project-improvement-agent/**/*','toolbox/index.json']
     return sorted({f for pattern in patterns for f in ROOT.glob(pattern)
                    if f.is_file() and '__pycache__' not in f.parts and f.suffix!='.pyc'})
