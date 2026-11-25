@@ -403,6 +403,75 @@ walker.Progress.next_plan = at_old_limit
         self.assertNotIn("assistant_text_selection", json.loads((first_page / "receipt.json").read_bytes())["plan"])
         self.assert_private_receipts()
 
+    def test_range_selects_only_after_anchor_and_has_distinct_digest(self):
+        result = self.invoke(mode="range", after_turn_id="one")
+        self.assertEqual(result["coverage_status"], "complete_observed")
+        state = self.state()["coverage"]
+        self.assertEqual([row["turn_id"] for row in state["observed_inventory"]], ["two"])
+        self.assertEqual([row["turn_id"] for row in state["closed_item_scopes"]], ["two"])
+        self.assertEqual(state["observed_anchor"]["turn_id"], "one")
+        self.assertEqual(state["earlier_item_coverage"], "excluded")
+        self.assertEqual(result["range"], {"after_turn_id": "one", "through_turn_id": "two",
+                                          "start_exclusive": True, "end_inclusive": True})
+        self.assertEqual([row["params"]["turnId"] for row in self.transcript()
+                          if row.get("method") == "thread/items/list"], ["two"])
+        first_digest = state["observation_sha256"]
+        self.assert_private_receipts()
+        self.output = self.root / "changed-range"
+        self.log.unlink()
+        self.invoke(mode="range", after_turn_id="two", through_turn_id="three")
+        self.assertNotEqual(self.state()["coverage"]["observation_sha256"], first_digest)
+        self.assertEqual([row["params"]["turnId"] for row in self.transcript()
+                          if row.get("method") == "thread/items/list"], ["three"])
+
+    def test_range_resume_rechecks_anchor_and_replays_without_earlier_bodies(self):
+        first = self.invoke(mode="range_long", after_turn_id="one", probes=1)
+        self.assertEqual(first["coverage_status"], "partial")
+        self.assertIsNone(self.state()["coverage"]["observation_sha256"])
+        final = self.invoke(mode="range_long", resume=True)
+        self.assertEqual(final["coverage_status"], "complete_observed")
+        self.assertEqual(final["usage"]["selected_items"], 1)
+        self.assertEqual([row["params"]["turnId"] for row in self.transcript()
+                          if row.get("method") == "thread/items/list"], ["two"])
+        self.assert_private_receipts()
+
+    def test_equal_range_endpoints_complete_empty_only_after_revalidation(self):
+        first = self.invoke(mode="range", after_turn_id="one", through_turn_id="one", probes=1)
+        self.assertEqual(first["coverage_status"], "partial")
+        self.assertIsNone(self.state()["coverage"]["observation_sha256"])
+        final = self.invoke(mode="range", resume=True)
+        self.assertEqual(final["coverage_status"], "complete_observed")
+        self.assertEqual(final["usage"]["selected_items"], 0)
+        self.assertEqual(self.state()["coverage"]["observed_inventory"], [])
+        self.assertEqual(self.state()["coverage"]["closed_item_scopes"], [])
+        self.assertFalse(any(row.get("method") == "thread/items/list" for row in self.transcript()))
+
+    def test_invalid_absent_reversed_or_changed_range_anchor_never_completes(self):
+        for anchor in (None, False, [], "bad id"):
+            with self.subTest(anchor=anchor):
+                self.assertEqual(self.invoke(expected=2, after_turn_id=anchor)["reason"], "invalid_walk_after_turn")
+                self.assertFalse(self.log.exists())
+                self.assertFalse(self.output.exists())
+        for label, mode, anchor, reason in (
+            ("absent", "range", "missing", "after_turn_missing_or_reversed"),
+            ("reversed", "range", "three", "after_turn_missing_or_reversed"),
+            ("active", "range_anchor_active", "one", "nonterminal_selected_turn"),
+            ("changed", "range_anchor_changed", "one", "selected_inventory_changed")):
+            with self.subTest(label=label):
+                self.output = self.root / label
+                self.log.unlink(missing_ok=True)
+                result = self.invoke(expected=1, mode=mode, after_turn_id=anchor)
+                self.assertEqual(result["coverage_status"], "partial")
+                self.assertEqual(result["reason"], reason)
+                self.assertIsNone(self.state()["coverage"]["observation_sha256"])
+                self.assertFalse(any(row.get("params", {}).get("turnId") == "one" for row in self.transcript()))
+        self.output = self.root / "changed-before-resume-items"
+        self.log.unlink()
+        self.invoke(mode="range_anchor_changed", after_turn_id="one", probes=1)
+        resumed = self.invoke(expected=1, mode="range_anchor_changed", resume=True)
+        self.assertEqual(resumed["reason"], "selected_inventory_changed")
+        self.assertFalse(any(row.get("method") == "thread/items/list" for row in self.transcript()))
+
     def test_resume_rejects_file_mutation_rollback_pending_and_live_lock(self):
         self.invoke(probes=2)
         before = len(self.transcript())

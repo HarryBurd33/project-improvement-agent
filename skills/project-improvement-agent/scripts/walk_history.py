@@ -16,7 +16,7 @@ sys.dont_write_bytecode = True
 import read_history as reader
 
 
-VERSION = "1.9.0"
+VERSION = "1.10.0"
 MAXIMA = {"max_probes": 1024, "max_bytes": 536870912, "max_seconds": 900, "max_records": 20000}
 REQUIRED = {"schema_version", "thread_id", "through_turn_id", *MAXIMA}
 LARGE_BATCH_STRATEGY = "bounded_large_pages"
@@ -46,10 +46,11 @@ def blob(path, limit, private=False):
 def parse_plan(raw):
     value = reader.parse(raw, "invalid_walk_plan_json")
     require(isinstance(value, dict) and REQUIRED <= value.keys()
-            and value.keys() <= REQUIRED | {"page_strategy"}, "invalid_walk_plan_fields")
+            and value.keys() <= REQUIRED | {"page_strategy", "after_turn_id"}, "invalid_walk_plan_fields")
     plan = {"page_strategy": "standard_only", **value}
     require(type(plan["schema_version"]) is int and plan["schema_version"] == 1, "invalid_walk_plan_version")
     require(reader.identifier(plan["thread_id"]) and reader.identifier(plan["through_turn_id"]), "invalid_walk_scope")
+    require("after_turn_id" not in plan or reader.identifier(plan["after_turn_id"]), "invalid_walk_after_turn")
     require(plan["page_strategy"] in STRATEGIES, "invalid_walk_strategy")
     for name, maximum in MAXIMA.items():
         number = plan[name]
@@ -103,8 +104,11 @@ class Progress:
         self.plan = plan
         # Canonical JSON lines bind the logical scope, inventory and retained rows.
         # Probe sizes, attempts, runtime and resume boundaries do not describe content.
-        self.observation = hashlib.sha256(reader.encoded(
-            ["closed-walk-projection-v1", plan["thread_id"], plan["through_turn_id"]]))
+        scope = ["closed-walk-projection-v1", plan["thread_id"], plan["through_turn_id"]]
+        if "after_turn_id" in plan:
+            scope = ["closed-walk-range-v1", plan["thread_id"], plan["after_turn_id"], plan["through_turn_id"]]
+        self.observation = hashlib.sha256(reader.encoded(scope))
+        self.anchor = None
         self.phase = "inventory"
         self.cursor = None
         self.cursors = {None}
@@ -174,21 +178,35 @@ class Progress:
         return reader.validate_plan(probe), None
 
     def scan(self, records, next_cursor):
+        after = self.plan.get("after_turn_id")
         for row in records:
             turn = row["turn_id"]
             require(row["type"] == "turn" and reader.identifier(turn) and turn not in self.scan_ids,
                     "duplicate_or_invalid_turn")
             self.scan_ids.add(turn)
-            require(row["status"] in TERMINAL and type(row["completed_at_seconds"]) is int, "nonterminal_selected_turn")
+            if after is None or after in self.scan_ids:
+                require(row["status"] in TERMINAL and type(row["completed_at_seconds"]) is int,
+                        "nonterminal_selected_turn")
             self.scanning.append(row)
             if turn == self.plan["through_turn_id"]:
+                anchor = None
+                selected = self.scanning.copy()
+                if after is not None:
+                    require(after in self.scan_ids, "after_turn_missing_or_reversed")
+                    index = next(index for index, value in enumerate(selected) if value["turn_id"] == after)
+                    anchor = selected[index]
+                    selected = selected[index + 1:]
                 if self.phase == "inventory":
-                    self.inventory = self.scanning.copy()
+                    self.inventory = selected
+                    self.anchor = anchor
+                    if anchor is not None:
+                        self.observation.update(reader.encoded(anchor))
                     for turn_record in self.inventory:
                         self.observation.update(reader.encoded(turn_record))
-                    self.phase = "resume_inventory" if self.initial_scan_resumed else "items"
+                    self.phase = ("resume_inventory" if self.initial_scan_resumed else
+                                  "items" if self.inventory else "final_inventory")
                 else:
-                    require(self.scanning == self.inventory, "selected_inventory_changed")
+                    require(selected == self.inventory and anchor == self.anchor, "selected_inventory_changed")
                     self.phase = ("done" if self.phase == "final_inventory" else
                                   "items" if self.turn_index < len(self.inventory) else "final_inventory")
                 self.reset_scan()
@@ -322,7 +340,13 @@ class Progress:
             self.blocked = str(error)
 
     def view(self):
-        return {"phase": self.phase,
+        scope = {}
+        if "after_turn_id" in self.plan:
+            scope = {"range": {"after_turn_id": self.plan["after_turn_id"],
+                               "through_turn_id": self.plan["through_turn_id"],
+                               "start_exclusive": True, "end_inclusive": True},
+                     "observed_anchor": self.anchor, "earlier_item_coverage": "excluded"}
+        return {**scope, "phase": self.phase,
                 "observation_sha256": self.observation.hexdigest() if self.phase == "done" and not self.blocked else None,
                 "observed_inventory": self.inventory, "closed_item_scopes": self.ends,
                 "scope_excludes_after_cutoff": True, "blocked": self.blocked, "item_cursor": self.cursor,
@@ -547,7 +571,9 @@ def walk(args):
         return ({"coverage_status": "partial" if finalization_uncertain else state["coverage_status"],
                 "reason": reason, "state": str(directory / "state.json"), "state_sha256": state_sha,
                 "usage": progress.used, "measured_elapsed_us_before_summary": clock.elapsed(),
-                "snapshot_consistency": "unverified", "mutation_check": "turn_inventory_only"},
+                "snapshot_consistency": "unverified", "mutation_check": "turn_inventory_only",
+                **({"range": progress.view()["range"], "earlier_item_coverage": "excluded"}
+                   if "after_turn_id" in plan else {})},
                 int(bool(progress.blocked or finalization_uncertain)))
     finally:
         if own_marker and not validated_state:

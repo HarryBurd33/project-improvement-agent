@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.9.0
+# Portfolio review playbook — 1.10.0
 
 ## Inputs, authority, limits
 
@@ -160,3 +160,12 @@ For a changed-input qualification, provide a different synthetic mix of the supp
 ### Compare repeated history observations
 
 Turn inventories can match even when item text differs. When checking for this kind of change, follow the comparison procedure in references/history-and-host.md. Compare only completed observations made with matching scope and projection versions. Keep the two receipts and report exactly what agreed or differed. Attachment counts identify unexamined inputs. If the user separately supplies media, identify what you actually viewed and record its provenance before associating it with a historical item.
+
+
+### Continue after an already covered turn
+
+A small continuation after a previously covered prefix needed a separate private script because the walker always selected all item bodies up to its cutoff. Use the [closed-range option](references/history-and-host.md#select-a-closed-range-after-an-earlier-turn) when the current task authorizes only later history. Save the earlier terminal turn as after_turn_id and the inclusive new terminal cutoff as through_turn_id in a fresh plan and private output. Keep the earlier receipts separately.
+
+Check that the provider inventory contains both endpoints in order. The walker inventories turn metadata, rechecks the anchor and selected rows, and requests item bodies only after the anchor through the new cutoff. Equal endpoints cover an empty range only after metadata revalidation. Missing, reversed or changed boundaries leave the read partial. The range digest identifies both endpoints, anchor metadata and selected projection; it cannot establish earlier item coverage.
+
+To qualify changed input, save a fresh plan selecting a different known terminal anchor/cutoff from the same authorized provider scope. Independently compare item requests, ordered selected records and closed item scopes against that interval. Pause at a finite probe limit, verify a partial digest is absent, then resume with the same source versions and confirm fresh matching anchor/suffix metadata before additional item calls. Check cleanup and retained shared usage. Preserve snapshot consistency as unverified.

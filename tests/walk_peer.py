@@ -29,6 +29,17 @@ def item(turn_id, name, kind="userMessage"):
 def page(log, method, params, mode):
     if method == "thread/turns/list":
         inventory = [turn("one"), turn("two", status="interrupted"), turn("after", "inProgress", None)]
+        if mode.startswith("range"):
+            inventory = [turn("one"), turn("two", status="interrupted"), turn("three", status="failed"),
+                         turn("after", "inProgress", None)]
+            if mode == "range_long":
+                inventory = [turn(f"older-{index}") for index in range(20)] + inventory
+            if mode == "range_anchor_changed" and sum(
+                json.loads(row).get("method") == "thread/turns/list" for row in Path(log.name).read_text().splitlines()
+            ) > 1:
+                inventory[0]["completedAt"] = 40
+            if mode == "range_anchor_active":
+                inventory[0]["status"], inventory[0]["completedAt"] = "inProgress", None
         if mode == "changed" or (mode == "final_changed" and sum(
             json.loads(row).get("method") == "thread/turns/list" for row in Path(log.name).read_text().splitlines()
         ) > 1):
@@ -46,6 +57,9 @@ def page(log, method, params, mode):
         return inventory[start:end], f"inventory-{end}" if end < len(inventory) else None
     assert method == "thread/items/list"
     turn_id = params["turnId"]
+    if mode.startswith("range"):
+        assert turn_id in {"two", "three"}, "Older/anchor bodies must never be requested"
+        return [item(turn_id, turn_id + "-user")], None
     assert turn_id in {"one", "two"} or (mode == "long_inventory" and turn_id.startswith("older-"))
     if mode == "pending":
         time.sleep(10)
