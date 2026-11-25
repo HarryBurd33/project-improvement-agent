@@ -113,3 +113,5 @@ Version 1.10.0 adds an optional exclusive after_turn_id to bounded history walks
 Version 1.11.0 adds explicit read-only verification for a captured terminal final-write witness. It derives scoped coverage under separate finite artifact checks while preserving the original partial run, marker and collection budget. The saved procedure covers captured stdout, unchanged evidence, origin exit and idempotent verification.
 
 Version 1.12.0 adds a bounded read-only inspector for committed evidence from exact released history formats. It reports retained counts and stopped scope without certifying original completion or deadline compliance. The existing walker and reader bytes retain their previous resume and witness-verification behavior.
+
+Version 1.13.0 extends the offline inspector to exact tagged v1.6.0, v1.7.0 and v1.8.0 source pairs. Compatibility profiles preserve their original reader versions, page-reset behavior and missing view field. Matching bytes provide a compatible source reference while the original package identity remains unverified.

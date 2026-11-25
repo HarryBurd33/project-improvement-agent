@@ -184,7 +184,17 @@ Use `scripts/inspect_history.py --run DIR` for a quiescent private history walk 
 python3 scripts/inspect_history.py --run "$private_saved_walk"
 ```
 
-The initial qualified producers are walker 1.9.0 at commit aa20991, walker 1.10.0 at 8dc22d9, and walker 1.11.0 at 53ecb69, each paired with reader 1.9.0. The registry checks exact walker and reader hashes from those commits, not skill version labels alone. Version 1.9 supports prefix plans only. The known unjournaled timing-only classifier from 1.9 and 1.10 is recognized only when the remaining replay view matches exactly. Earlier 1.6–1.8 formats and unreleased source pairs are explicitly unsupported because their projections, fallback behavior, digest fields or internal source versions differ.
+The registry checks exact observed walker version and both source hashes. The modern pairs remain walker 1.9.0 at aa20991, 1.10.0 at 8dc22d9 and 1.11.0 at 53ecb69, each with reader 1.9.0. Earlier qualified references are:
+
+| Compatible tag | Reference commit | Internal walker | Internal reader |
+| --- | --- | --- | --- |
+| v1.6.0 | 45e589c | 1.6.0 | 1.6.0 |
+| v1.7.0 | bd27cdc | 1.6.0 | 1.7.0 |
+| v1.8.0 | 380078a | 1.7.1 | 1.7.0 |
+
+The source pair identifies compatible tagged bytes, while original_package_identity remains unverified. The released_commit field names the trusted reference commit. An intermediate commit shares the v1.8 bytes, and a v1.7.1 tag was not resolved. The inspector reports compatible_release_tags without inferring that original package identity. Unknown, mixed and prerelease source pairs refuse.
+
+All early profiles and 1.9 are prefix-only. Every original receipt reader_version must match its profile before a local header copy is passed to the current pure checker. Profiles reproduce the older successful-page reset for v1.6/v1.7 and the retained single-item size for v1.8. They omit only the observation_sha256 field genuinely absent from old views; every other view field stays exact. Older aggregate-only non-text counts leave subtype information unknown. The known unjournaled timing-only classifier is recognized for these exact early sources, 1.9 and 1.10 only when the remaining replay view matches. Inspection never invents a historical completion digest.
 
 The inspector acquires the existing exclusive lock and refuses an active recorded origin. It checks the original raw plan, source pair, journal order, requests, cursor chain and every committed receipt/record hash under the existing fixed local verification envelope of 15 seconds, 512 MiB read, 20000 records and 1024 receipts. Reads, loops and directory enumeration are bounded. A missing or corrupt committed file, unsafe path, incompatible producer, conflicting observation, changed coverage or malformed reservation refuses inspection with no accepted digest. Blocking filesystem operations can overrun physically, after which the next budget check refuses success.
 

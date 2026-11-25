@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.12.0
+# Portfolio review playbook — 1.13.0
 
 ## Inputs, authority, limits
 
@@ -187,3 +187,12 @@ An older terminal-looking partial retained useful hashed records but could not u
 Run the inspector on the quiescent original private directory after checking its owner. Compare its trusted producer pair, raw plan binding, committed probe hashes, record counts and closed versus incomplete scopes with independent retained evidence. A pending next slot has an unknown outcome. Its directory may contain incomplete or complete-looking files, but those bytes are excluded. A producer-rejected conflicting observation is refused rather than counted as a recovered item. Preserve the original run, marker, budgets and stopped decisions.
 
 For changed-input qualification, use a separately saved known partial with a different selected scope and stop point. Follow the same saved inspector command, compare its committed counts, partial cursor and unreached scopes against the independently frozen fixture, and verify all original files and provider call records remain identical. Repeat inspection to confirm the same committed digest. A successful inspection never authorizes collection or implementation of historical requests. Use the earlier helper versions for a separately authorized source-bound resume.
+
+
+### Match early producer bytes before interpreting the archive
+
+An older saved 1.6 artifact was refused by the first inspector because its reader version, missing view field and page-reset behavior differed from the current engine. The inspector now selects a small compatibility profile from the exact observed walker version and both source hashes. It checks every original receipt reader version before adapting a local copy for pure replay. It never changes installed version globals or loads code from a run.
+
+Follow the [supported-source registry](references/history-and-host.md#inspect-supported-older-committed-evidence). Report internal versions and compatible tagged references separately. The v1.7 release uses the same walker label as v1.6 with a different reader. The v1.8 tagged bytes use the internal walker label 1.7.1, which is also shared by an intermediate commit. Those bytes do not establish the original installed package, and no missing tag should be invented.
+
+For changed-input qualification, use another exact tagged-source synthetic partial at a different stop point. Check the actual saved cursor and item stage: v1.6/v1.7 reset successful fallback pages to the wider count, while v1.8 keeps the single-item size until the turn ends. Verify replayed requests and committed counts through a persisted pause and distinct-process resume. Compare all original hashes and the committed digest before and after inspection. Keep old missing subtype information unknown and original completion/deadline unverified.
