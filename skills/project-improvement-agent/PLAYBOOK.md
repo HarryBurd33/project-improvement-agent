@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.13.0
+# Portfolio review playbook — 1.14.0
 
 ## Inputs, authority, limits
 
@@ -182,7 +182,7 @@ For changed-input qualification, save a fresh selected plan, private output and 
 
 ### Inspect older committed history evidence
 
-An older terminal-looking partial retained useful hashed records but could not use the newer final-write witness verifier. The [committed-evidence inspector](references/history-and-host.md#inspect-supported-older-committed-evidence) now replays only exact qualified released formats without running the archived producer. Its result identifies retained observations and missing scope while leaving original completion and deadline compliance unverified.
+An older terminal-looking partial retained useful hashed records but could not use the newer final-write witness verifier. The [committed-evidence inspector](references/history-and-host.md#inspect-supported-older-committed-evidence) now replays only exact qualified source formats without running the archived producer. Its result identifies retained observations and missing scope while leaving original completion and deadline compliance unverified.
 
 Run the inspector on the quiescent original private directory after checking its owner. Compare its trusted producer pair, raw plan binding, committed probe hashes, record counts and closed versus incomplete scopes with independent retained evidence. A pending next slot has an unknown outcome. Its directory may contain incomplete or complete-looking files, but those bytes are excluded. A producer-rejected conflicting observation is refused rather than counted as a recovered item. Preserve the original run, marker, budgets and stopped decisions.
 
@@ -196,3 +196,12 @@ An older saved 1.6 artifact was refused by the first inspector because its reade
 Follow the [supported-source registry](references/history-and-host.md#inspect-supported-older-committed-evidence). Report internal versions and compatible tagged references separately. The v1.7 release uses the same walker label as v1.6 with a different reader. The v1.8 tagged bytes use the internal walker label 1.7.1, which is also shared by an intermediate commit. Those bytes do not establish the original installed package, and no missing tag should be invented.
 
 For changed-input qualification, use another exact tagged-source synthetic partial at a different stop point. Check the actual saved cursor and item stage: v1.6/v1.7 reset successful fallback pages to the wider count, while v1.8 keeps the single-item size until the turn ends. Verify replayed requests and committed counts through a persisted pause and distinct-process resume. Compare all original hashes and the committed digest before and after inspection. Keep old missing subtype information unknown and original completion/deadline unverified.
+
+
+### Inspect the explicitly selected pre-release pair
+
+A retained preview was refused despite sharing an internal version with a release. Comparing trusted source bytes showed one historical difference: the preview allowed 128 MiB of collection input, while tagged v1.6.0 allowed 512 MiB. Version labels alone were insufficient. The inspector now requires the exact preview walker/reader pair and validates its historical plan ceiling before replay. It does not change current verification caps or existing released profiles.
+
+After current intake and ownership checks, follow the supported-source registry and run `python3 scripts/inspect_history.py --run /private/saved-walk` from the installed skill directory. Keep the original directory quiescent and private; this command never resumes collection. Expect `producer.compatibility` to be `explicit_prerelease`, an empty compatible-release-tags list and original-package identity `unverified`. No released commit is inferred. Confirm the saved collection plan is at most 134217728 bytes; a larger plan refuses even when its hashes were consistently rebound. Original completion, deadline and pending outcomes stay unverified.
+
+For changed-input reuse, inspect a second independently saved exact-pair fixture with a different stop boundary. Compare retained counts, partial cursor and closed/unreached scopes against its separate expected evidence; do not copy the first result. Repeat inspection and compare original file hashes and provider logs before/after. A synthetic at-cap pause/resume exercise retained one then two items, while a released-source plan above that cap remained supported. A refused artifact is never repaired or relabeled by inspection.

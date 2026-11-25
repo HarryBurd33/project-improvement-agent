@@ -115,3 +115,5 @@ Version 1.11.0 adds explicit read-only verification for a captured terminal fina
 Version 1.12.0 adds a bounded read-only inspector for committed evidence from exact released history formats. It reports retained counts and stopped scope without certifying original completion or deadline compliance. The existing walker and reader bytes retain their previous resume and witness-verification behavior.
 
 Version 1.13.0 extends the offline inspector to exact tagged v1.6.0, v1.7.0 and v1.8.0 source pairs. Compatibility profiles preserve their original reader versions, page-reset behavior and missing view field. Matching bytes provide a compatible source reference while the original package identity remains unverified.
+
+Version 1.14.0 adds one exact pre-release source pair to offline committed-evidence inspection. It enforces that producer's historical 128 MiB collection ceiling and labels compatibility without inventing a release or package identity. Released profiles and the current collection helpers remain unchanged. See the [saved procedure](skills/project-improvement-agent/PLAYBOOK.md#inspect-the-explicitly-selected-pre-release-pair).

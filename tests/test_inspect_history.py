@@ -168,6 +168,61 @@ raise SystemExit(walker.main(sys.argv[1:]))
                                   if probe["receipt"]["plan"]["operation"] == "items"]
                         self.assertEqual(limits, [20, 1, 1, 1] if tag == "v1.8.0" else [20, 1, 1, 20])
 
+    def test_exact_preview_profile_historical_cap_and_identity(self):
+        for phase in ("partial", "resumed"):
+            self.write_early_fixture("preview/" + phase)
+            before = self.hashes()
+            result = self.inspect()
+            producer = result["producer"]
+            self.assertEqual(producer["compatibility"], "explicit_prerelease")
+            self.assertEqual(producer["compatible_release_tags"], [])
+            self.assertNotIn("released_commit", producer)
+            self.assertEqual(producer["original_package_identity"], "unverified")
+            self.assertEqual(producer["historical_plan_limits"], {"max_bytes": 134217728})
+            self.assertEqual(result["committed"]["items"], 1 if phase == "partial" else 2)
+            self.assertEqual(before, self.hashes())
+            # A well-typed current-valid plan is still outside this producer's cap.
+            plan_path = self.fixture.output / "plan.json"
+            state_path = self.fixture.output / "state.json"
+            original_plan, original_state = plan_path.read_bytes(), state_path.read_bytes()
+            plan = json.loads(original_plan)
+            plan["max_bytes"] = 134217729
+            raw = (json.dumps(plan) + "\n").encode()
+            state = json.loads(original_state)
+            state["plan"]["max_bytes"] = plan["max_bytes"]
+            state["plan_sha256"] = hashlib.sha256(raw).hexdigest()
+            plan_path.write_bytes(raw)
+            state_path.write_text(json.dumps(state))
+            self.assertEqual(self.inspect(expected=2)["reason"], "unsupported_producer_plan_limit")
+            plan_path.write_bytes(original_plan)
+            state_path.write_bytes(original_state)
+
+    def test_released_profile_retains_above_preview_cap(self):
+        self.write_early_fixture("released-above-preview-cap/partial")
+        result = self.inspect()
+        self.assertEqual(result["producer"]["compatible_release_tags"], ["v1.6.0"])
+        self.assertEqual(result["committed"]["items"], 1)
+        self.assertNotIn("historical_plan_limits", result["producer"])
+
+    def test_preview_source_reconstructs_from_pinned_public_git(self):
+        root = INSPECTOR.parents[3]
+        if not (root / ".git").exists():
+            self.skipTest("Source ZIP: portable preview artifact tests still run")
+        commit = "45e589c72bbd2f141394ec9bceed61616f0e486c"
+        def source(name):
+            result = subprocess.run(["git", "show", commit + ":skills/project-improvement-agent/scripts/" + name],
+                                    cwd=root, capture_output=True, timeout=10)
+            self.assertEqual(result.returncode, 0, "Pinned public Git object required in checkout/CI")
+            return result.stdout
+        released = source("walk_history.py")
+        self.assertEqual(hashlib.sha256(released).hexdigest(), "d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95")
+        old, new = b'"max_bytes": 536870912', b'"max_bytes": 134217728'
+        self.assertEqual(released.count(old), 1)
+        self.assertEqual(hashlib.sha256(released.replace(old, new)).hexdigest(),
+                         "e1c0fd50891f288a92d43c882b8a4910afc863892d6f5da6d3c5eb8504ee2c39")
+        self.assertEqual(hashlib.sha256(source("read_history.py")).hexdigest(),
+                         "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743")
+
     def test_early_profiles_reject_mixed_pair_wrong_receipt_and_extra_view_field(self):
         self.write_early_fixture("v1.7.0/partial")
         state_path = self.fixture.output / "state.json"
