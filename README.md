@@ -107,3 +107,5 @@ Version 1.8.0 preserves each recommendation's supplied routing, dependencies and
 Version 1.9.0 validates supported non-text user inputs before accepting a history page and records bounded omission counts by type. Attachment payloads and locators remain omitted, and older aggregate-only records leave the modality mix unknown.
 
 Completed history walks also provide a digest of the ordered retained records. Compare separately bounded observations of the same closed scope to detect changes to the retained content even when turn metadata matches.
+
+Version 1.10.0 adds an optional exclusive after_turn_id to bounded history walks. A fresh range inventories and validates both endpoints, reads only the selected later item bodies, and preserves its own resume state and observation digest. Earlier prefix coverage requires its separate evidence.

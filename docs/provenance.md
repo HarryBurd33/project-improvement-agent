@@ -34,3 +34,7 @@ Version 1.8.0 adapts the existing MIT portfolio report and tests with an origina
 ### Non-text user content validation
 
 Version 1.9.0 adapts the original MIT reader with validation of the six non-text UserInput variants from the locally generated Codex CLI 0.166.0 schema. A bounded per-type omission counter supplements the existing total. No provider implementation, generated schema, attachment body or locator is redistributed.
+
+### Closed range after a terminal anchor
+
+Version 1.10.0 adapts the original MIT walker with an explicit exclusive start turn and the existing inclusive cutoff. It reuses the existing read-only turn/item methods, bounded reader and minimized record projection. No provider code or private continuation script was copied.

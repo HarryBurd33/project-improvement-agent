@@ -76,7 +76,7 @@
       "purpose": "Portfolio review PLAYBOOK.md",
       "kind": "instructions",
       "location": "PLAYBOOK.md",
-      "version": "1.9.0",
+      "version": "1.10.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -99,7 +99,7 @@
       "purpose": "Portfolio review SKILL.md",
       "kind": "instructions",
       "location": "SKILL.md",
-      "version": "1.9.0",
+      "version": "1.10.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -312,7 +312,7 @@
       "purpose": "Receipt validation and explicit history/host evidence procedure: references/history-and-host.md",
       "kind": "reference",
       "location": "references/history-and-host.md",
-      "version": "1.9.0",
+      "version": "1.10.0",
       "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
       "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
       "dependencies": [],
@@ -556,9 +556,9 @@
       "purpose": "Optional bounded closed-prefix history coverage for the existing manual audit",
       "kind": "tool",
       "location": "scripts/walk_history.py",
-      "version": "1.9.0",
-      "input_contract": "One authorized explicit closed thread prefix, finite shared caps, new private destination or previously owned resume",
-      "output_contract": "Bounded aggregate coverage and private immutable probe receipts with exact cursor chain",
+      "version": "1.10.0",
+      "input_contract": "One authorized closed thread prefix or explicit (after_turn_id, through_turn_id] range, finite shared caps, new private destination or source-bound resume",
+      "output_contract": "Bounded scoped coverage, optional explicit range/anchor, private immutable probe receipts and domain-separated completed observation digest",
       "dependencies": [
         "selected-history-reader"
       ],
@@ -574,7 +574,7 @@
         ]
       },
       "replaces": null,
-      "reuse_decision": "Reuse the indexed selected-history parser, validation and transport for finite aggregate traversal and resume state"
+      "reuse_decision": "Adapt existing bounded walker with exclusive range selection while preserving omitted-option full-prefix behavior"
     }
   ]
 }
