@@ -103,3 +103,7 @@ The [desktop checklist](skills/project-improvement-agent/assets/invocation-check
 Version 1.7.1 preserves one-item reads through the rest of a turn after the standard adaptive walker recovers an oversized page. An orderly resume retains the recovered size.
 
 Version 1.8.0 preserves each recommendation's supplied routing, dependencies and full prompt inside its copyable block. Missing legacy routing is explicitly unknown, workload estimates remain separate, and embedded backtick fences are enclosed safely.
+
+Version 1.9.0 validates supported non-text user inputs before accepting a history page and records bounded omission counts by type. Attachment payloads and locators remain omitted, and older aggregate-only records leave the modality mix unknown.
+
+Completed history walks also provide a digest of the ordered retained records. Compare separately bounded observations of the same closed scope to detect changes to the retained content even when turn metadata matches.
