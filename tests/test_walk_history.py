@@ -593,19 +593,45 @@ walker.replay = slow_replay
         self.assertNotIn("finalization_witness", partial)
         self.assertEqual(self.verify_capture(partial, expected=2)["reason"], "invalid_finalization_witness")
         self.output = self.root / "overdeadline"
-        late = self.invoke(expected=1, max_seconds=4, inject="""
+        late = self.invoke(expected=1, max_seconds=30, inject="""
 publish = walker.publish
-slow_done = False
+monotonic_ns = time.monotonic_ns
+clock_offset = 0
+slow_terminal = False
+slow_setup = False
+def controlled_monotonic_ns():
+    return monotonic_ns() + clock_offset
+
 def slow_publish(directory, name, raw, replace=False):
-    global slow_done
-    if name == "state.json" and b'"reason":"selected_scope_end"' in raw and not slow_done:
-        slow_done = True
-        time.sleep(4.1)
-    return publish(directory, name, raw, replace)
+    global slow_terminal, slow_setup, clock_offset
+    if name == "state.json" and b'"reason":"ready"' in raw and not slow_setup:
+        slow_setup = True
+        time.sleep(1.2)
+    result = publish(directory, name, raw, replace)
+    if name == "state.json" and b'"reason":"selected_scope_end"' in raw and not slow_terminal:
+        slow_terminal = True
+        time.sleep(0.4)
+    if name == walker.INVOCATION_MARKER and b'"terminal_commitment"' in raw:
+        # Advance only after the genuine last marker write and fsync returned.
+        # A generous collection allowance keeps slow setup from skipping this stage.
+        clock_offset = 31 * walker.MICROS * 1000
+    return result
+
+time.monotonic_ns = controlled_monotonic_ns
 walker.publish = slow_publish
 """)
         self.assertNotIn("finalization_witness", late)
         self.assertEqual(late["coverage_status"], "partial")
+        self.assertEqual(late["reason"], "finalization_time_uncertain")
+        state = self.state()
+        self.assertEqual(state["coverage"]["phase"], "done")
+        self.assertIsNone(state["pending"])
+        self.assertGreaterEqual(state["coverage"]["usage"]["orchestration_elapsed_us"], 1_200_000)
+        self.assertGreater(late["measured_elapsed_us_before_summary"], 30 * 1_000_000)
+        marker = json.loads((self.output / ".invocation").read_bytes())
+        self.assertIn("terminal_commitment", marker)
+        self.assertEqual(marker["terminal_state_sha256"], hashlib.sha256((self.output / "state.json").read_bytes()).hexdigest())
+        self.assertEqual(self.verify_capture(late, expected=2)["reason"], "invalid_finalization_witness")
 
     def test_resume_rejects_file_mutation_rollback_pending_and_live_lock(self):
         self.invoke(probes=2)
