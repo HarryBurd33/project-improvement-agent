@@ -30,3 +30,7 @@ Version 1.7.0 adapts the existing MIT reader and synthetic test peer. The Codex 
 ### Recommendation report rendering
 
 Version 1.8.0 adapts the existing MIT portfolio report and tests with an original shared prompt renderer. It preserves supplied routing and dependencies across report modes and chooses the enclosing fence from the complete copied content. No new runtime or dependency was added.
+
+### Non-text user content validation
+
+Version 1.9.0 adapts the original MIT reader with validation of the six non-text UserInput variants from the locally generated Codex CLI 0.166.0 schema. A bounded per-type omission counter supplements the existing total. No provider implementation, generated schema, attachment body or locator is redistributed.

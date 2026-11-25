@@ -420,6 +420,44 @@ class ReadHistoryTest(unittest.TestCase):
                 self.assertEqual(receipt["accepted_page_count"], 0)
                 self.assertEqual(rows, [])
 
+    def test_nontext_inventory_counts_types_without_retaining_locators(self):
+        for scenario, images in (("nontext_mixed", 1), ("nontext_empty_dual", 2)):
+            with self.subTest(scenario=scenario):
+                self.output = self.root / scenario
+                result, _ = self.invoke(scenario)
+                receipt, rows = self.private(0, result)
+                row = rows[0]
+                counts = {"image": images, "localImage": 1, "audio": 1, "localAudio": 1, "skill": 1, "mention": 1}
+                self.assertEqual(row["omitted_nontext_parts_by_type"], counts)
+                self.assertEqual(row["omitted_nontext_parts"], sum(counts.values()))
+                self.assertEqual(row["text_parts"], ["Exact user text\nπ\t  "])
+                self.assertEqual(set(row), {"type", "turn_id", "item_id", "role", "started_at_ms", "completed_at_ms",
+                                            "text_parts", "omitted_nontext_parts", "omitted_nontext_parts_by_type"})
+                self.assertEqual(receipt["reader_version"], "1.9.0")
+
+    def test_nontext_required_fields_and_optional_details_are_validated_atomically(self):
+        for name in ("image_no_source", "image_wrong_url", "image_bad_detail", "image_bad_detail_string",
+                     "local_image_no_path", "local_image_bad_detail", "audio_no_url", "local_audio_wrong_path",
+                     "skill_no_name", "skill_wrong_path", "mention_no_path", "mention_wrong_name"):
+            with self.subTest(name=name):
+                self.output = self.root / name
+                result, _ = self.invoke("nontext_bad_" + name, cursor="unchanged-input")
+                receipt, rows = self.private(1, result)
+                self.assertEqual(receipt["reason"], "invalid_user_content")
+                self.assertEqual(receipt["accepted_page_count"], 0)
+                self.assertEqual(receipt["last_safe_cursor"], "unchanged-input")
+                self.assertEqual(rows, [])
+
+    def test_nontext_invalid_page_preserves_prior_accepted_page_and_cursor(self):
+        result, _ = self.invoke("nontext_invalid_second_page")
+        receipt, rows = self.private(1, result)
+        self.assertEqual(receipt["reason"], "invalid_user_content")
+        self.assertEqual(receipt["status"], "partial")
+        self.assertEqual(receipt["accepted_page_count"], 1)
+        self.assertEqual(receipt["last_safe_cursor"], "nontext-next")
+        self.assertEqual([row["text_parts"] for row in rows], [["First safe page"]])
+        self.assertNotIn("omitted_nontext_parts_by_type", rows[0])
+
     def test_valid_empty_page_finishes_only_selected_scope(self):
         result, _ = self.invoke("empty")
         receipt, rows = self.private(0, result)

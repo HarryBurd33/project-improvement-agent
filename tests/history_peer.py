@@ -55,6 +55,40 @@ def assistant_rows(mode):
     return rows
 
 
+def nontext_parts(mode):
+    parts = [{"type": "image", "fileId": "PRIVATE_FILE_ID"},
+             {"type": "localImage", "path": "PRIVATE_IMAGE_PATH", "detail": "original"},
+             {"type": "audio", "url": "PRIVATE_AUDIO_URL"},
+             {"type": "localAudio", "path": "PRIVATE_AUDIO_PATH"},
+             {"type": "skill", "name": "PRIVATE_SKILL", "path": "PRIVATE_SKILL_PATH"},
+             {"type": "mention", "name": "PRIVATE_MENTION", "path": "PRIVATE_MENTION_PATH"}]
+    if mode == "nontext_empty_dual":
+        parts = [{"type": "image", "url": "", "fileId": 42, "detail": None, "extra": "PRIVATE_EXTRA"},
+                 {"type": "image", "url": False, "fileId": "", "detail": "high"},
+                 {"type": "localImage", "path": ""}, {"type": "audio", "url": ""},
+                 {"type": "localAudio", "path": ""}, {"type": "skill", "name": "", "path": ""},
+                 {"type": "mention", "name": "", "path": ""}]
+    elif mode == "nontext_invalid_second_page":
+        parts = [{"type": "image"}]
+    invalid = {
+        "image_no_source": {"type": "image"},
+        "image_wrong_url": {"type": "image", "url": 42},
+        "image_bad_detail": {"type": "image", "fileId": "PRIVATE_ID", "detail": {}},
+        "image_bad_detail_string": {"type": "image", "fileId": "PRIVATE_ID", "detail": "max"},
+        "local_image_no_path": {"type": "localImage"},
+        "local_image_bad_detail": {"type": "localImage", "path": "PRIVATE_PATH", "detail": False},
+        "audio_no_url": {"type": "audio"},
+        "local_audio_wrong_path": {"type": "localAudio", "path": []},
+        "skill_no_name": {"type": "skill", "path": "PRIVATE_PATH"},
+        "skill_wrong_path": {"type": "skill", "name": "PRIVATE_NAME", "path": False},
+        "mention_no_path": {"type": "mention", "name": "PRIVATE_NAME"},
+        "mention_wrong_name": {"type": "mention", "name": {}, "path": "PRIVATE_PATH"},
+    }
+    if mode.startswith("nontext_bad_"):
+        parts = [invalid[mode.removeprefix("nontext_bad_")]]
+    return [{"type": "text", "text": "Exact user text\nπ\t  "}, *parts]
+
+
 def main():
     mode = os.environ["PIA_TEST_SCENARIO"]
     with open(os.environ["PIA_TEST_TRANSCRIPT"], "a", encoding="utf-8") as log:
@@ -110,6 +144,14 @@ def main():
                 elif mode == "turn_view_explicit":
                     data[0]["itemsView"] = "notLoaded"
                 emit({"id": req_id, "result": {"data": data, "nextCursor": None}})
+                continue
+            if mode.startswith("nontext_"):
+                row = entry("nontext-" + str(req_id))
+                row["item"]["content"] = nontext_parts(mode)
+                if mode == "nontext_invalid_second_page" and req_id == 2:
+                    row["item"]["content"] = [{"type": "text", "text": "First safe page"}]
+                cursor = "nontext-next" if mode == "nontext_invalid_second_page" and req_id == 2 else None
+                emit({"id": req_id, "result": {"data": [row], "nextCursor": cursor}})
                 continue
             if mode.startswith("assistant_"):
                 emit({"id": req_id, "result": {"data": assistant_rows(mode), "nextCursor": "assistant-next",

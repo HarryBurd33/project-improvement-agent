@@ -182,3 +182,15 @@ All 150 local tests passed on Python 3.9.6 and Python 3.15.0. Four new tests cov
 These observations concern rendering supplied records. Current source review, fresh generated-agent runs, active installation and remote release are separately checked during delivery.
 
 After integration with version 1.7.1, all 151 tests passed, including the same-turn history recovery regression.
+
+## Non-text user input validation 1.9.0
+
+The locally generated Codex CLI 0.166.0 schema defines image, localImage, audio, localAudio, skill and mention user inputs. The reader now validates their required source/path/name field types and optional image detail before accepting a page. Schema-valid empty strings, image URL-or-file-ID alternatives and unknown ancillary fields remain supported. User records containing non-text parts gain bounded omitted_nontext_parts_by_type counts alongside the existing total. Attachment and reference locators and payloads stay omitted. Text-only records keep their former projection.
+
+Ten actual synthetic foreground CLI baseline cases included eight malformed non-text variants that the previous reader accepted as complete pages. The repaired reader rejected those eight pages without accepting records or advancing the input cursor. The mixed valid control passed and kept counts for all six kinds. The unknown-type control continued to reject. Each run confirmed cleanup and its evidence hash and byte counters. Additional local tests cover image alternatives, empty strings, invalid detail, all required fields, and preserving the first accepted page and cursor when a second page is malformed.
+
+The current combined candidate passed all 155 local tests on Python 3.9.6 and 3.15.0. Exact source inventory, Markdown links and the Agent Forge ready audit passed. These synthetic reads used no actual account history or attachment access. A modality count indicates omitted content and cannot establish its meaning. Records with only the historical aggregate leave the mix unknown. Provider snapshot consistency remains unverified.
+
+A separate six-walk comparison changed user text, item order, item count and thread scope. Each change produced a different digest. A paused, repaginated walk reproduced the original digest after resume. Two actual bounded Codex reads of the same closed synthetic control turn also agreed on all three observed items. This measures agreement of the observed projections. Atomic provider snapshots and excluded attachment contents remain unverified.
+
+Two fresh model runs used the reader with a synthetic history provider. One reported the three omitted types and correctly described a separately supplied image. Its report kept the relationship between the image and the historical references unknown. With changed input, the other reported two omitted audio parts and a mention and explained why the retained records could not support transcription.

@@ -2,6 +2,7 @@
 """Walk one closed Codex history prefix using bounded, private reader receipts."""
 import argparse
 import fcntl
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -15,7 +16,7 @@ sys.dont_write_bytecode = True
 import read_history as reader
 
 
-VERSION = "1.7.1"
+VERSION = "1.9.0"
 MAXIMA = {"max_probes": 1024, "max_bytes": 536870912, "max_seconds": 900, "max_records": 20000}
 REQUIRED = {"schema_version", "thread_id", "through_turn_id", *MAXIMA}
 LARGE_BATCH_STRATEGY = "bounded_large_pages"
@@ -100,6 +101,10 @@ def exact_count(value, maximum):
 class Progress:
     def __init__(self, plan):
         self.plan = plan
+        # Canonical JSON lines bind the logical scope, inventory and retained rows.
+        # Probe sizes, attempts, runtime and resume boundaries do not describe content.
+        self.observation = hashlib.sha256(reader.encoded(
+            ["closed-walk-projection-v1", plan["thread_id"], plan["through_turn_id"]]))
         self.phase = "inventory"
         self.cursor = None
         self.cursors = {None}
@@ -179,6 +184,8 @@ class Progress:
             if turn == self.plan["through_turn_id"]:
                 if self.phase == "inventory":
                     self.inventory = self.scanning.copy()
+                    for turn_record in self.inventory:
+                        self.observation.update(reader.encoded(turn_record))
                     self.phase = "resume_inventory" if self.initial_scan_resumed else "items"
                 else:
                     require(self.scanning == self.inventory, "selected_inventory_changed")
@@ -198,6 +205,8 @@ class Progress:
                 and all(row["turn_id"] == turn and row["type"] in reader.ITEMS for row in records)
                 and not keys & self.identities, "duplicate_or_wrong_item")
         require(next_cursor is None or next_cursor not in self.cursors, "item_cursor_cycle")
+        for row in records:
+            self.observation.update(reader.encoded(row))
         self.identities.update(keys)
         self.used["selected_items"] += len(records)
         users = sum(row["type"] == "userMessage" for row in records)
@@ -313,7 +322,9 @@ class Progress:
             self.blocked = str(error)
 
     def view(self):
-        return {"phase": self.phase, "observed_inventory": self.inventory, "closed_item_scopes": self.ends,
+        return {"phase": self.phase,
+                "observation_sha256": self.observation.hexdigest() if self.phase == "done" and not self.blocked else None,
+                "observed_inventory": self.inventory, "closed_item_scopes": self.ends,
                 "scope_excludes_after_cutoff": True, "blocked": self.blocked, "item_cursor": self.cursor,
                 "inventory_cursor": self.scan_cursor, "item_stage": self.stage, "item_batch_limit": self.batch_limit,
                 "next_turn_index": self.turn_index, "initial_scan_resumed": self.initial_scan_resumed, "usage": self.used, "provider_version": self.provider_version,

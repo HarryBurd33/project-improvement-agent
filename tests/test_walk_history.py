@@ -109,6 +109,21 @@ class WalkTest(unittest.TestCase):
                          ["Exact π 🌱\n  "])
         self.assert_private_receipts()
 
+    def test_complete_digest_tracks_projection_and_survives_resume(self):
+        self.invoke(probes=2)
+        self.assertIsNone(self.state()["coverage"]["observation_sha256"])
+        self.invoke(resume=True)
+        resumed = self.state()["coverage"]["observation_sha256"]
+
+        self.output = self.root / "fresh"
+        self.invoke()
+        self.assertRegex(resumed, r"^[a-f0-9]{64}$")
+        self.assertEqual(resumed, self.state()["coverage"]["observation_sha256"])
+
+        self.output = self.root / "changed-item"
+        self.invoke(mode="assistant")
+        self.assertNotEqual(resumed, self.state()["coverage"]["observation_sha256"])
+
     def test_resume_mid_inventory_revalidates_before_items(self):
         first = self.invoke(mode="long_inventory", probes=1)
         self.assertEqual(first["usage"]["source_list_calls"], 1)

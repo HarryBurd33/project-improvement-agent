@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.8.0
+# Portfolio review playbook — 1.9.0
 
 ## Inputs, authority, limits
 
@@ -147,3 +147,16 @@ A report formerly showed routing or dependencies elsewhere while omitting them f
 Before handing off a recommendation, copy only its block and compare it against that record's supplied routing, dependencies and seven prompt fields. Keep workload effort separate from reasoning effort. Legacy records with missing routing show Unknown (not supplied). Empty or invalid supplied routing shows Unknown (invalid supplied value), requiring clarification in the report rather than a guessed model choice.
 
 For changed-input qualification, save a second synthetic finding with a different model, reasoning effort, destination, dependency and context. Include a literal multiline fence. Run the same read-only report command from the [state procedure](references/state.md), compare the actual copied block with those new fields and ensure verification remains inside its fence. Compare state bytes before and after both reports. Record source findings and planned checks with their original evidence status.
+
+
+### Verify omitted user content
+
+A synthetic provider check found that malformed image, audio, skill and mention parts were accepted while only their aggregate omission count was saved. The reader now checks each recognized non-text variant against the inspected provider schema before accepting the page. A failed part rejects that entire page and preserves any earlier accepted page and cursor. The output keeps an aggregate omission count and a bounded count by type, allowing the audit to name omitted modalities without saving their locators or bodies.
+
+Before interpreting a user record as evidence, inspect omitted_nontext_parts and, when present, omitted_nontext_parts_by_type. Images and audio remain unread attachments. Skills and mentions remain omitted references. An item count or page end alone cannot establish the meaning of those parts. Text-only records keep the existing projection. Older records with just an aggregate count leave the modality mix unknown.
+
+For a changed-input qualification, provide a different synthetic mix of the supported non-text variants and use the same saved selected-history plan with a fresh private output. Compare the returned type counts and aggregate with the known fixture, verify exact text and absence of locators and bodies, and check cleanup. Include a malformed part on a second page to confirm that the first page remains accepted and its cursor is preserved. Keep helper versions pinned with unfinished historical walks because their saved state binds both source hashes.
+
+### Compare repeated history observations
+
+Turn inventories can match even when item text differs. When checking for this kind of change, follow the comparison procedure in references/history-and-host.md. Compare only completed observations made with matching scope and projection versions. Keep the two receipts and report exactly what agreed or differed. Attachment counts identify unexamined inputs. If the user separately supplies media, identify what you actually viewed and record its provenance before associating it with a historical item.

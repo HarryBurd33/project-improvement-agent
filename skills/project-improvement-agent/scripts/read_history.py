@@ -17,7 +17,7 @@ import sys
 import time
 
 
-VERSION = "1.7.0"
+VERSION = "1.9.0"
 DEFAULTS = dict(direction="asc", page_size=20, max_pages=2, max_records=20, max_seconds=15, max_bytes=131072)
 REQUIRED = {"schema_version", "thread_id", "operation"}
 OPTIONAL = {"turn_id", "cursor", "read_mode", "assistant_text_selection"}
@@ -188,6 +188,18 @@ def matching_scope(event, plan):
         require(event["turnId"] == plan["turn_id"], "wrong_turn_scope")
 
 
+def validate_nontext_input(part):
+    kind = part["type"]
+    if kind == "image":
+        require(any(isinstance(part.get(field), str) for field in ("url", "fileId")), "invalid_user_content")
+    else:
+        fields = {"localImage": ("path",), "audio": ("url",), "localAudio": ("path",),
+                  "skill": ("name", "path"), "mention": ("name", "path")}[kind]
+        require(all(isinstance(part.get(field), str) for field in fields), "invalid_user_content")
+    if kind in ("image", "localImage"):
+        require(part.get("detail") in (None, "auto", "low", "high", "original"), "invalid_user_content")
+
+
 def record(raw, plan):
     require(isinstance(raw, dict), "invalid_record")
     matching_scope(raw, plan)
@@ -222,7 +234,10 @@ def record(raw, plan):
                 require(isinstance(part.get("text"), str), "invalid_user_text")
                 result["text_parts"].append(part["text"])
             else:
+                validate_nontext_input(part)
                 result["omitted_nontext_parts"] += 1
+                counts = result.setdefault("omitted_nontext_parts_by_type", {})
+                counts[part["type"]] = counts.get(part["type"], 0) + 1
     else:
         result["serialized_item_sha256"] = digest(encoded(item))
     return result
