@@ -111,3 +111,5 @@ Completed history walks also provide a digest of the ordered retained records. C
 Version 1.10.0 adds an optional exclusive after_turn_id to bounded history walks. A fresh range inventories and validates both endpoints, reads only the selected later item bodies, and preserves its own resume state and observation digest. Earlier prefix coverage requires its separate evidence.
 
 Version 1.11.0 adds explicit read-only verification for a captured terminal final-write witness. It derives scoped coverage under separate finite artifact checks while preserving the original partial run, marker and collection budget. The saved procedure covers captured stdout, unchanged evidence, origin exit and idempotent verification.
+
+Version 1.12.0 adds a bounded read-only inspector for committed evidence from exact released history formats. It reports retained counts and stopped scope without certifying original completion or deadline compliance. The existing walker and reader bytes retain their previous resume and witness-verification behavior.

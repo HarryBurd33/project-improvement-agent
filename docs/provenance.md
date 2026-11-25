@@ -42,3 +42,7 @@ Version 1.10.0 adapts the original MIT walker with an explicit exclusive start t
 ### Witnessed final-write verification
 
 Version 1.11.0 adapts the original MIT walker and receipt replay with a random nonce release condition, exact local snapshot binding and a bounded read-only verifier. The transport and reader implementation are reused. No external recovery framework, runtime hooks or private provider histories are bundled.
+
+### Committed legacy history evidence
+
+Version 1.12.0 adds original Python standard-library inspection code adapted from the existing MIT journal replay. Exact producer hashes were checked against trusted released repository commits aa20991, 8dc22d9 and 53ecb69. The current helper modules are reused without changes. No historical producer code, generated schema, private run or provider payload is bundled with the inspector.
