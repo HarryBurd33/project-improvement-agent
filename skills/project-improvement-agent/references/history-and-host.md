@@ -178,7 +178,7 @@ Only disk-bound stored_collection_usage is returned as saved accounting. Editabl
 
 #### Inspect supported older committed evidence
 
-Use `scripts/inspect_history.py --run DIR` for a quiescent private history walk produced by an exactly supported released source pair. This is a local read-only examination of saved records. It imports only the current trusted installed helpers. No code from the run is loaded or executed, and no provider executable is needed.
+Use `scripts/inspect_history.py --run DIR` for a quiescent private history walk produced by an exactly supported source pair. This is a local read-only examination of saved records. It imports only the current trusted installed helpers. No code from the run is loaded or executed, and no provider executable is needed.
 
 ```sh
 python3 scripts/inspect_history.py --run "$private_saved_walk"
@@ -192,7 +192,7 @@ The registry checks exact observed walker version and both source hashes. The mo
 | v1.7.0 | bd27cdc | 1.6.0 | 1.7.0 |
 | v1.8.0 | 380078a | 1.7.1 | 1.7.0 |
 
-The source pair identifies compatible tagged bytes, while original_package_identity remains unverified. The released_commit field names the trusted reference commit. An intermediate commit shares the v1.8 bytes, and a v1.7.1 tag was not resolved. The inspector reports compatible_release_tags without inferring that original package identity. Unknown, mixed and prerelease source pairs refuse.
+The source pair identifies compatible tagged bytes, while original_package_identity remains unverified. The released_commit field names the trusted reference commit. An intermediate commit shares the v1.8 bytes, and a v1.7.1 tag was not resolved. The inspector reports compatible_release_tags without inferring that original package identity. Unknown and mixed source pairs refuse; only the separately documented exact pre-release pair is supported.
 
 All early profiles and 1.9 are prefix-only. Every original receipt reader_version must match its profile before a local header copy is passed to the current pure checker. Profiles reproduce the older successful-page reset for v1.6/v1.7 and the retained single-item size for v1.8. They omit only the observation_sha256 field genuinely absent from old views; every other view field stays exact. Older aggregate-only non-text counts leave subtype information unknown. The known unjournaled timing-only classifier is recognized for these exact early sources, 1.9 and 1.10 only when the remaining replay view matches. Inspection never invents a historical completion digest.
 
@@ -245,3 +245,12 @@ Each 1.9.0 walk computes `coverage.observation_sha256` in its private `state.jso
 When a second observation is needed, run a new, separately bounded walk of the same thread through the same closed turn in a fresh output directory. Check both final receipts, source bindings, scope and completion before comparing digests. A mismatch is a reason to inspect the affected saved records. A match means the observed projections agreed at the two reads. Content could have changed between observations. Changes solely to excluded attachment payloads, to discarded locators or to records omitted by the provider can escape this comparison.
 
 The versioned comparison hashes canonical JSON lines (sorted keys, compact separators, ASCII encoding, trailing newline) in sequence: the array containing the format label `closed-walk-projection-v1`, thread ID and cutoff turn ID, then each selected turn metadata row and each retained item row in order. Page layout, resume timing and probe accounting do not enter this digest. The per-probe hashes still verify the saved files.
+
+
+### Explicit pre-release inspection profile
+
+In addition to the tagged profiles, the inspector accepts exactly observed walker `1.6.0` SHA-256 `e1c0fd50891f288a92d43c882b8a4910afc863892d6f5da6d3c5eb8504ee2c39` with reader `1.6.0` SHA-256 `6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743`. This is explicit prerelease compatibility, not attribution to any release tag, commit or installed package. Output has `compatibility: explicit_prerelease`, `compatible_release_tags: []`, no `released_commit`, `original_package_identity: unverified`, and `historical_plan_limits.max_bytes: 134217728`.
+
+The historical normalized plan must remain within 128 MiB; a 128 MiB + 1 plan refuses before replay. Other original bounds, prefix-only scope, reader-header checks and early reset behavior remain strict. Released v1.6.0 retains its distinct 512 MiB collection ceiling. Current offline verification remains separately capped at 15 seconds, 512 MiB of artifact reads, 20000 record rows and 1024 receipts. These are verification limits, not new collection allowance. Normal walker/reader bytes, resume bindings and witnessed finalization are unchanged.
+
+For independent reconstruction only, obtain `skills/project-improvement-agent/scripts/walk_history.py` from public tagged v1.6.0 commit `45e589c72bbd2f141394ec9bceed61616f0e486c`. Verify released hash `d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95`, replace the single ASCII constant `"max_bytes": 536870912` with `"max_bytes": 134217728`, and verify the full result equals the preview hash above. The reader from that reference already matches. This reference explains the byte relationship; it is not the preview's origin commit. Never execute code found inside an inspected run. Checkout CI fetches that exact public object for an inert reconstruction assertion; source ZIP tests still exercise genuine sanitized artifacts without Git.

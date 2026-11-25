@@ -13,7 +13,7 @@ import walk_history as walker
 
 reader = walker.reader
 require = walker.require
-VERSION = "1.13.0"
+VERSION = "1.14.0"
 READER_SHA256 = "93e171abe75a7e4e4413881a27af1d2899addc5eaa6353785995ed04e9dfad25"
 PRODUCERS = {
     "1.9.0": ("475e661a2bb8cf7381f8fdca106f278ab94731963ae66914af506c836633921e",
@@ -38,6 +38,11 @@ EARLY_PRODUCERS = {
 }
 
 
+# Explicit pre-release bytes; the released tag is only a reconstruction reference.
+PREVIEW_SOURCE = ("1.6.0", "e1c0fd50891f288a92d43c882b8a4910afc863892d6f5da6d3c5eb8504ee2c39",
+                  "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743")
+
+
 def producer_profile(state):
     version, source = state.get("walker_version"), state["source"]
     require(isinstance(version, str) and (version in PRODUCERS or any(key[0] == version for key in EARLY_PRODUCERS)),
@@ -53,6 +58,14 @@ def producer_profile(state):
                    "prefix_only": version == "1.9.0", "unjournaled_timing": version != "1.11.0"}
     else:
         key = (version, source["walker_sha256"], source["reader_sha256"])
+        if key == PREVIEW_SOURCE:
+            producer = {"walker_version": version, "reader_version": "1.6.0", "source": source,
+                        "compatibility": "explicit_prerelease", "compatible_release_tags": [],
+                        "original_package_identity": "unverified",
+                        "historical_plan_limits": {"max_bytes": 134217728}}
+            profile = {"reader_version": "1.6.0", "old_view": True, "reset_stage": True,
+                       "prefix_only": True, "unjournaled_timing": True, "max_plan_bytes": 134217728}
+            return producer, profile
         require(key in EARLY_PRODUCERS, "unsupported_producer_source")
         reader_version, tag, commit, reset = EARLY_PRODUCERS[key]
         producer = {"walker_version": version, "reader_version": reader_version, "source": source,
@@ -218,6 +231,8 @@ def inspect_run(path):
                 and state["schema_version"] == 1, "unsupported_walk_schema")
         producer, profile = producer_profile(state)
         plan = walker.parse_plan(raw)
+        require(plan["max_bytes"] <= profile.get("max_plan_bytes", walker.MAXIMA["max_bytes"]),
+                "unsupported_producer_plan_limit")
         require(not profile["prefix_only"] or "after_turn_id" not in plan, "unsupported_producer_range")
         require(reader.encoded(state["plan"]) == reader.encoded(plan)
                 and state["plan_sha256"] == reader.digest(raw), "walk_plan_mismatch")

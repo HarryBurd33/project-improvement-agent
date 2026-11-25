@@ -15,5 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      # Historical object is used only as inert reconstruction proof, never executed.
+      - run: git fetch --no-tags origin 45e589c72bbd2f141394ec9bceed61616f0e486c
       - run: python -B -m unittest discover -s tests -v
       - run: python scripts/validate.py

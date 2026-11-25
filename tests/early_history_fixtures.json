@@ -1,4 +1,2764 @@
 {
+  "preview/partial": {
+    "compatibility": "explicit_prerelease",
+    "expected_closed_scopes": 0,
+    "expected_items": 1,
+    "plan_json": "{\"schema_version\": 1, \"thread_id\": \"walk-test\", \"through_turn_id\": \"one\", \"page_strategy\": \"standard_then_single_then_large\", \"max_probes\": 24, \"max_bytes\": 134217728, \"max_seconds\": 30, \"max_records\": 100}",
+    "probes": {
+      "probe-0001": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.190238,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.165078,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0002": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.046716,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.023272,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "624dbab137bb84453ea9a07c35b157844045472970b5f116067b2fb4afb8d734",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0003": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.047172,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.02202,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "f82eb71c8fb34c9d5264bd9f94295d0751507ae9e71fde99c2e8ac04bb75ac7d",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0004": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": "one-next",
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "returned_cursor",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.046787,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.021632,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": "one-next",
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 4194304,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "large_single_page",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "cc664e9aa9f464fda54464ec7b6546d7a4b982e686db48a2d591fb8d8b5ae74f",
+          "reader_version": "1.6.0",
+          "reason": "record_limit",
+          "received_bytes": 270325,
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "partial",
+          "stderr_bytes": 0,
+          "stdout_bytes": 270325,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-large",
+            "role": null,
+            "serialized_item_sha256": "cbbc075844d39cb132068d051a2ed39ecbb7d8dd57b154ec31aa29a0d4d772bb",
+            "started_at_ms": 10,
+            "turn_id": "one",
+            "type": "reasoning"
+          }
+        ]
+      }
+    },
+    "provenance": "Synthetic output produced by exact trusted reconstructed prerelease source; executable, process ID and wall timestamp metadata sanitized, source labels and replay data retained",
+    "state": {
+      "coverage": {
+        "blocked": null,
+        "closed_item_scopes": [],
+        "initial_scan_resumed": false,
+        "inventory_cursor": null,
+        "item_batch_limit": 20,
+        "item_cursor": "one-next",
+        "item_stage": 0,
+        "mutation_check": "turn_inventory_only",
+        "next_turn_index": 0,
+        "observed_inventory": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          }
+        ],
+        "phase": "items",
+        "provider_version": "0.166.0",
+        "scope_excludes_after_cutoff": true,
+        "snapshot_consistency": "unverified",
+        "usage": {
+          "accepted_records": 4,
+          "elapsed_us": 587099,
+          "failed_probes": 2,
+          "finalization_reserve_us": 250000,
+          "ignored_notifications": 4,
+          "initialize_calls": 4,
+          "initialized_notifications": 4,
+          "nonuser_items": 1,
+          "orchestration_elapsed_us": 6186,
+          "probes": 4,
+          "reader_elapsed_us": 330913,
+          "received_bytes": 533127,
+          "selected_items": 1,
+          "source_list_calls": 4,
+          "stderr_bytes": 0,
+          "stdout_bytes": 533127,
+          "turn_metadata_records": 3,
+          "user_items": 0
+        }
+      },
+      "coverage_status": "partial",
+      "executable": "/synthetic/codex",
+      "journal": [
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 681,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 182,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "71b21a1d68bd0a1dc8facfe2c7f52c5eccac138dd8242947c83e3bf39d13c06d",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0001"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 842,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 365,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "8d0ab1909ca81f1fec1ed5bcae37b13dc7882989345719f16088f1eee35f5535",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0002"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1036,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 353,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "e0e70573e1781db302dfd36eca0388a0c0ce7bb235d8f75ca025dc30b313fcab",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0003"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 919,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 340,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "07d8ce9c527c21f852ef534851208d97877c811d6c153a2fe6ed64231a154dbd",
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "slot": "probe-0004"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 929,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 539,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        }
+      ],
+      "pending": null,
+      "plan": {
+        "max_bytes": 134217728,
+        "max_probes": 24,
+        "max_records": 100,
+        "max_seconds": 30,
+        "page_strategy": "standard_then_single_then_large",
+        "schema_version": 1,
+        "thread_id": "walk-test",
+        "through_turn_id": "one"
+      },
+      "plan_sha256": "f73459fc94421718b40cf3bde24ed236f84f11f0c750a60c5c6636a2afef85a6",
+      "reason": "invocation_probe_limit",
+      "schema_version": 1,
+      "source": {
+        "reader_sha256": "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743",
+        "walker_sha256": "e1c0fd50891f288a92d43c882b8a4910afc863892d6f5da6d3c5eb8504ee2c39"
+      },
+      "started_at": "2026-01-01T00:00:00+00:00",
+      "walker_version": "1.6.0"
+    }
+  },
+  "preview/resumed": {
+    "compatibility": "explicit_prerelease",
+    "expected_closed_scopes": 1,
+    "expected_items": 2,
+    "plan_json": "{\"schema_version\": 1, \"thread_id\": \"walk-test\", \"through_turn_id\": \"one\", \"page_strategy\": \"standard_then_single_then_large\", \"max_probes\": 24, \"max_bytes\": 134217728, \"max_seconds\": 30, \"max_records\": 100}",
+    "probes": {
+      "probe-0001": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.190238,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.165078,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0002": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.046716,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.023272,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "624dbab137bb84453ea9a07c35b157844045472970b5f116067b2fb4afb8d734",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0003": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.047172,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.02202,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "f82eb71c8fb34c9d5264bd9f94295d0751507ae9e71fde99c2e8ac04bb75ac7d",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0004": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": "one-next",
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "returned_cursor",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.046787,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.021632,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": "one-next",
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 4194304,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "large_single_page",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "cc664e9aa9f464fda54464ec7b6546d7a4b982e686db48a2d591fb8d8b5ae74f",
+          "reader_version": "1.6.0",
+          "reason": "record_limit",
+          "received_bytes": 270325,
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "partial",
+          "stderr_bytes": 0,
+          "stdout_bytes": 270325,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-large",
+            "role": null,
+            "serialized_item_sha256": "cbbc075844d39cb132068d051a2ed39ecbb7d8dd57b154ec31aa29a0d4d772bb",
+            "started_at_ms": 10,
+            "turn_id": "one",
+            "type": "reasoning"
+          }
+        ]
+      },
+      "probe-0005": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.042877,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.017715,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0006": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.043752,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.018607,
+          "initial_cursor_provenance": "caller_supplied_unverified",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": "one-next",
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "37708e51519d8b68e6bf282ee473dc0269d8d4828cdda7166f9d6a597076952e",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 434,
+          "records_sha256": "531c5db8099286216c5a34f375097ef6827a2f2c8a093068fb74dcc0ea8ce65e",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "cursor": "one-next",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 434,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-last",
+            "omitted_nontext_parts": 1,
+            "role": "user",
+            "started_at_ms": 10,
+            "text_parts": [
+              "Exact \u03c0 \ud83c\udf31\n  "
+            ],
+            "turn_id": "one",
+            "type": "userMessage"
+          }
+        ]
+      },
+      "probe-0007": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.043744,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.01853,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      }
+    },
+    "provenance": "Synthetic output produced by exact trusted reconstructed prerelease source; executable, process ID and wall timestamp metadata sanitized, source labels and replay data retained",
+    "state": {
+      "coverage": {
+        "blocked": null,
+        "closed_item_scopes": [
+          {
+            "item_count": 2,
+            "next_cursor": null,
+            "turn_id": "one"
+          }
+        ],
+        "initial_scan_resumed": false,
+        "inventory_cursor": null,
+        "item_batch_limit": 20,
+        "item_cursor": null,
+        "item_stage": 0,
+        "mutation_check": "turn_inventory_only",
+        "next_turn_index": 1,
+        "observed_inventory": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          }
+        ],
+        "phase": "done",
+        "provider_version": "0.166.0",
+        "scope_excludes_after_cutoff": true,
+        "snapshot_consistency": "unverified",
+        "usage": {
+          "accepted_records": 11,
+          "elapsed_us": 972667,
+          "failed_probes": 2,
+          "finalization_reserve_us": 500000,
+          "ignored_notifications": 7,
+          "initialize_calls": 7,
+          "initialized_notifications": 7,
+          "nonuser_items": 1,
+          "orchestration_elapsed_us": 11381,
+          "probes": 7,
+          "reader_elapsed_us": 461286,
+          "received_bytes": 534877,
+          "selected_items": 2,
+          "source_list_calls": 7,
+          "stderr_bytes": 0,
+          "stdout_bytes": 534877,
+          "turn_metadata_records": 9,
+          "user_items": 1
+        }
+      },
+      "coverage_status": "complete_observed",
+      "executable": "/synthetic/codex",
+      "journal": [
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 681,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 182,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "71b21a1d68bd0a1dc8facfe2c7f52c5eccac138dd8242947c83e3bf39d13c06d",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0001"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 842,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 365,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "8d0ab1909ca81f1fec1ed5bcae37b13dc7882989345719f16088f1eee35f5535",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0002"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1036,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 353,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "e0e70573e1781db302dfd36eca0388a0c0ce7bb235d8f75ca025dc30b313fcab",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0003"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 919,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 340,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "07d8ce9c527c21f852ef534851208d97877c811d6c153a2fe6ed64231a154dbd",
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "slot": "probe-0004"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 929,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 539,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1248,
+          "kind": "time"
+        },
+        {
+          "kind": "resume_inventory"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 270,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "a5d3d67906f6f9f126bfa54cf950301b6f6726863a4c0c10d50a7d81c1c27b07",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0005"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 782,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 259,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "589c145c836405d1f1cf0870284e0ab24efa2046644e4f588e36a8b49e114013",
+          "records_sha256": "531c5db8099286216c5a34f375097ef6827a2f2c8a093068fb74dcc0ea8ce65e",
+          "slot": "probe-0006"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 802,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 315,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "3e6002026ea038d0319e3a53a413d4196ffc80fbae2d3b5795b9c0212538c005",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0007"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 958,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 314,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 247,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        }
+      ],
+      "pending": null,
+      "plan": {
+        "max_bytes": 134217728,
+        "max_probes": 24,
+        "max_records": 100,
+        "max_seconds": 30,
+        "page_strategy": "standard_then_single_then_large",
+        "schema_version": 1,
+        "thread_id": "walk-test",
+        "through_turn_id": "one"
+      },
+      "plan_sha256": "f73459fc94421718b40cf3bde24ed236f84f11f0c750a60c5c6636a2afef85a6",
+      "reason": "selected_scope_end",
+      "schema_version": 1,
+      "source": {
+        "reader_sha256": "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743",
+        "walker_sha256": "e1c0fd50891f288a92d43c882b8a4910afc863892d6f5da6d3c5eb8504ee2c39"
+      },
+      "started_at": "2026-01-01T00:00:00+00:00",
+      "walker_version": "1.6.0"
+    }
+  },
+  "released-above-preview-cap/partial": {
+    "expected_closed_scopes": 0,
+    "expected_items": 1,
+    "plan_json": "{\"schema_version\": 1, \"thread_id\": \"walk-test\", \"through_turn_id\": \"one\", \"page_strategy\": \"standard_then_single_then_large\", \"max_probes\": 24, \"max_bytes\": 134217729, \"max_seconds\": 30, \"max_records\": 100}",
+    "probes": {
+      "probe-0001": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.199042,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.168845,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0002": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.054859,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.024699,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "624dbab137bb84453ea9a07c35b157844045472970b5f116067b2fb4afb8d734",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0003": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.053086,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.02294,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "f82eb71c8fb34c9d5264bd9f94295d0751507ae9e71fde99c2e8ac04bb75ac7d",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0004": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": "one-next",
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "returned_cursor",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.053139,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.022966,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": "one-next",
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 4194304,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "large_single_page",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "cc664e9aa9f464fda54464ec7b6546d7a4b982e686db48a2d591fb8d8b5ae74f",
+          "reader_version": "1.6.0",
+          "reason": "record_limit",
+          "received_bytes": 270325,
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "partial",
+          "stderr_bytes": 0,
+          "stdout_bytes": 270325,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-large",
+            "role": null,
+            "serialized_item_sha256": "cbbc075844d39cb132068d051a2ed39ecbb7d8dd57b154ec31aa29a0d4d772bb",
+            "started_at_ms": 10,
+            "turn_id": "one",
+            "type": "reasoning"
+          }
+        ]
+      }
+    },
+    "provenance": "Synthetic output produced by exact trusted tagged v1.6.0 source; executable, process ID and wall timestamp metadata sanitized, source labels and replay data retained",
+    "state": {
+      "coverage": {
+        "blocked": null,
+        "closed_item_scopes": [],
+        "initial_scan_resumed": false,
+        "inventory_cursor": null,
+        "item_batch_limit": 20,
+        "item_cursor": "one-next",
+        "item_stage": 0,
+        "mutation_check": "turn_inventory_only",
+        "next_turn_index": 0,
+        "observed_inventory": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          }
+        ],
+        "phase": "items",
+        "provider_version": "0.166.0",
+        "scope_excludes_after_cutoff": true,
+        "snapshot_consistency": "unverified",
+        "usage": {
+          "accepted_records": 4,
+          "elapsed_us": 616518,
+          "failed_probes": 2,
+          "finalization_reserve_us": 250000,
+          "ignored_notifications": 4,
+          "initialize_calls": 4,
+          "initialized_notifications": 4,
+          "nonuser_items": 1,
+          "orchestration_elapsed_us": 6392,
+          "probes": 4,
+          "reader_elapsed_us": 360126,
+          "received_bytes": 533127,
+          "selected_items": 1,
+          "source_list_calls": 4,
+          "stderr_bytes": 0,
+          "stdout_bytes": 533127,
+          "turn_metadata_records": 3,
+          "user_items": 0
+        }
+      },
+      "coverage_status": "partial",
+      "executable": "/synthetic/codex",
+      "journal": [
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 744,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 210,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "04130aa8606660129e4744f316df120b6889b064ea56bb051649156e2a9abd82",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0001"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 873,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 388,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "fe31ce4228dbe13e9ed714463b138569abeb8929e190eda39b050e86c6349569",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0002"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1007,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 356,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "58dcbebed1b23c28b86f4315c66a81cdc2de4f8a7b1539c47b4e48866e1c8301",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0003"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 921,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 355,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "4eb0f582bf0c2766802c530b49d839f3aad60f9b4787c68e3ab29ebe54fc7ad0",
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "slot": "probe-0004"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 946,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 592,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        }
+      ],
+      "pending": null,
+      "plan": {
+        "max_bytes": 134217729,
+        "max_probes": 24,
+        "max_records": 100,
+        "max_seconds": 30,
+        "page_strategy": "standard_then_single_then_large",
+        "schema_version": 1,
+        "thread_id": "walk-test",
+        "through_turn_id": "one"
+      },
+      "plan_sha256": "d7e5a2c8b946428a4630b0444a6b51f20717f75b49b7b0925251b562f3b61bcd",
+      "reason": "invocation_probe_limit",
+      "schema_version": 1,
+      "source": {
+        "reader_sha256": "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743",
+        "walker_sha256": "d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95"
+      },
+      "started_at": "2026-01-01T00:00:00+00:00",
+      "walker_version": "1.6.0"
+    },
+    "tag": "v1.6.0"
+  },
+  "released-above-preview-cap/resumed": {
+    "expected_closed_scopes": 1,
+    "expected_items": 2,
+    "plan_json": "{\"schema_version\": 1, \"thread_id\": \"walk-test\", \"through_turn_id\": \"one\", \"page_strategy\": \"standard_then_single_then_large\", \"max_probes\": 24, \"max_bytes\": 134217729, \"max_seconds\": 30, \"max_records\": 100}",
+    "probes": {
+      "probe-0001": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.199042,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.168845,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0002": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.054859,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.024699,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "624dbab137bb84453ea9a07c35b157844045472970b5f116067b2fb4afb8d734",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0003": {
+        "receipt": {
+          "accepted_page_count": 0,
+          "accepted_pages": [],
+          "accepted_records": 0,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "unadvanced_input_boundary",
+          "cleanup": {
+            "exit_code": -13,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.053086,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.02294,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "f82eb71c8fb34c9d5264bd9f94295d0751507ae9e71fde99c2e8ac04bb75ac7d",
+          "reader_version": "1.6.0",
+          "reason": "byte_limit",
+          "received_bytes": 131072,
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "error",
+          "stderr_bytes": 0,
+          "stdout_bytes": 131072,
+          "transport": "codex app-server --stdio"
+        },
+        "records": []
+      },
+      "probe-0004": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": "one-next",
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "returned_cursor",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.053139,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.022966,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": "one-next",
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 4194304,
+            "max_pages": 1,
+            "max_records": 1,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 1,
+            "read_mode": "large_single_page",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "cc664e9aa9f464fda54464ec7b6546d7a4b982e686db48a2d591fb8d8b5ae74f",
+          "reader_version": "1.6.0",
+          "reason": "record_limit",
+          "received_bytes": 270325,
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "limit": 1,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "partial",
+          "stderr_bytes": 0,
+          "stdout_bytes": 270325,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-large",
+            "role": null,
+            "serialized_item_sha256": "cbbc075844d39cb132068d051a2ed39ecbb7d8dd57b154ec31aa29a0d4d772bb",
+            "started_at_ms": 10,
+            "turn_id": "one",
+            "type": "reasoning"
+          }
+        ]
+      },
+      "probe-0005": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.048298,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.018127,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      },
+      "probe-0006": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 1,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 1,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.043945,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.018959,
+          "initial_cursor_provenance": "caller_supplied_unverified",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": "one-next",
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "items",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": "one"
+          },
+          "plan_sha256": "37708e51519d8b68e6bf282ee473dc0269d8d4828cdda7166f9d6a597076952e",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 434,
+          "records_sha256": "531c5db8099286216c5a34f375097ef6827a2f2c8a093068fb74dcc0ea8ce65e",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/items/list",
+              "params": {
+                "cursor": "one-next",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test",
+                "turnId": "one"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 434,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_ms": 12,
+            "item_id": "one-last",
+            "omitted_nontext_parts": 1,
+            "role": "user",
+            "started_at_ms": 10,
+            "text_parts": [
+              "Exact \u03c0 \ud83c\udf31\n  "
+            ],
+            "turn_id": "one",
+            "type": "userMessage"
+          }
+        ]
+      },
+      "probe-0007": {
+        "receipt": {
+          "accepted_page_count": 1,
+          "accepted_pages": [
+            {
+              "next_cursor": null,
+              "record_count": 3,
+              "request_id": 2
+            }
+          ],
+          "accepted_records": 3,
+          "app_server_version": "0.166.0",
+          "attempted_page_count": 1,
+          "boundary": "selected_scope_end",
+          "cleanup": {
+            "exit_code": 0,
+            "group_gone": true,
+            "margin_seconds": 2.5,
+            "pid": 2147483000,
+            "reaped": true,
+            "signals": [],
+            "started": true
+          },
+          "elapsed_seconds": 0.045412,
+          "executable": "/synthetic/codex",
+          "finished_at": "2026-01-01T00:00:01+00:00",
+          "foreground_seconds": 0.01935,
+          "initial_cursor_provenance": "start_of_selected_scope",
+          "last_safe_cursor": null,
+          "notifications": 1,
+          "plan": {
+            "cursor": null,
+            "direction": "asc",
+            "max_bytes": 131072,
+            "max_pages": 1,
+            "max_records": 20,
+            "max_seconds": 15,
+            "operation": "turns",
+            "page_size": 20,
+            "read_mode": "standard",
+            "schema_version": 1,
+            "thread_id": "walk-test",
+            "turn_id": null
+          },
+          "plan_sha256": "8391bd8ba98c85716959504db76df840570e7c989f32de433524dda531ce135d",
+          "reader_version": "1.6.0",
+          "reason": "selected_scope_end",
+          "received_bytes": 658,
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "requests": [
+            {
+              "id": 2,
+              "method": "thread/turns/list",
+              "params": {
+                "itemsView": "notLoaded",
+                "limit": 20,
+                "sortDirection": "asc",
+                "threadId": "walk-test"
+              }
+            }
+          ],
+          "schema_version": 1,
+          "server_requests": 0,
+          "started_at": "2026-01-01T00:00:00+00:00",
+          "status": "complete",
+          "stderr_bytes": 0,
+          "stdout_bytes": 658,
+          "transport": "codex app-server --stdio"
+        },
+        "records": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "interrupted",
+            "turn_id": "two",
+            "type": "turn"
+          },
+          {
+            "completed_at_seconds": null,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "inProgress",
+            "turn_id": "after",
+            "type": "turn"
+          }
+        ]
+      }
+    },
+    "provenance": "Synthetic output produced by exact trusted tagged v1.6.0 source; executable, process ID and wall timestamp metadata sanitized, source labels and replay data retained",
+    "state": {
+      "coverage": {
+        "blocked": null,
+        "closed_item_scopes": [
+          {
+            "item_count": 2,
+            "next_cursor": null,
+            "turn_id": "one"
+          }
+        ],
+        "initial_scan_resumed": false,
+        "inventory_cursor": null,
+        "item_batch_limit": 20,
+        "item_cursor": null,
+        "item_stage": 0,
+        "mutation_check": "turn_inventory_only",
+        "next_turn_index": 1,
+        "observed_inventory": [
+          {
+            "completed_at_seconds": 12,
+            "duration_ms": null,
+            "role": null,
+            "root_turn_id": null,
+            "started_at_seconds": 9,
+            "status": "completed",
+            "turn_id": "one",
+            "type": "turn"
+          }
+        ],
+        "phase": "done",
+        "provider_version": "0.166.0",
+        "scope_excludes_after_cutoff": true,
+        "snapshot_consistency": "unverified",
+        "usage": {
+          "accepted_records": 11,
+          "elapsed_us": 1009459,
+          "failed_probes": 2,
+          "finalization_reserve_us": 500000,
+          "ignored_notifications": 7,
+          "initialize_calls": 7,
+          "initialized_notifications": 7,
+          "nonuser_items": 1,
+          "orchestration_elapsed_us": 11678,
+          "probes": 7,
+          "reader_elapsed_us": 497781,
+          "received_bytes": 534877,
+          "selected_items": 2,
+          "source_list_calls": 7,
+          "stderr_bytes": 0,
+          "stdout_bytes": 534877,
+          "turn_metadata_records": 9,
+          "user_items": 1
+        }
+      },
+      "coverage_status": "complete_observed",
+      "executable": "/synthetic/codex",
+      "journal": [
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 744,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 210,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "04130aa8606660129e4744f316df120b6889b064ea56bb051649156e2a9abd82",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0001"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 873,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 388,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "fe31ce4228dbe13e9ed714463b138569abeb8929e190eda39b050e86c6349569",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0002"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1007,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 356,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 1,
+          "kind": "probe",
+          "receipt_sha256": "58dcbebed1b23c28b86f4315c66a81cdc2de4f8a7b1539c47b4e48866e1c8301",
+          "records_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+          "slot": "probe-0003"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 921,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 355,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "4eb0f582bf0c2766802c530b49d839f3aad60f9b4787c68e3ab29ebe54fc7ad0",
+          "records_sha256": "6538a23ebf01c292b53a0dc4efc9f3456e59c60e190a2545be32922b0aba4c41",
+          "slot": "probe-0004"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 946,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 592,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 1176,
+          "kind": "time"
+        },
+        {
+          "kind": "resume_inventory"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 287,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "919963580d4b8bba327c39b3789226d1f0c0636cd5ad4f950f2051c410776025",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0005"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 848,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 287,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/items/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "cee3c7fcace1d29e9d6fe86191fb23e2faf1617f53e2a593ee56e1e9d1900125",
+          "records_sha256": "531c5db8099286216c5a34f375097ef6827a2f2c8a093068fb74dcc0ea8ce65e",
+          "slot": "probe-0006"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 846,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 336,
+          "kind": "time"
+        },
+        {
+          "calls": [
+            "initialize",
+            "initialized",
+            "thread/turns/list"
+          ],
+          "exit_code": 0,
+          "kind": "probe",
+          "receipt_sha256": "2866b1f75faa204195bad445af67a93059a13c45f64d1087ac0d0139dad7904d",
+          "records_sha256": "613b82e1fb2d04e603c8398c35be2e19730b933665705225617e2b5e3eafb537",
+          "slot": "probe-0007"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 834,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 368,
+          "kind": "time"
+        },
+        {
+          "category": "orchestration_elapsed_us",
+          "duration_us": 304,
+          "kind": "time"
+        },
+        {
+          "category": "finalization_reserve_us",
+          "duration_us": 250000,
+          "kind": "time"
+        }
+      ],
+      "pending": null,
+      "plan": {
+        "max_bytes": 134217729,
+        "max_probes": 24,
+        "max_records": 100,
+        "max_seconds": 30,
+        "page_strategy": "standard_then_single_then_large",
+        "schema_version": 1,
+        "thread_id": "walk-test",
+        "through_turn_id": "one"
+      },
+      "plan_sha256": "d7e5a2c8b946428a4630b0444a6b51f20717f75b49b7b0925251b562f3b61bcd",
+      "reason": "selected_scope_end",
+      "schema_version": 1,
+      "source": {
+        "reader_sha256": "6fdde60b719e2725a3c9c10a028ab6aad8b41df3b1bc31c30e3c39d2b1dfc743",
+        "walker_sha256": "d79594ab1e1687784981631881828543a4b7a8f315b06573221e0292d1cb2f95"
+      },
+      "started_at": "2026-01-01T00:00:00+00:00",
+      "walker_version": "1.6.0"
+    },
+    "tag": "v1.6.0"
+  },
   "v1.6.0/partial": {
     "expected_closed_scopes": 0,
     "expected_items": 1,
