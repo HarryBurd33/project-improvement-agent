@@ -109,3 +109,5 @@ Version 1.9.0 validates supported non-text user inputs before accepting a histor
 Completed history walks also provide a digest of the ordered retained records. Compare separately bounded observations of the same closed scope to detect changes to the retained content even when turn metadata matches.
 
 Version 1.10.0 adds an optional exclusive after_turn_id to bounded history walks. A fresh range inventories and validates both endpoints, reads only the selected later item bodies, and preserves its own resume state and observation digest. Earlier prefix coverage requires its separate evidence.
+
+Version 1.11.0 adds explicit read-only verification for a captured terminal final-write witness. It derives scoped coverage under separate finite artifact checks while preserving the original partial run, marker and collection budget. The saved procedure covers captured stdout, unchanged evidence, origin exit and idempotent verification.

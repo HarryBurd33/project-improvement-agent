@@ -33,7 +33,7 @@ class WalkTest(unittest.TestCase):
         executable.chmod(0o700)
         self.env = dict(os.environ, PATH=str(self.root) + os.pathsep + os.environ["PATH"], PIA_WALK_LOG=str(self.log))
 
-    def invoke(self, expected=0, mode="normal", probes=512, resume=False, inject=None, **options):
+    def invoke(self, expected=0, mode="normal", probes=512, resume=False, inject=None, allow_finalization=False, **options):
         if resume:
             args = ["--resume", str(self.output)]
         else:
@@ -49,11 +49,16 @@ class WalkTest(unittest.TestCase):
                         + "raise SystemExit(walker.main(sys.argv[1:]))"]
         result = subprocess.run([sys.executable, "-B", *launcher, *args, "--max-probes-this-run", str(probes)],
                                 capture_output=True, text=True, env=dict(self.env, PIA_WALK_MODE=mode), timeout=12)
-        self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+        report = json.loads(result.stdout)
+        code = result.returncode
+        if expected == 0 and allow_finalization and code == 1 and "finalization_witness" in report:
+            verified = self.verify_capture(report)
+            report.update(coverage_status=verified["coverage_status"], derived_verification=verified)
+            code = 0
+        self.assertEqual(code, expected, result.stdout + result.stderr)
         self.assertEqual(result.stderr, "")
         self.assertNotIn("PRIVATE_", result.stdout)
         self.assertNotIn("one-next", result.stdout)
-        report = json.loads(result.stdout)
         self.assertEqual(report["snapshot_consistency"], "unverified")
         self.assertEqual(report["mutation_check"], "turn_inventory_only")
         return report
@@ -404,7 +409,7 @@ walker.Progress.next_plan = at_old_limit
         self.assert_private_receipts()
 
     def test_range_selects_only_after_anchor_and_has_distinct_digest(self):
-        result = self.invoke(mode="range", after_turn_id="one")
+        result = self.invoke(mode="range", after_turn_id="one", allow_finalization=True)
         self.assertEqual(result["coverage_status"], "complete_observed")
         state = self.state()["coverage"]
         self.assertEqual([row["turn_id"] for row in state["observed_inventory"]], ["two"])
@@ -415,12 +420,13 @@ walker.Progress.next_plan = at_old_limit
                                           "start_exclusive": True, "end_inclusive": True})
         self.assertEqual([row["params"]["turnId"] for row in self.transcript()
                           if row.get("method") == "thread/items/list"], ["two"])
-        first_digest = state["observation_sha256"]
+        first_digest = result.get("derived_verification", state)["observation_sha256"]
         self.assert_private_receipts()
         self.output = self.root / "changed-range"
         self.log.unlink()
-        self.invoke(mode="range", after_turn_id="two", through_turn_id="three")
-        self.assertNotEqual(self.state()["coverage"]["observation_sha256"], first_digest)
+        changed = self.invoke(mode="range", after_turn_id="two", through_turn_id="three", allow_finalization=True)
+        changed_digest = changed.get("derived_verification", self.state()["coverage"])["observation_sha256"]
+        self.assertNotEqual(changed_digest, first_digest)
         self.assertEqual([row["params"]["turnId"] for row in self.transcript()
                           if row.get("method") == "thread/items/list"], ["three"])
 
@@ -428,7 +434,7 @@ walker.Progress.next_plan = at_old_limit
         first = self.invoke(mode="range_long", after_turn_id="one", probes=1)
         self.assertEqual(first["coverage_status"], "partial")
         self.assertIsNone(self.state()["coverage"]["observation_sha256"])
-        final = self.invoke(mode="range_long", resume=True)
+        final = self.invoke(mode="range_long", resume=True, allow_finalization=True)
         self.assertEqual(final["coverage_status"], "complete_observed")
         self.assertEqual(final["usage"]["selected_items"], 1)
         self.assertEqual([row["params"]["turnId"] for row in self.transcript()
@@ -439,7 +445,7 @@ walker.Progress.next_plan = at_old_limit
         first = self.invoke(mode="range", after_turn_id="one", through_turn_id="one", probes=1)
         self.assertEqual(first["coverage_status"], "partial")
         self.assertIsNone(self.state()["coverage"]["observation_sha256"])
-        final = self.invoke(mode="range", resume=True)
+        final = self.invoke(mode="range", resume=True, allow_finalization=True)
         self.assertEqual(final["coverage_status"], "complete_observed")
         self.assertEqual(final["usage"]["selected_items"], 0)
         self.assertEqual(self.state()["coverage"]["observed_inventory"], [])
@@ -471,6 +477,135 @@ walker.Progress.next_plan = at_old_limit
         resumed = self.invoke(expected=1, mode="range_anchor_changed", resume=True)
         self.assertEqual(resumed["reason"], "selected_inventory_changed")
         self.assertFalse(any(row.get("method") == "thread/items/list" for row in self.transcript()))
+
+    def verify_capture(self, captured, expected=0, inject=None):
+        capture = self.root / ("capture-%d.json" % getattr(self, "capture_number", 0))
+        self.capture_number = getattr(self, "capture_number", 0) + 1
+        capture.write_text(json.dumps(captured), encoding="utf-8")
+        capture.chmod(0o600)
+        launcher = [str(WALKER)]
+        if inject is not None:
+            launcher = ["-c", "import sys, time\n"
+                        + "sys.path.insert(0, " + repr(str(WALKER.parent)) + ")\n"
+                        + "import walk_history as walker\n" + inject + "\n"
+                        + "raise SystemExit(walker.main(sys.argv[1:]))"]
+        result = subprocess.run([sys.executable, "-B", *launcher, "--verify-finalization", str(self.output),
+                                 "--capture", str(capture)], capture_output=True, text=True, env=self.env, timeout=20)
+        self.assertEqual(result.returncode, expected, result.stdout + result.stderr)
+        self.assertEqual(result.stderr, "")
+        return json.loads(result.stdout)
+
+    def delayed_terminal(self, **options):
+        return self.invoke(expected=1, inject="""
+publish = walker.publish
+slow_done = False
+def slow_publish(directory, name, raw, replace=False):
+    global slow_done
+    if name == "state.json" and b'"reason":"selected_scope_end"' in raw and not slow_done:
+        slow_done = True
+        time.sleep(0.4)
+    return publish(directory, name, raw, replace)
+walker.publish = slow_publish
+""", **options)
+
+    def run_hashes(self):
+        return {str(path.relative_to(self.output)): hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in self.output.rglob("*") if path.is_file()}
+
+    def test_witnessed_terminal_verifies_readonly_and_repeated_without_provider_calls(self):
+        captured = self.delayed_terminal()
+        self.assertEqual(captured["coverage_status"], "partial")
+        self.assertIn("finalization_witness", captured)
+        self.assertEqual(self.state()["coverage"]["phase"], "done")
+        hashes = self.run_hashes()
+        transcript = self.log.read_bytes()
+        first = self.verify_capture(captured)
+        second = self.verify_capture(captured)
+        self.assertEqual(first["observation_sha256"], second["observation_sha256"])
+        self.assertEqual(first["stored_collection_usage"], self.state()["coverage"]["usage"])
+        self.assertIsNone(first["exact_closing_elapsed_seconds"])
+        self.assertEqual(first["stored_coverage_status"], "partial")
+        self.assertEqual(hashes, self.run_hashes())
+        self.assertEqual(transcript, self.log.read_bytes())
+        self.assertEqual(self.invoke(expected=2, resume=True)["reason"], "uncertain_previous_invocation")
+        self.assert_private_receipts()
+
+    def test_witnessed_changed_range_keeps_digest_scope_and_ignores_captured_summary_claims(self):
+        captured = self.delayed_terminal(mode="range", after_turn_id="one")
+        captured["measured_elapsed_us_before_summary"] = 0
+        captured["usage"] = {"probes": 0, "elapsed_us": 0}
+        verified = self.verify_capture(captured)
+        self.assertEqual(verified["range"]["after_turn_id"], "one")
+        self.assertEqual(verified["earlier_item_coverage"], "excluded")
+        self.assertEqual(verified["stored_collection_usage"]["selected_items"], 1)
+        self.assertGreater(verified["stored_collection_usage"]["probes"], 0)
+        self.assertNotIn("measured_elapsed_us_before_summary", verified)
+
+    def test_verification_rejects_missing_bad_tampered_or_locked_evidence(self):
+        captured = self.delayed_terminal()
+        hashes = self.run_hashes()
+        for replacement in (None, {}, {**captured["finalization_witness"], "nonce": "0" * 64},
+                            {**captured["finalization_witness"], "elapsed_us": 0}):
+            with self.subTest(witness=replacement):
+                self.assertEqual(self.verify_capture({"finalization_witness": replacement}, expected=2)["verification_status"], "failed")
+        for name in ("state.json", "plan.json", "probe-0001/records.json", "probe-0001/receipt.json"):
+            path = self.output / name
+            original = path.read_bytes()
+            path.write_bytes(original + b" ")
+            self.assertEqual(self.verify_capture(captured, expected=2)["verification_status"], "failed")
+            path.write_bytes(original)
+        with (self.output / ".lock").open("rb") as handle:
+            fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            self.assertEqual(self.verify_capture(captured, expected=2)["reason"], "walk_writer_active")
+        active = self.verify_capture(captured, expected=2, inject="walker.os.kill = lambda pid, signal: None")
+        self.assertEqual(active["reason"], "finalization_origin_active")
+        public_capture = self.verify_capture(captured, expected=2, inject="walker.Path(sys.argv[-1]).chmod(0o644)")
+        self.assertEqual(public_capture["reason"], "invalid_private_file")
+        marker_path = self.output / ".invocation"
+        original = marker_path.read_bytes()
+        marker = json.loads(original)
+        marker["pid"] = 2 ** 64
+        marker_path.write_text(json.dumps(marker))
+        bad_pid = json.loads(json.dumps(captured))
+        bad_pid["finalization_witness"]["marker_sha256"] = hashlib.sha256(marker_path.read_bytes()).hexdigest()
+        self.assertEqual(self.verify_capture(bad_pid, expected=2)["reason"], "invalid_finalization_marker")
+        marker_path.write_bytes(original)
+        self.assertEqual(hashes, self.run_hashes())
+
+    def test_verification_separate_byte_and_wall_limits_refuse_without_writes(self):
+        captured = self.delayed_terminal()
+        hashes = self.run_hashes()
+        small = self.verify_capture(captured, expected=2, inject='walker.VERIFY_LIMITS = {**walker.VERIFY_LIMITS, "bytes": 1}')
+        self.assertEqual(small["reason"], "verification_byte_limit")
+        slow = self.verify_capture(captured, expected=2, inject="""
+walker.VERIFY_LIMITS = {**walker.VERIFY_LIMITS, "seconds": 0.1}
+replay = walker.replay
+def slow_replay(*args, **kwargs):
+    time.sleep(0.15)
+    return replay(*args, **kwargs)
+walker.replay = slow_replay
+""")
+        self.assertEqual(slow["reason"], "verification_wall_limit")
+        self.assertEqual(hashes, self.run_hashes())
+
+    def test_nonterminal_or_overdeadline_collection_releases_no_witness(self):
+        partial = self.invoke(probes=1)
+        self.assertNotIn("finalization_witness", partial)
+        self.assertEqual(self.verify_capture(partial, expected=2)["reason"], "invalid_finalization_witness")
+        self.output = self.root / "overdeadline"
+        late = self.invoke(expected=1, max_seconds=4, inject="""
+publish = walker.publish
+slow_done = False
+def slow_publish(directory, name, raw, replace=False):
+    global slow_done
+    if name == "state.json" and b'"reason":"selected_scope_end"' in raw and not slow_done:
+        slow_done = True
+        time.sleep(4.1)
+    return publish(directory, name, raw, replace)
+walker.publish = slow_publish
+""")
+        self.assertNotIn("finalization_witness", late)
+        self.assertEqual(late["coverage_status"], "partial")
 
     def test_resume_rejects_file_mutation_rollback_pending_and_live_lock(self):
         self.invoke(probes=2)
