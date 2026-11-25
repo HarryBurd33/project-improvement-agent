@@ -1,4 +1,4 @@
-# Portfolio review playbook — 1.11.0
+# Portfolio review playbook — 1.12.0
 
 ## Inputs, authority, limits
 
@@ -178,3 +178,12 @@ A hosted scope test reached its terminal observation but a final durable write e
 Follow [final-write verification](references/history-and-host.md#verify-a-witnessed-final-write) after the originating process has exited. Run the public verifier from a distinct process with the run directory and captured stdout. It replays the exact source/plan/journal/receipts and selected ends under its own finite local verification limits. A derived complete result and digest do not change the original partial snapshot or reopen collection. Missing or conflicting witnesses, active origins, pending probes and old uninstrumented markers remain refused.
 
 For changed-input qualification, save a fresh selected plan, private output and stdout capture for a different terminal scope. Use the same saved verification command after that originating process exits. Compare the derived digest and selected records against independently observed changed evidence. Check run-file hashes and provider call counts before and after verification, repeat it to confirm idempotence, and keep any failed or over-budget result partial. Keep exact closing duration unknown when the witness only certifies the original deadline bound.
+
+
+### Inspect older committed history evidence
+
+An older terminal-looking partial retained useful hashed records but could not use the newer final-write witness verifier. The [committed-evidence inspector](references/history-and-host.md#inspect-supported-older-committed-evidence) now replays only exact qualified released formats without running the archived producer. Its result identifies retained observations and missing scope while leaving original completion and deadline compliance unverified.
+
+Run the inspector on the quiescent original private directory after checking its owner. Compare its trusted producer pair, raw plan binding, committed probe hashes, record counts and closed versus incomplete scopes with independent retained evidence. A pending next slot has an unknown outcome. Its directory may contain incomplete or complete-looking files, but those bytes are excluded. A producer-rejected conflicting observation is refused rather than counted as a recovered item. Preserve the original run, marker, budgets and stopped decisions.
+
+For changed-input qualification, use a separately saved known partial with a different selected scope and stop point. Follow the same saved inspector command, compare its committed counts, partial cursor and unreached scopes against the independently frozen fixture, and verify all original files and provider call records remain identical. Repeat inspection to confirm the same committed digest. A successful inspection never authorizes collection or implementation of historical requests. Use the earlier helper versions for a separately authorized source-bound resume.

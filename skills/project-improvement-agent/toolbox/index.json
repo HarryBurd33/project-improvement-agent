@@ -76,7 +76,7 @@
       "purpose": "Portfolio review PLAYBOOK.md",
       "kind": "instructions",
       "location": "PLAYBOOK.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -99,7 +99,7 @@
       "purpose": "Portfolio review SKILL.md",
       "kind": "instructions",
       "location": "SKILL.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current manual request and applicable evidence; never inherited permission",
       "output_contract": "Bounded private review or honest partial record",
       "dependencies": [],
@@ -312,7 +312,7 @@
       "purpose": "Receipt validation and explicit history/host evidence procedure: references/history-and-host.md",
       "kind": "reference",
       "location": "references/history-and-host.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
       "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
       "dependencies": [],
@@ -575,6 +575,32 @@
       },
       "replaces": null,
       "reuse_decision": "Reuse exact journal replay for explicit terminal witness verification after slow final persistence"
+    },
+    {
+      "id": "committed-history-inspector",
+      "purpose": "Bounded read-only inspection of exact released committed history evidence",
+      "kind": "tool",
+      "location": "scripts/inspect_history.py",
+      "version": "1.12.0",
+      "input_contract": "One quiescent private saved walk from an exact supported released producer; fixed local verification limits",
+      "output_contract": "Committed counts, scope, evidence-relative paths and distinct digest; original completion/deadline unverified; pending bytes excluded",
+      "dependencies": [
+        "closed-history-walker",
+        "selected-history-reader"
+      ],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Actual synthetic subprocess integrity/partial/pending tests and trusted released format qualification",
+        "evidence": [
+          "references/history-and-host.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt trusted current replay primitives without altering existing walker or loading historical bundle code"
     }
   ]
 }

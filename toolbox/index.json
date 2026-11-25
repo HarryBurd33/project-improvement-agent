@@ -99,7 +99,7 @@
       "purpose": "Reusable release README.md",
       "kind": "reference",
       "location": "README.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -122,7 +122,7 @@
       "purpose": "Reusable release docs/provenance.md",
       "kind": "reference",
       "location": "docs/provenance.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -145,7 +145,7 @@
       "purpose": "Reusable release docs/validation.md",
       "kind": "reference",
       "location": "docs/validation.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -306,7 +306,7 @@
       "purpose": "Reusable release skills/project-improvement-agent/PLAYBOOK.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/PLAYBOOK.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -329,7 +329,7 @@
       "purpose": "Reusable release skills/project-improvement-agent/SKILL.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/SKILL.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Current authorized manual request or documented fixture inputs; no saved permission",
       "output_contract": "Reusable manual agent, discriminating validation or documented evidence; private data excluded",
       "dependencies": [],
@@ -542,7 +542,7 @@
       "purpose": "Receipt validation and explicit history/host evidence procedure: skills/project-improvement-agent/references/history-and-host.md",
       "kind": "reference",
       "location": "skills/project-improvement-agent/references/history-and-host.md",
-      "version": "1.11.0",
+      "version": "1.12.0",
       "input_contract": "Explicit private trace, optional bound runner/claims/report; or current scoped history/host observation",
       "output_contract": "Recorded facts, honest unknowns, claim checks or concrete manual recovery plan; no implicit authority",
       "dependencies": [],
@@ -1085,6 +1085,57 @@
       },
       "replaces": null,
       "reuse_decision": "Reuse the indexed selected-history parser, validation and transport for finite aggregate traversal and resume state"
+    },
+    {
+      "id": "committed-history-inspector",
+      "purpose": "Bounded read-only inspection of exact released committed history evidence",
+      "kind": "tool",
+      "location": "skills/project-improvement-agent/scripts/inspect_history.py",
+      "version": "1.12.0",
+      "input_contract": "One quiescent private saved walk from an exact supported released producer; fixed local verification limits",
+      "output_contract": "Committed counts, scope, evidence-relative paths and distinct digest; original completion/deadline unverified; pending bytes excluded",
+      "dependencies": [
+        "closed-history-walker",
+        "selected-history-reader"
+      ],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Actual synthetic subprocess integrity/partial/pending tests and trusted released format qualification",
+        "evidence": [
+          "skills/project-improvement-agent/references/history-and-host.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Adapt trusted current replay primitives without altering existing walker or loading historical bundle code"
+    },
+    {
+      "id": "committed-history-tests",
+      "purpose": "Synthetic subprocess regressions for committed evidence inspection",
+      "kind": "code",
+      "location": "tests/test_inspect_history.py",
+      "version": "1.12.0",
+      "input_contract": "Synthetic current producer and corrupt or uncertain saved fixtures",
+      "output_contract": "Independent assertions of counts, exclusion, strict failures and immutable files",
+      "dependencies": [
+        "committed-history-inspector"
+      ],
+      "status": "validated",
+      "used_by": [
+        "step-01",
+        "check-01"
+      ],
+      "validation": {
+        "method": "Actual synthetic subprocess integrity/partial/pending tests and trusted released format qualification",
+        "evidence": [
+          "skills/project-improvement-agent/references/history-and-host.md"
+        ]
+      },
+      "replaces": null,
+      "reuse_decision": "Reuse the indexed closed-history synthetic peer for new read-only inspection branches"
     }
   ]
 }
